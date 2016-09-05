@@ -29,7 +29,8 @@ class Str {
     
     /**
      * Gets a new Str instance where template tokens are replaced with the
-     * values from $params.
+     * values from $params. $params must be a key/value array, where the key is
+     * the token to replace.
      * 
      * @param   array $params
      * @return  System.Core.Str

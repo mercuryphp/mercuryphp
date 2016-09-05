@@ -1,7 +1,7 @@
 <?php
 
 class Core {
-    public static function autoload(){
+    public static function init(){
         $rootPath = __DIR__;
         $autoload = [
             $rootPath, 
@@ -20,12 +20,19 @@ class Core {
                 }
             });
         }
+        
+        include 'global.php';
+
+        $app = new Application($rootPath);
+        
+        try{
+            $app->load();
+        } catch (Exception $ex) {
+
+        }
     }
 }
 
-Core::autoload();
-
-print System\Core\Str::set('hello')->subString('e');
-
+Core::init();
 
 ?>
