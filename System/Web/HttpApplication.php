@@ -26,7 +26,7 @@ abstract class HttpApplication {
     	}
     	
     	foreach($this->routes as $route){
-            $route->getRouteHandler()->execute($this->httpContext);
+            $route->getRouteHandler()->execute($route, $this->httpContext);
     	}
     }
     

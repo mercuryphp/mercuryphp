@@ -29,7 +29,7 @@ class Core {
             $app->load();
             $app->run();
         } catch (Exception $ex) {
-        	$app->error($ex);
+            $app->error($ex);
         }
     }
 }
