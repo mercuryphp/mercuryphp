@@ -12,18 +12,5 @@ class RouteHandler {
         
         $tokens = Str::set($route->getRoute())->tokenize('{', '}');
 
-        $routePattern = '';
-        foreach($tokens as $token){
-            if(substr($token, 0,1) == '{'){
-                $routePattern .= '(?<'. trim($token, '{}').'>.+)';
-            }else{
-                $routePattern .= $token;
-            }
-        }
-
-        preg_match('#^'.$routePattern.'/$#', $uri, $matches);
-
-        print_r($matches);
-
     }
 }
