@@ -28,10 +28,10 @@ class Route {
     }
 
     public function setRouteHandler(){
-
+        
     }
 
     public function getRouteHandler(){
-
+        return $this->routeHandler;
     }
 }

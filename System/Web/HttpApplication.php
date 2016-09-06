@@ -10,6 +10,7 @@ abstract class HttpApplication {
     public function __construct($rootPath){
         $this->rootPath = $rootPath;
         $this->routes = new \System\Web\Routing\RouteCollection();
+        $this->httpContext = new HttpContext(new HttpRequest());
     }
     
     protected function getRoutes(){
@@ -21,11 +22,11 @@ abstract class HttpApplication {
     public final function run(){
     	
     	if(!$this->routes->count()){
-    		throw new \RuntimeException('One or more routes must be registered.');
+            throw new \RuntimeException('One or more routes must be registered.');
     	}
     	
     	foreach($this->routes as $route){
-    		$route->execute();
+            $route->getRouteHandler()->execute($this->httpContext);
     	}
     }
     
