@@ -27,8 +27,9 @@ class Core {
         
         try{
             $app->load();
+            $app->run();
         } catch (Exception $ex) {
-
+        	$app->error($ex);
         }
     }
 }
