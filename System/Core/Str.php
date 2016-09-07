@@ -58,6 +58,25 @@ class Str {
     }
     
     /**
+     * Gets a new Str instance where all occurrences of a specified string in this 
+     * instance is replaced with another specified string.
+     * 
+     * @param   mixed $search
+     * @param   string $replace
+     * @param   int $limit
+     * @return  System.Core.Str
+     */
+    public function replace($search, string $replace, int $limit = -1) : Str {
+        if(is_string($search)){
+            $search[] = $search;
+        }
+        foreach($search as $item){
+            $this->string = preg_replace('#'.$item.'#', $replace, $this->string, $limit);
+        }
+        return new Str($this->string);
+    }
+    
+    /**
      * Gets a new Str instance where all occurrences of $char are removed from 
      * this instance.
      * 

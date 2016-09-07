@@ -2,7 +2,7 @@
 
 namespace System\Collections;
 
-abstract class Collection implements \IteratorAggregate {
+abstract class Collection implements \IteratorAggregate, \ArrayAccess, \Countable {
     
     protected $collection = [];
     
@@ -60,4 +60,62 @@ abstract class Collection implements \IteratorAggregate {
     public function getIterator(){
         return new \ArrayIterator($this->collection);
     }
+    
+    /**
+     * Gets a boolean value indicating if the collection offset exists.
+     * This method is not intended to be used directly.
+     * 
+     * @param   mixed $offset
+     * @return  bool
+     */
+    public function offsetExists($offset){
+        if (array_key_exists($offset, $this->collection)){
+            return true;
+        }
+        return false;
+    }
+    
+    /**
+     * Gets an element from the collection using an offset.
+     * This method is not intended to be used directly.
+     * 
+     * @param   mixed $offset
+     * @return  mixed
+     */
+    public function offsetGet($offset){
+        return $this->collection[$offset];
+    }
+    
+    /**
+     * Sets an element in the collection using an offset.
+     * This method is not intended to be used directly.
+     * 
+     * @param   mixed $offset
+     * @param   mixed $value
+     * @return  mixed
+     */
+    public function offsetSet($offset, $value){
+        $this->collection[$offset] = $value;
+    }
+    
+    /**
+     * Removes an element from the collection using an offset.
+     * This method is not intended to be used directly.
+     * 
+     * @param   mixed $offset
+     * @return  void
+     */
+    public function offsetUnset($offset){
+        unset($this->collection[$offset]);
+    }
+    
+    /**
+     * Gets the number of elements in the collection.
+     * 
+     * @return  int
+     */
+    public function count() : int {
+        return count($this->collection);
+    }
+    
 }
