@@ -57,6 +57,29 @@ abstract class Collection implements \IteratorAggregate, \ArrayAccess, \Countabl
         return new \System\Core\Str();
     }
     
+    /**
+     * Merges an array or an instance of System.Collections.Collection with the collection.
+     * 
+     * @param   mixed $array
+     * @return  @this
+     */
+    public function merge($array) : Collection {
+        if($array instanceof \System\Collections\Collection){
+            $array = $array->toArray();
+        }
+        $this->collection = array_merge($this->collection, $array);
+        return $this;
+    }
+    
+    /**
+     * Gets the internal PHP array.
+     * 
+     * @return  array
+     */
+    public function toArray() : array {
+        return $this->collection;
+    }
+    
     public function getIterator(){
         return new \ArrayIterator($this->collection);
     }
