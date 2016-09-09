@@ -88,6 +88,28 @@ class Str {
     }
     
     /**
+     * Gets a new Str instance where all occurrences of $char are removed from 
+     * the start of this instance.
+     * 
+     * @param   string $charList = null
+     * @return  System.Core.Str
+     */
+    public function leftTrim($charList = null) : Str{
+        return new Str(ltrim($this->string, $charList));
+    }
+    
+    /**
+     * Gets a new Str instance where all occurrences of $char are removed from 
+     * the end of this instance.
+     * 
+     * @param   string $charList = null
+     * @return  System.Core.Str
+     */
+    public function rightTrim($charList = null) : Str {
+        return new Str(rtrim($this->string, $charList));
+    }
+    
+    /**
      * Gets a new Str instance which is a sub string of this instance.
      * 
      * @param   mixed $start
@@ -151,16 +173,66 @@ class Str {
     }
     
     /**
+     * Gets a boolean value indicating if this Str instance equals $string.
+     * 
+     * @param   array $string
+     * @return  bool
+     */
+    public function equals(string $string) : bool {
+        if($string == $this->string){
+            return true;
+        }
+        return false;
+    }
+    
+    /**
      * Gets a new Str instance where template tokens are replaced with the
      * values from $params. $params must be a key/value array, where the key is
      * the token to replace.
      * 
-     * @param   array $params
+     * @param   mixed $params
      * @return  System.Core.Str
      */
-    public function template($params){
-        foreach($params as $key=>$val){
-            $this->string = str_replace('{'.$key.'}', $val, $this->string);
+    public function template($params, array $transformations = []) : Str{
+        $tokens = $this->tokenize('{', '}', false)[0];
+
+        foreach($tokens as $idx => $token){
+            list($type, $tokenName) = array_values($token);
+
+            if($type=='T_TOKEN'){
+                if(array_key_exists($tokenName, $params) && array_key_exists($tokenName, $transformations)){
+                    $value = $params[$tokenName];
+                    $transformation = strtolower($transformations[$tokenName]);
+                    $args = explode('.',$transformation);
+                    
+                    foreach($args as $arg){
+                        switch($arg){
+                            case 'lc':
+                                $value = strtolower($value);
+                                break;
+                            case 'uc':
+                                $value = strtoupper($value);
+                                break;
+                            case 'ucf':
+                                $value = ucfirst($value);
+                                break;
+                            case 'lcf':
+                                $value = lcfirst($value);
+                                break;
+                            case 't':
+                                $value = trim($value);
+                                break;
+                        }
+                    }
+                    $params[$tokenName] = $value;
+                }
+            }
+            
+            if(array_key_exists($tokenName, $params)){
+                $this->string = str_replace('{'.$tokenName.'}', $params[$tokenName], $this->string);
+            }else{
+                $this->string = str_replace('{'.$tokenName.'}', '', $this->string);
+            }
         }
         return new Str($this->string);
     }
@@ -169,42 +241,47 @@ class Str {
      * Tokenizes the current instance and returns an instance of 
      * System.Collections.ArrayList that contains all the tokens.
      * 
-     * @param   string $openingChar
-     * @param   string $closingChar
+     * @param   string $openingTag
+     * @param   string $closingTag
      * @return  System.Collections.ArrayList
      */
-    public function tokenize(string $openingChar, string $closingChar){
+    public function tokenize(string $openingTag, string $closingTag, $includeTags = true) : \System\Collections\ArrayList {
         $len = strlen($this->string);
         $token = '';
-        $tokens = new \System\Collections\ArrayList();
+        $tokens = [];
         
         for($i=0; $i < $len; $i++){
             $char = $this->string[$i];
 
-            if($char==$openingChar){
+            if($char==$openingTag){
                 if($token){
-                    $tokens->add($token);
+                    $tokens[0][] = ['type' => 'T_TEXT', 'value' => $token];
+                    $tokens[1][] = $token;
                     $token = '';
                 }
                 continue;
             }
-            if($char==$closingChar){
-                $tokens->add($openingChar.$token.$closingChar);
+            if($char==$closingTag){
+                $tokenValue = $openingTag.$token.$closingTag;
+                if(!$includeTags){
+                    $tokenValue = $token;
+                }
+                $tokens[0][] = ['type' => 'T_TOKEN', 'value' => $tokenValue];
+                $tokens[1][] = $tokenValue;
                 $token = '';
                 continue;
             }
 
             $token.= $char;
-            
-            if($i==strlen($this->string)-1){
-                $tokens->add($token);
-            }
         }
-        return $tokens;
+        $tokens[0][] = ['type' => 'T_TEXT', 'value' => $token];
+        $tokens[1][] = $token;
+
+        return new \System\Collections\ArrayList($tokens);
     }
     
-    public function toString(){
-        return $this->string;
+    public function toString() : string {
+        return (string)$this->string;
     }
     
     public function __toString(){
@@ -219,5 +296,36 @@ class Str {
      */
     public static function set($string){
         return new Str($string);
+    }
+    
+    /**
+     * Joins all elements in the $array using the specified $glue and returns a 
+     * new instance of System.Core.Str
+     * 
+     * @param   string $glue
+     * @param   mixed $array
+     * @param   bool $removeEmptyEntries = true
+     * @return  System.Std.Str
+     */
+    public static function join($glue, $array, $removeEmptyEntries = true) : Str {
+        if($array instanceof \System\Collections\Collection){
+            $array = $array->toArray();
+        }
+        $join = '';
+        if(is_array($array)){
+            foreach($array as $value){
+                if(is_scalar($value)){
+                    $value = trim($value);
+                    if($removeEmptyEntries){
+                        if($value !=''){
+                            $join.= $value.$glue;
+                        }
+                    }else{
+                        $join.= $value.$glue;
+                    }
+                }
+            }
+        }
+        return new Str(trim($join, $glue));
     }
 }
