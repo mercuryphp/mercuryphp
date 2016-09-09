@@ -2,7 +2,7 @@
 
 class Core {
     public static function init(){
-        $rootPath = __DIR__;
+        $rootPath = str_replace('\\', '/', __DIR__);
         $autoload = [
             $rootPath, 
             $rootPath.'/Vendors'
@@ -28,6 +28,7 @@ class Core {
         try{
             $app->load();
             $app->run();
+            $app->end();
         } catch (Exception $ex) {
             $app->error($ex);
         }

@@ -11,4 +11,8 @@ class HttpResponse {
     public function getOutput() : HttpResponseOutput {
         return $this->output;
     }
+    
+    public function flush(){
+        echo $this->output->getBody();
+    }
 }

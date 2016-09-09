@@ -11,7 +11,7 @@ class Str {
     const LAST_FIRST = 3;
     const LAST_LAST = 4;
     
-    public function __construct($string){
+    public function __construct(string $string = ''){
         $this->string = $string;
     }
     
@@ -107,6 +107,17 @@ class Str {
      */
     public function rightTrim($charList = null) : Str {
         return new Str(rtrim($this->string, $charList));
+    }
+    
+    /**
+     * Gets a new Str instance with the specified string appened to this 
+     * instance.
+     * 
+     * @param   string $string
+     * @return  System.Core.Str
+     */
+    public function append(string $string) : Str {
+        return new Str($this->string.$string);
     }
     
     /**

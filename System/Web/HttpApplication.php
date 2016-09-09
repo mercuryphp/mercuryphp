@@ -8,7 +8,7 @@ use System\Core\Object;
 abstract class HttpApplication {
     
     private $rootPath;
-    private $routes = null;
+    private $routes;
     
     public function __construct($rootPath){
         $this->rootPath = $rootPath;
@@ -16,7 +16,7 @@ abstract class HttpApplication {
         $this->httpContext = new HttpContext(new HttpRequest(), new HttpResponse());
     }
     
-    protected function getRoutes(){
+    protected function getRoutes() : \System\Web\Routing\RouteCollection {
         return $this->routes;
     }
 
@@ -37,7 +37,10 @@ abstract class HttpApplication {
                 )->trim('.');
                 
                 try{
-                    $controller = Object::getInstance((string)$class, [$this->httpContext]);
+                    $controller = Object::getInstance((string)$class, [
+                        $this->rootPath,
+                        $this->httpContext
+                    ]);
                 }catch(\ReflectionException $e){
                     throw new Mvc\ControllerNotFoundException($this->httpContext, $class);
                 }
@@ -70,7 +73,9 @@ abstract class HttpApplication {
     	}
     }
     
+    public function end(){
+        $this->httpContext->getResponse()->flush();
+    }
 
-    
     public function error(\Exception $e){}
 }

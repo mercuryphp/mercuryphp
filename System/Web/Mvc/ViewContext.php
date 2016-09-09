@@ -4,16 +4,32 @@ namespace System\Web\Mvc;
 
 class ViewContext {
 
+    protected $rootPath;
     protected $httpContext;
-    protected $args;
+    protected $params;
+    protected $actionName;
     
-    public function __construct(\System\Web\HttpContext $httpContext, $args){
+    public function __construct(string $rootPath, \System\Web\HttpContext $httpContext, array $params, string $actionName = null){
+        $this->rootPath = $rootPath;
         $this->httpContext = $httpContext;
-        $this->args = $args;
+        $this->params = $params;
+        $this->actionName = $actionName;
     }
     
-    public function getHttpContext(){
+    public function getRootPath() : string {
+        return $this->rootPath;
+    }
+    
+    public function getHttpContext() : \System\Web\HttpContext {
         return $this->httpContext;
+    }
+    
+    public function getParams() : array {
+        return $this->params;
+    }
+    
+    public function getActionName() : string {
+        return $this->actionName;
     }
 }
 
