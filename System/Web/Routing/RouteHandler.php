@@ -4,13 +4,13 @@ namespace System\Web\Routing;
 
 use System\Core\Str;
 
-class RouteHandler {
+class RouteHandler implements IRouteHandler {
     
-    public function execute(Route $route, \System\Web\HttpContext $httpContext){
+    public function execute(Route $route, \System\Web\HttpContext $httpContext) : bool {
         
         $uri = $httpContext->getRequest()->getUri();
         
-        $tokens = Str::set($route->getRoute())->tokenize('{', '}');
+        $tokens = Str::set($route->getRoute())->tokenize('{', '}')[1];
 
         $uriSegments = Str::set($uri)->replace($tokens, '#', 1)->split('#');
 
@@ -19,11 +19,16 @@ class RouteHandler {
             if(substr($token, 0,1) == '{'){
                 $tokenName = Str::set($token)->get('{', '}');
                 $tokens[$idx] = $uriSegments->get($counter);
+                
+                $httpContext->getRequest()->getRouteData()->set((string)$tokenName, $tokens[$idx]);
                 ++$counter;
             }
-            
         }
-        
-        print_R($tokens); exit;
+
+        if(Str::join('',$tokens)->trim('/')->equals($uri)){
+            $httpContext->getRequest()->getRouteData()->merge($route->getDefaults());
+            return true;
+        }
+        return false;
     }
 }
