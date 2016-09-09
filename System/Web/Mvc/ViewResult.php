@@ -2,17 +2,17 @@
 
 namespace System\Web\Mvc;
 
-class ViewResult extends ActionResult {
+class ViewResult implements IActionResult {
     
-    protected $controller;
+    protected $viewEngine;
     protected $viewContext;
     
-    public function __construct(\System\Web\Mvc\Controller $controller, $viewContext){
-        $this->controller = $controller;
+    public function __construct($viewEngine, $viewContext){
+        $this->viewEngine = $viewEngine;
         $this->viewContext = $viewContext;
     }
     
     public function execute(){
-        return $this->controller->getViewEngine()->render($this->viewContext);
+        return $this->viewEngine->render($this->viewContext);
     }
 }
