@@ -2,14 +2,26 @@
 
 namespace System\Web;
 
-class HttpRequest {
+final class HttpRequest {
     
-    protected $uri;
+    private $uri;
+    private $server;
+    private $routeData;
     
     public function __construct() {
         $this->server = new \System\Collections\Dictionary($_SERVER);
+        $this->routeData = new \System\Collections\Dictionary();
         
         $this->uri = $this->server->getString('REQUEST_URI')->getLastIndexOf('?')->trim('/');
+    }
+    
+    /**
+     * Gets the request URI without query variables.
+     * 
+     * @return  System.Collections.Dictionary
+     */
+    public function getRouteData() : \System\Collections\Dictionary {
+        return $this->routeData;
     }
     
     /**
