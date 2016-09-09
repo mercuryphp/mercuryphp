@@ -2,6 +2,9 @@
 
 namespace System\Web;
 
+use System\Core\Str;
+use System\Core\Object;
+
 abstract class HttpApplication {
     
     private $rootPath;
@@ -26,7 +29,24 @@ abstract class HttpApplication {
     	}
     	
     	foreach($this->routes as $route){
-            $route->getRouteHandler()->execute($route, $this->httpContext);
+            if($route->getRouteHandler()->execute($route, $this->httpContext)){
+                
+                $class = Str::set('{namespace}.{module}.Controllers.{controller}Controller')->template(
+                    $this->httpContext->getRequest()->getRouteData()->toArray(),
+                    ['module' => 'lc.ucf', 'controller' => 'lc.ucf']
+                )->trim('.');
+                
+                try{
+                    $controller = Object::getInstance((string)$class);
+                }catch(\ReflectionException $e){
+                    throw new Mvc\ControllerNotFoundException($this->httpContext, $class);
+                }
+                
+                if(!$controller instanceof Mvc\Controller){
+                    throw new Mvc\HttpException(sprintf("The controller '%s' does not inherit from System.Web.Mvc.Controller.", $class));
+                }
+                break;
+            }
     	}
     }
     
