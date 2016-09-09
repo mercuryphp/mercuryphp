@@ -3,7 +3,7 @@
 class Application extends System\Web\HttpApplication {
     
     public function load(){
-        $this->getRoutes()->add('{module}/{controller}/{action}');
+        $this->getRoutes()->add('{controller}/{action}', ['controller' => 'index', 'action' => 'index']);
     }
     
     public function error(Exception $e){
