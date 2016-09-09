@@ -7,11 +7,12 @@ class Route {
     protected $route;
     protected $defaults = [];
     protected $conditions = [];
+    protected $routeHandler;
 
     public function __construct($route, array $defaults = [], array $conditions = []){
         $this->route = $route;
-        $this->defaults = $defaults;
-        $this->conditions = $conditions;
+        $this->defaults = new \System\Collections\Dictionary($defaults);
+        $this->conditions = new \System\Collections\Dictionary($conditions);
         $this->routeHandler = new RouteHandler();
     }
 
@@ -19,19 +20,19 @@ class Route {
         return $this->route;
     }
 
-    public function getDefaults() : array {
+    public function getDefaults() : \System\Collections\Dictionary {
         return $this->defaults;
     }
 
-    public function getConditions() : array {
+    public function getConditions() : \System\Collections\Dictionary {
         return $this->conditions;
     }
 
-    public function setRouteHandler(){
-        
+    public function setRouteHandler(IRouteHandler $routeHandler){
+        $this->routeHandler = $routeHandler;
     }
 
-    public function getRouteHandler(){
+    public function getRouteHandler() : IRouteHandler {
         return $this->routeHandler;
     }
 }
