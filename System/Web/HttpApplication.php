@@ -13,7 +13,7 @@ abstract class HttpApplication {
     public function __construct($rootPath){
         $this->rootPath = $rootPath;
         $this->routes = new \System\Web\Routing\RouteCollection();
-        $this->httpContext = new HttpContext(new HttpRequest());
+        $this->httpContext = new HttpContext(new HttpRequest(), new HttpResponse());
     }
     
     protected function getRoutes(){
@@ -37,7 +37,7 @@ abstract class HttpApplication {
                 )->trim('.');
                 
                 try{
-                    $controller = Object::getInstance((string)$class);
+                    $controller = Object::getInstance((string)$class, [$this->httpContext]);
                 }catch(\ReflectionException $e){
                     throw new Mvc\ControllerNotFoundException($this->httpContext, $class);
                 }
@@ -45,10 +45,32 @@ abstract class HttpApplication {
                 if(!$controller instanceof Mvc\Controller){
                     throw new Mvc\HttpException(sprintf("The controller '%s' does not inherit from System.Web.Mvc.Controller.", $class));
                 }
+                
+                $refClass = new \ReflectionClass($controller);
+                $actionName = $this->httpContext->getRequest()->getRouteData()->get('action');
+                
+                if(!$refClass->hasMethod($actionName)){
+                    throw new \System\Web\Mvc\ActionNotFoundException($this->httpContext, get_class($controller));
+                }
+                
+                $controller->load();
+                
+                $actionMethod = $refClass->getMethod($actionName);
+                
+                $actionResult = $actionMethod->invokeArgs($controller, []);
+                
+                if(!$actionResult instanceof \System\Web\Mvc\IActionResult){
+                    $actionResult = new \System\Web\Mvc\StringResult($actionResult);
+                }
+                
+                $controller->render($actionResult);
+                
                 break;
             }
     	}
     }
+    
+
     
     public function error(\Exception $e){}
 }
