@@ -9,12 +9,10 @@ class StringResult implements IActionResult {
     public function __construct($string){
         if(is_scalar($string)){
             $this->string = $string;
-        }else{
-            $this->string = serialize($string);
         }
     }
     
-    public function execute(){
+    public function execute() : string {
         return $this->string;
     }
 }

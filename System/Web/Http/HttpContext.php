@@ -5,11 +5,11 @@ namespace System\Web\Http;
 final class HttpContext {
     
     private $httpRequest;
-    private $response;
+    private $httpResponse;
     
-    public function __construct(HttpRequest $httpRequest, HttpResponse $response) {
+    public function __construct(HttpRequest $httpRequest, HttpResponse $httpResponse) {
         $this->httpRequest = $httpRequest;
-        $this->response = $response;
+        $this->httpResponse = $httpResponse;
     }
     
     /**
@@ -27,7 +27,7 @@ final class HttpContext {
      * @return  System.Web.HttpResponse
      */
     public function getResponse() : HttpResponse{
-        return $this->response;
+        return $this->httpResponse;
     } 
 }
 

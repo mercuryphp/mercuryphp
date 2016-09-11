@@ -16,9 +16,14 @@ abstract class Controller {
         $this->viewEngine->setViewPath($this->rootPath);
     }
     
-    public function view($params = [], $actionName = null){
-        $viewResult = new ViewResult($this->getViewEngine(), new ViewContext($this->httpContext, $params, $actionName));
+    public function view(array $data = [], $actionName = null){
+        $viewResult = new ViewResult($this->getViewEngine(), new ViewContext($this->httpContext, $data, $actionName));
         return $viewResult;
+    }
+    
+    public function json($data = [], $options = null){
+        $jsonResult = new JsonResult($this->httpContext->getResponse(), $data, $options);
+        return $jsonResult;
     }
     
     public function getViewEngine(){

@@ -64,7 +64,11 @@ abstract class HttpApplication {
                 $actionResult = $actionMethod->invokeArgs($controller, []);
                 
                 if(!$actionResult instanceof \System\Web\Mvc\IActionResult){
-                    $actionResult = new \System\Web\Mvc\StringResult($actionResult);
+                    if(is_array($actionResult)){
+                        $actionResult = new \System\Web\Mvc\JsonResult($this->httpContext->getResponse(), $actionResult, null);
+                    }else{
+                        $actionResult = new \System\Web\Mvc\StringResult($actionResult);
+                    }
                 }
                 
                 $controller->render($actionResult);
