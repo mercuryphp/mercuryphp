@@ -2,18 +2,23 @@
 
 namespace System\Web\Mvc\ViewEngine;
 
-class NativeView implements IView {
+use System\Core\Str;
+use System\Collections\Dictionary;
+
+class NativeView extends View {
     
-    protected $viewFilePattern = '{path}/{namespace}/{module}/Views/{controller}/{action}.php';
+    protected $viewFilePattern = '{namespace}/{module}/Views/{controller}/{action}.php';
     protected $layoutFile;
     protected $output = [];
-        
+    
     public function render(\System\Web\Mvc\ViewContext $viewContext){
         
         $request = $viewContext->getHttpContext()->getRequest(); 
-        
-        $file = \System\Core\Str::set($this->viewFilePattern)->template(
-            array_merge(['path' => $viewContext->getRootPath()], $request->getRouteData()->toArray()),
+
+        $file = Str::set($this->getViewPath())->append($this->viewFilePattern)->template(
+            (new Dictionary())
+            ->merge($request->getRouteData()->toArray())
+            ->toArray(),
             ['controller' => 'lc.ucf', 'action' => 'lc.ucf']
         );
 
@@ -27,8 +32,8 @@ class NativeView implements IView {
             $this->output['view'] = ob_get_clean();
 
             if($this->layoutFile){
-                if(substr($this->layoutFile, 0, 1) == '~'){
-                    $this->layoutFile = \System\Std\Environment::getRootPath() . substr($this->layoutFile, 1);
+                if(Str::set($this->layoutFile)->subString(0,1)->equals('~')){
+                    $this->layoutFile = $viewContext->getRootPath() . substr($this->layoutFile, 1);
                 }
                 
                 if (is_file($this->layoutFile)){

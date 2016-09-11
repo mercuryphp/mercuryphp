@@ -9,14 +9,15 @@ abstract class Controller {
     private $viewEngine;
 
 
-    public function __construct(string $rootPath, \System\Web\HttpContext $httpContext){
+    public function __construct(string $rootPath, \System\Web\Http\HttpContext $httpContext){
         $this->rootPath = $rootPath;
         $this->httpContext = $httpContext;
         $this->viewEngine = new ViewEngine\NativeView();
+        $this->viewEngine->setViewPath($this->rootPath);
     }
     
     public function view($params = [], $actionName = null){
-        $viewResult = new ViewResult($this->getViewEngine(), new ViewContext($this->rootPath, $this->httpContext, $params, $actionName));
+        $viewResult = new ViewResult($this->getViewEngine(), new ViewContext($this->httpContext, $params, $actionName));
         return $viewResult;
     }
     

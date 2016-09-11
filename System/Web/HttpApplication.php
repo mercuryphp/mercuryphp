@@ -4,6 +4,7 @@ namespace System\Web;
 
 use System\Core\Str;
 use System\Core\Object;
+use System\Web\Http;
 
 abstract class HttpApplication {
     
@@ -13,7 +14,7 @@ abstract class HttpApplication {
     public function __construct($rootPath){
         $this->rootPath = $rootPath;
         $this->routes = new \System\Web\Routing\RouteCollection();
-        $this->httpContext = new HttpContext(new HttpRequest(), new HttpResponse());
+        $this->httpContext = new Http\HttpContext(new Http\HttpRequest(), new Http\HttpResponse());
     }
     
     protected function getRoutes() : \System\Web\Routing\RouteCollection {

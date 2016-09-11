@@ -6,5 +6,5 @@ interface IActionResult {
     /**
      * Executes an empty ActionResult.
      */
-    public function execute();
+    public function execute() : string;
 }

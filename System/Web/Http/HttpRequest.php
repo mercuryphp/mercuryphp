@@ -1,6 +1,6 @@
 <?php
 
-namespace System\Web;
+namespace System\Web\Http;
 
 final class HttpRequest {
     
