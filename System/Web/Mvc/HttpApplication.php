@@ -1,10 +1,13 @@
 <?php
 
-namespace System\Web;
+namespace System\Web\Mvc;
 
 use System\Core\Str;
 use System\Core\Object;
-use System\Web\Http;
+use System\Web\Routing\RouteCollection;
+use System\Web\Http\HttpContext;
+use System\Web\Http\HttpRequest;
+use System\Web\Http\HttpResponse;
 
 abstract class HttpApplication {
     
@@ -13,8 +16,9 @@ abstract class HttpApplication {
     
     public function __construct($rootPath){
         $this->rootPath = $rootPath;
-        $this->routes = new \System\Web\Routing\RouteCollection();
-        $this->httpContext = new Http\HttpContext(new Http\HttpRequest(), new Http\HttpResponse());
+        $this->routes = new RouteCollection();
+        $this->httpContext = new HttpContext(new HttpRequest(), new HttpResponse());
+        $this->config = new \System\Configuration\YmlConfiguration();
     }
     
     protected function getRoutes() : \System\Web\Routing\RouteCollection {
@@ -43,18 +47,18 @@ abstract class HttpApplication {
                         $this->httpContext
                     ]);
                 }catch(\ReflectionException $e){
-                    throw new Mvc\ControllerNotFoundException($this->httpContext, $class);
+                    throw new ControllerNotFoundException($this->httpContext, $class);
                 }
                 
-                if(!$controller instanceof Mvc\Controller){
-                    throw new Mvc\HttpException(sprintf("The controller '%s' does not inherit from System.Web.Mvc.Controller.", $class));
+                if(!$controller instanceof Controller){
+                    throw new HttpException(sprintf("The controller '%s' does not inherit from System.Web.Mvc.Controller.", $class));
                 }
                 
                 $refClass = new \ReflectionClass($controller);
                 $actionName = $this->httpContext->getRequest()->getRouteData()->get('action');
                 
                 if(!$refClass->hasMethod($actionName)){
-                    throw new \System\Web\Mvc\ActionNotFoundException($this->httpContext, get_class($controller));
+                    throw new ActionNotFoundException($this->httpContext, get_class($controller));
                 }
                 
                 $controller->load();

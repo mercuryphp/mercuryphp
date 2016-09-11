@@ -1,6 +1,6 @@
 <?php
 
-class Application extends System\Web\HttpApplication {
+class Application extends System\Web\Mvc\HttpApplication {
     
     public function load(){
         $this->getRoutes()->add('{controller}/{action}', ['controller' => 'index', 'action' => 'index']);
