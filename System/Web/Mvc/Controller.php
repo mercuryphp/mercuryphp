@@ -13,7 +13,7 @@ abstract class Controller {
         $this->rootPath = $rootPath;
         $this->httpContext = $httpContext;
         $this->viewEngine = new ViewEngine\NativeView();
-        $this->viewEngine->setViewPath($this->rootPath);
+        $this->viewEngine->setPath($this->rootPath);
     }
     
     public function view(array $data = [], $actionName = null){
