@@ -4,14 +4,14 @@ namespace System\Web\Mvc\ViewEngine;
 
 abstract class View {
     
-    protected $viewPath;
+    protected $path;
     
-    public function setViewPath(string $viewPath){
-        $this->viewPath = $viewPath;
+    public function setPath(string $path){
+        $this->path = $path;
     }
     
-    public function getViewPath() : string {
-        return $this->viewPath;
+    public function getPath() : string {
+        return $this->path;
     }
     
     public abstract function render(\System\Web\Mvc\ViewContext $viewContext);
