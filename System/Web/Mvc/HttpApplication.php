@@ -18,7 +18,7 @@ abstract class HttpApplication {
         $this->rootPath = $rootPath;
         $this->routes = new RouteCollection();
         $this->httpContext = new HttpContext(new HttpRequest(), new HttpResponse());
-        $this->config = new \System\Configuration\YmlConfiguration();
+        $this->config = new \System\Configuration\Configuration('config.php');
     }
     
     protected function getRoutes() : \System\Web\Routing\RouteCollection {
@@ -61,6 +61,8 @@ abstract class HttpApplication {
                     throw new ActionNotFoundException($this->httpContext, get_class($controller));
                 }
                 
+                $this->beforeAction($controller);
+                
                 $controller->load();
                 
                 $actionMethod = $refClass->getMethod($actionName);
@@ -80,6 +82,9 @@ abstract class HttpApplication {
                 break;
             }
     	}
+    }
+    
+    public function beforeAction(Controller $controller){ 
     }
     
     public function end(){
