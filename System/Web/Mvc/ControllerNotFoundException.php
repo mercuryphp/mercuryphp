@@ -3,7 +3,7 @@
 namespace System\Web\Mvc;
 
 class ControllerNotFoundException extends HttpException {
-    public function __construct(\System\Web\HttpContext $httpContext, $className){
+    public function __construct(\System\Web\Http\HttpContext $httpContext, $className){
         $routeData = $httpContext->getRequest()->getRouteData(); 
         //$httpContext->getResponse()->setStatusCode(404)->flush();
         //$file = \System\Std\Environment::getRootPath().'/'.str_replace('.','/',$className).'.php';

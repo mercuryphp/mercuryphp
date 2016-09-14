@@ -8,6 +8,8 @@ class RouteHandler implements IRouteHandler {
     
     public function execute(Route $route, \System\Web\Http\HttpContext $httpContext) : bool {
         
+        $httpContext->getRequest()->getRouteData()->merge($route->getDefaults());
+        
         $uri = $httpContext->getRequest()->getUri();
         
         $tokens = Str::set($route->getRoute())->tokenize('{', '}')[1];
@@ -20,13 +22,14 @@ class RouteHandler implements IRouteHandler {
                 $tokenName = Str::set($token)->get('{', '}');
                 $tokens[$idx] = $uriSegments->get($counter);
                 
-                $httpContext->getRequest()->getRouteData()->set((string)$tokenName, $tokens[$idx]);
+                if($tokens[$idx]){
+                    $httpContext->getRequest()->getRouteData()->set((string)$tokenName, $tokens[$idx]);
+                }
                 ++$counter;
             }
         }
 
         if(Str::join('',$tokens)->trim('/')->equals($uri)){
-            $httpContext->getRequest()->getRouteData()->merge($route->getDefaults());
             return true;
         }
         return false;

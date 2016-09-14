@@ -14,7 +14,7 @@ abstract class HttpApplication {
     private $rootPath;
     private $routes;
     
-    public function __construct($rootPath){
+    public function __construct(string $rootPath){
         $this->rootPath = $rootPath;
         $this->routes = new RouteCollection();
         $this->httpContext = new HttpContext(new HttpRequest(), new HttpResponse());
@@ -35,12 +35,12 @@ abstract class HttpApplication {
     	
     	foreach($this->routes as $route){
             if($route->getRouteHandler()->execute($route, $this->httpContext)){
-                
+
                 $class = Str::set('{namespace}.{module}.Controllers.{controller}Controller')->template(
                     $this->httpContext->getRequest()->getRouteData()->toArray(),
                     ['module' => 'lc.ucf', 'controller' => 'lc.ucf']
                 )->trim('.');
-                
+
                 try{
                     $controller = Object::getInstance((string)$class, [
                         $this->rootPath,

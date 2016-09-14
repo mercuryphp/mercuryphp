@@ -16,6 +16,10 @@ abstract class Controller {
         $this->viewEngine->setPath($this->rootPath);
     }
     
+    public function getRequest(){
+        return $this->httpContext->getRequest();
+    }
+    
     public function view(array $data = [], $actionName = null){
         $viewResult = new ViewResult($this->getViewEngine(), new ViewContext($this->httpContext, $data, $actionName));
         return $viewResult;

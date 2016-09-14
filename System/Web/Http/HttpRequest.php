@@ -5,6 +5,7 @@ namespace System\Web\Http;
 final class HttpRequest {
     
     private $uri;
+    private $uriSegments;
     private $server;
     private $routeData;
     
@@ -13,6 +14,7 @@ final class HttpRequest {
         $this->routeData = new \System\Collections\Dictionary();
         
         $this->uri = $this->server->getString('REQUEST_URI')->getLastIndexOf('?')->trim('/');
+        $this->uriSegments = $this->uri->split('\/');
     }
     
     /**
@@ -31,5 +33,14 @@ final class HttpRequest {
      */
     public function getUri() : \System\Core\Str {
         return $this->uri;
+    }
+    
+    /**
+     * Gets a System.Collections.ArrayList of uri segments.
+     * 
+     * @return  System.Collections.ArrayList
+     */
+    public function getUriSegments() : \System\Collections\ArrayList {
+        return $this->uriSegments;
     }
 }

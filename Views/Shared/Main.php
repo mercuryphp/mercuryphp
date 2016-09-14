@@ -47,7 +47,6 @@
     }
 
     .bg {
-        //background: linear-gradient(141deg, #0fb8ad 0%, #1fc8db 51%, #2cb5e8 75%);
         background: linear-gradient(141deg, #3C385B 0%, #6D569E 51%, #3C385B 75%);
         height:350px;
         width:100%;
@@ -96,24 +95,6 @@
     }
     .grid tr td h3 label {
         color: #A06001;
-    }
-    
-    .library {
-        position:absolute;
-        left:0px;
-    }
-    .library > div { margin:5px 20px; }
-    .library > div > h3 { font-size:13px; color: #174D6F; }
-    .library > div > ul {
-        list-style-type:none;
-    }
-    .library > div > ul > li > a { color:#555; font-size:13px; text-decoration: none; }
-    
-    .library-window{
-        margin-left:230px;
-    }
-    .library-window > p {
-        color:#555;
     }
     
     .container {max-width:900px;margin:auto;}

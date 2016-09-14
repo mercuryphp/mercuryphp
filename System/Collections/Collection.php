@@ -6,15 +6,16 @@ abstract class Collection implements \IteratorAggregate, \ArrayAccess, \Countabl
     
     protected $collection = [];
     
+    /**
+     * Initializes a new instance of @class. If $collection is specified
+     * then initializes the collection with default elements.
+     */
     public function __construct(array $collection = []){
         $this->collection = $collection;
     }
     
     /**
-     * Determines if the collection contains an element with the specified key.
-     * 
-     * @param   mixed $key
-     * @return  bool
+     * Determines if the collection contains an element with the specified $key.
      */
     public function hasKey($key) : bool {
         if(array_key_exists($key, $this->collection)){
@@ -26,10 +27,6 @@ abstract class Collection implements \IteratorAggregate, \ArrayAccess, \Countabl
     /**
      * Gets an element from the collection using the specified $key. If $default 
      * is specified and the element is not found then gets $default. 
-     * 
-     * @param   mixed $key
-     * @param   mixed $default = null
-     * @return  mixed
      */
     public function get($key, $default = null){
         if($this->hasKey($key)){
@@ -42,10 +39,6 @@ abstract class Collection implements \IteratorAggregate, \ArrayAccess, \Countabl
      * Gets an element from the collection as an instance of System.Core.Str
      * using the specified $key. If $default is specified and the element is not 
      * found then gets $default.
-     * 
-     * @param   mixed $key
-     * @param   string $default = null
-     * @return  System.Core.Str
      */
     public function getString($key, $default = null) : \System\Core\Str {
         if($this->hasKey($key)){
@@ -58,10 +51,8 @@ abstract class Collection implements \IteratorAggregate, \ArrayAccess, \Countabl
     }
     
     /**
-     * Merges an array or an instance of System.Collections.Collection with the collection.
-     * 
-     * @param   mixed $array
-     * @return  @this
+     * Merges an array or an instance of System.Collections.Collection with 
+     * this collection instance.
      */
     public function merge($array) : Collection {
         if($array instanceof \System\Collections\Collection){
@@ -73,8 +64,6 @@ abstract class Collection implements \IteratorAggregate, \ArrayAccess, \Countabl
     
     /**
      * Gets the internal PHP array.
-     * 
-     * @return  array
      */
     public function toArray() : array {
         return $this->collection;
@@ -87,9 +76,6 @@ abstract class Collection implements \IteratorAggregate, \ArrayAccess, \Countabl
     /**
      * Gets a boolean value indicating if the collection offset exists.
      * This method is not intended to be used directly.
-     * 
-     * @param   mixed $offset
-     * @return  bool
      */
     public function offsetExists($offset){
         if (array_key_exists($offset, $this->collection)){
@@ -101,9 +87,6 @@ abstract class Collection implements \IteratorAggregate, \ArrayAccess, \Countabl
     /**
      * Gets an element from the collection using an offset.
      * This method is not intended to be used directly.
-     * 
-     * @param   mixed $offset
-     * @return  mixed
      */
     public function offsetGet($offset){
         return $this->collection[$offset];
@@ -112,10 +95,6 @@ abstract class Collection implements \IteratorAggregate, \ArrayAccess, \Countabl
     /**
      * Sets an element in the collection using an offset.
      * This method is not intended to be used directly.
-     * 
-     * @param   mixed $offset
-     * @param   mixed $value
-     * @return  mixed
      */
     public function offsetSet($offset, $value){
         $this->collection[$offset] = $value;
@@ -124,9 +103,6 @@ abstract class Collection implements \IteratorAggregate, \ArrayAccess, \Countabl
     /**
      * Removes an element from the collection using an offset.
      * This method is not intended to be used directly.
-     * 
-     * @param   mixed $offset
-     * @return  void
      */
     public function offsetUnset($offset){
         unset($this->collection[$offset]);
@@ -134,11 +110,8 @@ abstract class Collection implements \IteratorAggregate, \ArrayAccess, \Countabl
     
     /**
      * Gets the number of elements in the collection.
-     * 
-     * @return  int
      */
     public function count() : int {
         return count($this->collection);
     }
-    
 }

@@ -27,24 +27,24 @@ class Str {
     }
     
     /**
-     * Gets the zero-based index of the last occurrence of the specified $char
+     * Gets the zero-based index of the last occurrence of the specified $string
      * in the current instance.
      * 
      * @param   string $string
      * @return  int
      */
-    public function lastIndexOf($string) : int {
+    public function lastIndexOf(string $string) : int {
         return strripos($this->string, $string);
     }
     
     /**
-     * Gets the zero-based index of the last occurrence of the specified $char
+     * Gets the string after the last occurrence of the specified $string
      * in the current instance.
      * 
      * @param   string $string
      * @return  System.Core.Str
      */
-    public function getLastIndexOf($string) : Str {
+    public function getLastIndexOf(string $string) : Str {
         return $this->subString(0, $this->lastIndexOf($string));
     }
     
@@ -58,8 +58,9 @@ class Str {
     }
     
     /**
-     * Gets a new Str instance where all occurrences of a specified string in this 
-     * instance is replaced with another specified string.
+     * Gets a new Str instance where all occurrences of $search is replaced 
+     * with a $replace string. The $search argument can be either a string or
+     * an array containing search strings.
      * 
      * @param   mixed $search
      * @param   string $replace

@@ -1,0 +1,19 @@
+<?xml version="1.0" standalone="no"?>
+<!-- Generator: Adobe Fireworks 10, Export SVG Extension by Aaron Beall (http://fireworks.abeall.com) . Version: 0.6.1  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg id="Untitled-Page%201" viewBox="0 0 43 40" style="background-color:#ffffff00" version="1.1"
+	xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve"
+	x="0px" y="0px" width="43px" height="40px"
+>
+	<g id="Layer%201">
+		<path id="Line" d="M 6 12 L 6 26 " stroke="#403861" stroke-width="3" fill="none"/>
+		<path id="Line2" d="M 36 12 L 36 27 " stroke="#403861" stroke-width="3" fill="none"/>
+		<path id="Line3" d="M 31.25 11 L 27 15.25 " stroke="#403861" stroke-width="3" fill="none"/>
+		<path id="Line4" d="M 11 11 L 15.25 15.25 " stroke="#403861" stroke-width="3" fill="none"/>
+		<path id="Ellipse" d="M 3 6.5 C 3 4.567 4.567 3 6.5 3 C 8.433 3 10 4.567 10 6.5 C 10 8.433 8.433 10 6.5 10 C 4.567 10 3 8.433 3 6.5 Z" stroke="#403861" stroke-width="3" fill="none"/>
+		<path id="Ellipse2" d="M 3 33.5 C 3 31.567 4.567 30 6.5 30 C 8.433 30 10 31.567 10 33.5 C 10 35.433 8.433 37 6.5 37 C 4.567 37 3 35.433 3 33.5 Z" stroke="#403861" stroke-width="3" fill="none"/>
+		<path id="Ellipse3" d="M 33 33.5 C 33 31.567 34.567 30 36.5 30 C 38.433 30 40 31.567 40 33.5 C 40 35.433 38.433 37 36.5 37 C 34.567 37 33 35.433 33 33.5 Z" stroke="#403861" stroke-width="3" fill="none"/>
+		<path id="Ellipse4" d="M 33 6.5 C 33 4.567 34.567 3 36.5 3 C 38.433 3 40 4.567 40 6.5 C 40 8.433 38.433 10 36.5 10 C 34.567 10 33 8.433 33 6.5 Z" stroke="#403861" stroke-width="3" fill="none"/>
+		<path id="Ellipse5" d="M 18 18.5 C 18 16.567 19.567 15 21.5 15 C 23.433 15 25 16.567 25 18.5 C 25 20.433 23.433 22 21.5 22 C 19.567 22 18 20.433 18 18.5 Z" stroke="#403861" stroke-width="3" fill="none"/>
+	</g>
+</svg>

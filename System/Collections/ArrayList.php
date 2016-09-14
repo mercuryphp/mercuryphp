@@ -5,7 +5,7 @@ namespace System\Collections;
 class ArrayList extends Collection {
 
     /**
-     * Adds an element to the end of the collection.
+     * Determines if the collection contains an element with the specified key.
      */
     public function add($value) : ArrayList {
         $this->collection[] = $value;
