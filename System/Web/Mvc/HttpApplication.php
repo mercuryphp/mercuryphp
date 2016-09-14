@@ -21,12 +21,24 @@ abstract class HttpApplication {
         $this->config = new \System\Configuration\Configuration('config.php');
     }
     
+    /**
+     * Gets the route collection instance which can be used to register routes.
+     */
     protected function getRoutes() : \System\Web\Routing\RouteCollection {
         return $this->routes;
     }
 
+    /**
+     * This method is an application event and is called before all other events.
+     * It can be used to register routes and initialize application settings.
+     */
     public function load(){}
     
+    /**
+     * This method is an application event and is called after the load() event.
+     * This method configures and dispatches a controller. This method cannot be
+     * overriden.
+     */
     public final function run(){
     	
     	if(!$this->routes->count()){
@@ -84,9 +96,17 @@ abstract class HttpApplication {
     	}
     }
     
-    public function beforeAction(Controller $controller){ 
-    }
+    /**
+     * This method is an application event and is called before the controllers
+     * load() and action() methods. You can use this method to configure the 
+     * controller at an application level.
+     */
+    public function beforeAction(Controller $controller){ }
     
+    /**
+     * This method is an application event and is called at the end of the 
+     * applications cycle. It is used to flush output to the browser.
+     */
     public function end(){
         $this->httpContext->getResponse()->flush();
     }
