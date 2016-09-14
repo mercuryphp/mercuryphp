@@ -9,7 +9,7 @@ class LibraryController extends \System\Web\Mvc\Controller {
     protected $library = [];
     
     public function load(){
-        $this->pdo = new \PDO('mysql:host=127.0.0.1;dbname=merc','root','');
+        $this->pdo = new \PDO('mysql:host=127.0.0.1;dbname=merc','merc','Yellow@77');
         $stm = $this->pdo->query("SELECT * FROM class order by class_name");
         
         $classes = $stm->fetchAll(\PDO::FETCH_OBJ);
