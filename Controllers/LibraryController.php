@@ -29,13 +29,13 @@ class LibraryController extends \System\Web\Mvc\Controller {
 
         $this->openDir('/var/www/mercuryphp/System');
         
-        
+        /*
         $this->pdo->query('TRUNCATE class');
         
         foreach($this->classList as $class){
             $stm = $this->pdo->query("INSERT INTO class (url_key, class_name) VALUES('" . strtolower($class) . "', '" . $class . "')");
         }
-        
+        */
         
         try{
             
