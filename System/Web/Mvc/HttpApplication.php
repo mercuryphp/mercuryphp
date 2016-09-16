@@ -13,7 +13,12 @@ abstract class HttpApplication {
     
     private $rootPath;
     private $routes;
+    private $httpContext;
+    private $config;
     
+    /**
+     * Initialize an instance of HttpApplication.
+     */
     public function __construct(string $rootPath){
         $this->rootPath = $rootPath;
         $this->routes = new RouteCollection();
@@ -91,6 +96,8 @@ abstract class HttpApplication {
                 
                 $controller->render($actionResult);
                 
+                $this->afterAction($controller);
+                
                 break;
             }
     	}
@@ -102,6 +109,12 @@ abstract class HttpApplication {
      * controller at an application level.
      */
     public function beforeAction(Controller $controller){ }
+    
+    /**
+     * This method is an application event and is called after the controllers
+     * render() method.
+     */
+    public function afterAction(Controller $controller){ }
     
     /**
      * This method is an application event and is called at the end of the 
