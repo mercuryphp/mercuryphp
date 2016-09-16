@@ -2,25 +2,58 @@
 
 namespace System\Core;
 
-class Str {
+class Str implements \IteratorAggregate, \Countable {
     
     private $string = '';
     
     const FIRST_FIRST = 1;
     const FIRST_LAST = 2;
-    const LAST_FIRST = 3;
-    const LAST_LAST = 4;
+    const LAST_LAST = 3;
     
+    /**
+     * Initialize an instance of Str. If $string is specified the instance is
+     * initialized with a default string.
+     */
     public function __construct(string $string = ''){
         $this->string = $string;
     }
     
     /**
+     * Gets the character at the $index position.
+     * Throws System.Core.IndexOutOfRangeException when index is out of range.
+     */
+    public function charAt($index) : Str {
+        if(isset($this->string[$index])){
+            return new Str($this->string[$index]);
+        }
+        throw new \System\Core\IndexOutOfRangeException(sprintf("The index '%s' was out or range.", $index));
+    }
+    
+    /**
+     * Gets a new instance of Str with the character at $index position removed.
+     * Throws System.Core.IndexOutOfRangeException when index is out of range.
+     */
+    public function removeAt($index) : Str {
+        if(isset($this->string[$index])){
+            return new Str(substr_replace($this->string, '', $index, 1));
+        }
+        throw new \System\Core\IndexOutOfRangeException(sprintf("The index '%s' was out or range.", $index));
+    }
+    
+    /**
+     * Gets a new instance of Str with $string inserted at $index position.
+     * Throws System.Core.IndexOutOfRangeException when index is out of range.
+     */
+    public function insertAt($index, $string) : Str {
+        if(isset($this->string[$index])){
+            return new Str(substr_replace($this->string, $string, $index, 0));
+        }
+        throw new \System\Core\IndexOutOfRangeException(sprintf("The index '%s' was out or range.", $index));
+    }
+    
+    /**
      * Gets the zero-based index of the first occurrence of the specified $char
      * in the current instance.
-     * 
-     * @param   string $string
-     * @return  int
      */
     public function indexOf($string) : int {
         return stripos($this->string, $string);
@@ -29,9 +62,6 @@ class Str {
     /**
      * Gets the zero-based index of the last occurrence of the specified $string
      * in the current instance.
-     * 
-     * @param   string $string
-     * @return  int
      */
     public function lastIndexOf(string $string) : int {
         return strripos($this->string, $string);
@@ -40,9 +70,6 @@ class Str {
     /**
      * Gets the string after the last occurrence of the specified $string
      * in the current instance.
-     * 
-     * @param   string $string
-     * @return  System.Core.Str
      */
     public function getLastIndexOf(string $string) : Str {
         return $this->subString(0, $this->lastIndexOf($string));
@@ -50,22 +77,31 @@ class Str {
     
     /**
      * Gets the number of characters in the current instance.
-     * 
-     * @return  int
      */
-    public function length() : int {
+    public function count() : int {
         return strlen($this->string);
+    }
+    
+    /**
+     * Gets a new Str instance where the string is left padded with $char,
+     * for a specified total $length.
+     */
+    public function paddLeft(int $length, string $char = ' ') : Str {
+        return new Str(str_pad($this->string, $length, $char, STR_PAD_LEFT));
+    }
+    
+    /**
+     * Gets a new Str instance where the string is right padded with $char,
+     * for a specified total $length.
+     */
+    public function paddRight(int $length, string $char = ' ') : Str {
+        return new Str(str_pad($this->string, $length, $char, STR_PAD_RIGHT));
     }
     
     /**
      * Gets a new Str instance where all occurrences of $search is replaced 
      * with a $replace string. The $search argument can be either a string or
      * an array containing search strings.
-     * 
-     * @param   mixed $search
-     * @param   string $replace
-     * @param   int $limit
-     * @return  System.Core.Str
      */
     public function replace($search, string $replace, int $limit = -1) : Str {
         if(is_string($search)){
@@ -79,10 +115,7 @@ class Str {
     
     /**
      * Gets a new Str instance where all occurrences of $char are removed from 
-     * this instance.
-     * 
-     * @param   string $charList = null
-     * @return  System.Core.Str
+     * the beginning and end of this instance.
      */
     public function trim($charList = null) : Str {
         return new Str(trim($this->string, $charList));
@@ -91,42 +124,68 @@ class Str {
     /**
      * Gets a new Str instance where all occurrences of $char are removed from 
      * the start of this instance.
-     * 
-     * @param   string $charList = null
-     * @return  System.Core.Str
      */
-    public function leftTrim($charList = null) : Str{
+    public function leftTrim($charList = null) : Str {
         return new Str(ltrim($this->string, $charList));
     }
     
     /**
      * Gets a new Str instance where all occurrences of $char are removed from 
      * the end of this instance.
-     * 
-     * @param   string $charList = null
-     * @return  System.Core.Str
      */
     public function rightTrim($charList = null) : Str {
         return new Str(rtrim($this->string, $charList));
     }
     
     /**
-     * Gets a new Str instance with the specified string appened to this 
+     * Gets a new Str instance where the string is converted to uppercase.
+     */
+    public function toUpper() : Str {
+        return new Str(strtoupper($this->string));
+    }
+    
+    /**
+     * Gets a new Str instance where the string is converted to lowercase.
+     */
+    public function toLower() : Str {
+        return new Str(strtolower($this->string));
+    }
+    
+    /**
+     * Gets a new Str instance where the first character in the string is 
+     * converted to uppercase.
+     */
+    public function toFirstUpper() : Str {
+        return new Str(ucfirst($this->string));
+    }
+    
+    /**
+     * Gets a new Str instance where the first character in the string is 
+     * converted to lowercase.
+     */
+    public function toFirstLower() : Str {
+        return new Str(lcfirst($this->string));
+    }
+    
+    /**
+     * Gets a new Str instance with the specified string prepended to this 
      * instance.
-     * 
-     * @param   string $string
-     * @return  System.Core.Str
+     */
+    public function prepend(string $string) : Str {
+        return new Str($string.$this->string);
+    }
+    
+    /**
+     * Gets a new Str instance with the specified string appended to this 
+     * instance.
      */
     public function append(string $string) : Str {
         return new Str($this->string.$string);
     }
     
     /**
-     * Gets a new Str instance which is a sub string of this instance.
-     * 
-     * @param   mixed $start
-     * @param   int $length = null
-     * @return  System.Core.Str
+     * Gets a new Str instance which is a sub string of this instance. If $start
+     * is a string, the characters index position is used as the start position.
      */
     public function subString($start, $length = null) : Str {
         if(is_string($start)){
@@ -140,12 +199,8 @@ class Str {
     
     /**
      * Splits a string into substrings using the $delimiter and returns a 
-     * System.Collections.ArrayList containing the substrings.
-     * 
-     * @param   string $delimiter
-     * @param   int $limit = null
-     * @param   int $flags
-     * @return  System.Collections.ArrayList
+     * System.Collections.ArrayList containing the substrings. This method uses 
+     * the preg_split() function. Special characters need to be escaped.
      */
     public function split(string $delimiter, int $limit = null, int $flags = PREG_SPLIT_NO_EMPTY) : \System\Collections\ArrayList {
         $array = preg_split('/'.$delimiter.'/', $this->string, $limit, $flags);
@@ -153,13 +208,11 @@ class Str {
     }
     
     /**
-     * Gets a new Str instance which is a substring of this instance using a 
-     * $fromChar and a $toChar.
-     * 
-     * @param   string $fromChar
-     * @param   string $toChar
-     * @param   string $mode
-     * @return  System.Code.Str
+     * Gets a new Str instance where the string returned is between $fromChar 
+     * and $toChar. The $mode parameter can be used to specifiy the start position 
+     * of $fromChar and $toChar. There are three mode constants 
+     * (FIRST_FIRST, FIRST_LAST and LAST_LAST). Gets an empty Str instance if
+     * no match is found.
      */
     public function get(string $fromChar, string $toChar, $mode = Str::FIRST_FIRST) : Str {
         switch ($mode){
@@ -171,24 +224,86 @@ class Str {
                 $pos1 = $this->indexOf($fromChar);
                 $pos2 = $this->lastIndexOf($toChar);
                 break;
-            case self::LAST_FIRST:
-                $pos1 = $this->lastIndexOf($fromChar);
-                $pos2 = $this->indexOf($toChar);
-                break;
             case self::LAST_LAST:
                 $pos1 = $this->lastIndexOf($fromChar);
                 $pos2 = $this->lastIndexOf($toChar);
                 break;
         }
 
-        return new Str($this->subString((int)$pos1+1, (int)$pos2-$this->length()));
+        return new Str($this->subString((int)$pos1+1, (int)$pos2-$this->count()));
+    }
+    
+    /**
+     * Compares two strings by calculating the sum of all character ordinals in 
+     * $string1 with the sum of all character ordinals in $string2. Gets an 
+     * integer value that represents the difference. A negative return value means
+     * $string1 is less than $string2. A zero value means both $string1 and $string2
+     * are equal. A positive value means $string1 is more than $string2.
+     */
+    public function compareOrdinal(string $string1, string $string2) : int {
+        $strings = [$string1, $string2];
+        $counts = [];
+        
+        foreach($strings as $string){
+            $len = strlen($string);
+            $ord = 0;
+            for($idx=0; $idx < $len; $idx++){
+                $ord += ord($string[$idx]);
+            }
+            $counts[] = $ord;
+        }
+        return $counts[0] - $counts[1];
+    }
+    
+    /**
+     * Gets a boolean value indicating if the Str instance matches the specified 
+     * regex $pattern.
+     */
+    public function match(string $pattern) : bool {
+        if(preg_match($pattern, $this->string)){
+            return true;
+        }
+        return false;
+    }
+    
+    /**
+     * Gets a boolean value indicating if the Str instance contains the specified 
+     * $string.
+     */
+    public function contains(string $string, bool $ignoreCase = true) : bool {
+        $case = $ignoreCase ? 'i' : '';
+        if(preg_match('/'.$string.'/'.$case, $this->string)){
+            return true;
+        }
+        return false;
+    }
+    
+    /**
+     * Gets a boolean value indicating if the end of this Str instance 
+     * matches the specified $string.
+     */
+    public function endsWith(string $string, bool $ignoreCase = true) : bool {
+        $case = $ignoreCase ? 'i' : '';
+        if(preg_match('/'.$string.'$/'.$case, $this->string)){
+            return true;
+        }
+        return false;
+    }
+    
+    /**
+     * Gets a boolean value indicating if the beginning of this Str instance 
+     * matches the specified $string.
+     */
+    public function startsWith(string $string, bool $ignoreCase = true) : bool {
+        $case = $ignoreCase ? 'i' : '';
+        if(preg_match('/^'.$string.'/'.$case, $this->string)){
+            return true;
+        }
+        return false;
     }
     
     /**
      * Gets a boolean value indicating if this Str instance equals $string.
-     * 
-     * @param   array $string
-     * @return  bool
      */
     public function equals(string $string) : bool {
         if($string == $this->string){
@@ -200,10 +315,11 @@ class Str {
     /**
      * Gets a new Str instance where template tokens are replaced with the
      * values from $params. $params must be a key/value array, where the key is
-     * the token to replace.
-     * 
-     * @param   mixed $params
-     * @return  System.Core.Str
+     * the token to replace. The $transformations parameter can be used to
+     * apply string manipulation to the values in $params. There are 5
+     * transformation keywords (lc: lowercase, uc: uppercase, 
+     * ucf: uppercase first, lcf: lowercase first, t: trim). Transformations can
+     * be chained using "." e.g "lc.ucf" transforms MERCURY to Mercury.  
      */
     public function template($params, array $transformations = []) : Str{
         $tokens = $this->tokenize('{', '}', false)[0];
@@ -252,10 +368,6 @@ class Str {
     /**
      * Tokenizes the current instance and returns an instance of 
      * System.Collections.ArrayList that contains all the tokens.
-     * 
-     * @param   string $openingTag
-     * @param   string $closingTag
-     * @return  System.Collections.ArrayList
      */
     public function tokenize(string $openingTag, string $closingTag, $includeTags = true) : \System\Collections\ArrayList {
         $len = strlen($this->string);
@@ -292,19 +404,30 @@ class Str {
         return new \System\Collections\ArrayList($tokens);
     }
     
+    /**
+     * Gets an ArrayIterator object so that characters in this Str instance can
+     * be iterated.
+     */
+    public function getIterator(){
+        return new \ArrayIterator(str_split($this->string, 1));
+    }
+
+    /**
+     * Gets the Str instance as a string data type.
+     */
     public function toString() : string {
         return (string)$this->string;
     }
     
-    public function __toString(){
+    /**
+     * Magic method. Alias of toString().
+     */
+    public function __toString() : string {
         return $this->toString();
     }
     
     /**
      * Sets the string and gets a new instance of Str.
-     * 
-     * @param   string $string
-     * @return  System.Core.Str
      */
     public static function set($string){
         return new Str($string);
@@ -313,11 +436,6 @@ class Str {
     /**
      * Joins all elements in the $array using the specified $glue and returns a 
      * new instance of System.Core.Str
-     * 
-     * @param   string $glue
-     * @param   mixed $array
-     * @param   bool $removeEmptyEntries = true
-     * @return  System.Std.Str
      */
     public static function join($glue, $array, $removeEmptyEntries = true) : Str {
         if($array instanceof \System\Collections\Collection){
