@@ -2,6 +2,9 @@
 
 namespace System\Collections;
 
+/**
+ * Abstract base class for all collection types.
+ */
 abstract class Collection implements \IteratorAggregate, \ArrayAccess, \Countable {
     
     protected $collection = [];
@@ -12,6 +15,28 @@ abstract class Collection implements \IteratorAggregate, \ArrayAccess, \Countabl
      */
     public function __construct(array $collection = []){
         $this->collection = $collection;
+    }
+    
+    /**
+     * Gets the first element from the collection.
+     */
+    public function first(){
+        return reset($this->collection);
+    }
+    
+    /**
+     * Gets the last element from the collection.
+     */
+    public function last(){
+        return end($this->collection);
+    }
+    
+    /**
+     * Pop the element off the end of array.
+     */
+    public function pop() : Collection {
+        array_pop($this->collection);
+        return $this;
     }
     
     /**
@@ -33,6 +58,30 @@ abstract class Collection implements \IteratorAggregate, \ArrayAccess, \Countabl
             return $this->collection[$key];
         }
         return $default;
+    }
+    
+    /**
+     * Removes an element from the collection using the specified $key.
+     */
+    public function removeAt($key) : bool {
+        if($this->hasKey($key)){
+            unset($this->collection[$key]);
+            return true;
+        }
+        return false;
+    }
+    
+    /**
+     * Removes the first occurrence of an element from the collection.
+     */
+    public function remove($value) : bool{
+        foreach($this->collection as $key=>$item){
+            if($item == $value){
+                unset($this->collection[$key]);
+                return true;
+            }
+        }
+        return false;
     }
     
    /**
@@ -63,12 +112,49 @@ abstract class Collection implements \IteratorAggregate, \ArrayAccess, \Countabl
     }
     
     /**
+     * Reverses the order of the elements in the collection.
+     */
+    public function reverse() : Collection {
+        $this->collection = array_reverse($this->collection);
+        return $this;
+    }
+    
+    /**
+     * Sorts the elements in the collection.
+     */
+    public function sort() : Collection {
+        asort($this->collection);
+        return $this;
+    }
+    
+    /**
+     * Gets an ArrayList of all keys in the collection.
+     */
+    public function getKeys() : ArrayList {
+        return new ArrayList(array_keys($this->collection));
+    }
+    
+    /**
+     * Applies a callback function to all elements in the collection.
+     */
+    public function each(callable $func) : Collection {
+        foreach($this->collection as $k=>$v){
+            $this->collection[$k] = $func($v, $k);
+        }
+        return $this;
+    }
+    
+    /**
      * Gets the internal PHP array.
      */
     public function toArray() : array {
         return $this->collection;
     }
     
+    /**
+     * Gets an ArrayIterator object so that elements in this Collection instance 
+     * can be iterated.
+     */
     public function getIterator(){
         return new \ArrayIterator($this->collection);
     }
