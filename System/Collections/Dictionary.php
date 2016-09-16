@@ -27,4 +27,27 @@ class Dictionary extends Collection {
         $this->collection[$key] = $value;
         return $this;
     }
+    
+    /**
+     * Gets an stdClass object of the collection.
+     */
+    public function toObject() : stdClass {
+        return json_decode(json_encode($this->collection), false);
+    }
+    
+    /**
+     * Magic method. Dynamically sets an element. This method is an alias of the
+     * set() method.
+     */
+    public function __set($key, $value){
+        return $this->set($key, $value);
+    }
+    
+    /**
+     * Magic method. Dynamically gets an element from the collection. This 
+     * method is an alias of the get() method.
+     */
+    public function __get($key){
+        return $this->get($key);
+    }
 }
