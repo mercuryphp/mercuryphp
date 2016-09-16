@@ -17,7 +17,8 @@ abstract class HttpApplication {
     private $config;
     
     /**
-     * Initialize an instance of HttpApplication.
+     * Initializes an instance of HttpApplication by providing the application 
+     * root path.
      */
     public function __construct(string $rootPath){
         $this->rootPath = $rootPath;

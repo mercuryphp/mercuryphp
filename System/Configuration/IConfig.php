@@ -3,5 +3,5 @@
 namespace System\Configuration;
 
 interface IConfig {
-    public function get($path, $default = null);
+    public function get($path, $default = null) : string;
 }
