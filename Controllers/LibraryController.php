@@ -13,8 +13,8 @@ class LibraryController extends \System\Web\Mvc\Controller {
         $str = new \System\Core\Str("Hello");
 
         
-        //$this->pdo = new \PDO('mysql:host=127.0.0.1;dbname=merc','merc','Yellow@77');
-        $this->pdo = new \PDO('mysql:host=127.0.0.1;dbname=merc','root','');
+        $this->pdo = new \PDO('mysql:host=127.0.0.1;dbname=merc','merc','Yellow@77');
+        //$this->pdo = new \PDO('mysql:host=127.0.0.1;dbname=merc','root','');
         $stm = $this->pdo->query("SELECT * FROM class order by class_name");
         
         $classes = $stm->fetchAll(\PDO::FETCH_OBJ);
