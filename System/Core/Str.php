@@ -11,7 +11,7 @@ class Str implements \IteratorAggregate, \Countable {
     const LAST_LAST = 3;
     
     /**
-     * Initialize an instance of Str. If $string is specified the instance is
+     * Initializes an instance of Str. If $string is specified the instance is
      * initialized with a default string.
      */
     public function __construct(string $string = ''){
@@ -409,7 +409,10 @@ class Str implements \IteratorAggregate, \Countable {
      * be iterated.
      */
     public function getIterator(){
-        return new \ArrayIterator(str_split($this->string, 1));
+        return new \ArrayIterator(array_map(function($char){
+            return new Str($char);
+        },
+        str_split($this->string, 1)));
     }
 
     /**

@@ -7,7 +7,6 @@ use System\Collections\Dictionary;
 
 class NativeView extends View {
     
-    protected $viewFilePattern = '{namespace}/{module}/Views/{controller}/{action}.php';
     protected $layoutFile;
     protected $output = [];
     
@@ -24,7 +23,7 @@ class NativeView extends View {
         }
     }
 
-    public function render(\System\Web\Mvc\ViewContext $viewContext){
+    public function render(\System\Web\Mvc\ViewContext $viewContext) : string {
         
         $request = $viewContext->getHttpContext()->getRequest(); 
 
@@ -33,9 +32,8 @@ class NativeView extends View {
             ->merge($request->getRouteData()->toArray())
             ->toArray(),
             ['controller' => 'lc.ucf', 'action' => 'lc.ucf']
-        );
+        )->append('.php');
 
-        
         if(is_file(realpath($file))){
             extract($viewContext->getParams());
             ob_start();

@@ -8,7 +8,6 @@ abstract class Controller {
     private $httpContext;
     private $viewEngine;
 
-
     public function __construct(string $rootPath, \System\Web\Http\HttpContext $httpContext){
         $this->rootPath = $rootPath;
         $this->httpContext = $httpContext;
@@ -30,7 +29,13 @@ abstract class Controller {
         return $jsonResult;
     }
     
-    public function getViewEngine(){
+    public function setViewEngine(ViewEngine\View $viewEngine) : Controller {
+        $this->viewEngine = $viewEngine;
+        $this->viewEngine->setPath($this->rootPath);
+        return $this;
+    }
+    
+    public function getViewEngine() : ViewEngine\View {
         return $this->viewEngine;
     }
     
