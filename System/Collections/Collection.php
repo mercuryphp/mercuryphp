@@ -50,6 +50,16 @@ abstract class Collection implements \IteratorAggregate, \ArrayAccess, \Countabl
     }
     
     /**
+     * Determines if the collection contains an element with the specified $value.
+     */
+    public function contains($value) : bool {
+        if(in_array($value, $this->collection)){
+            return true;
+        }
+        return false;
+    }
+    
+    /**
      * Gets an element from the collection using the specified $key. If $default 
      * is specified and the element is not found then gets $default. 
      */
@@ -61,11 +71,16 @@ abstract class Collection implements \IteratorAggregate, \ArrayAccess, \Countabl
     }
     
     /**
-     * Removes an element from the collection using the specified $key.
+     * Removes an element from the collection using the specified $key. Numeric
+     * keys are reindexed if $reindex is set to true. 
      */
-    public function removeAt($key) : bool {
+    public function removeAt($key, $reindex = false) : bool {
         if($this->hasKey($key)){
             unset($this->collection[$key]);
+            
+            if($reindex){
+                $this->collection = array_values($this->collection);
+            }
             return true;
         }
         return false;

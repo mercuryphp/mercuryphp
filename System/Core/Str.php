@@ -11,8 +11,8 @@ class Str implements \IteratorAggregate, \Countable {
     const LAST_LAST = 3;
     
     /**
-     * Initializes an instance of Str. If $string is specified the instance is
-     * initialized with a default string.
+     * Initializes an instance of Str. If $string is specified, the instance is
+     * initialized with a default $string.
      */
     public function __construct(string $string = ''){
         $this->string = $string;
@@ -22,33 +22,39 @@ class Str implements \IteratorAggregate, \Countable {
      * Gets the character at the $index position.
      * Throws System.Core.IndexOutOfRangeException when index is out of range.
      */
-    public function charAt($index) : Str {
+    public function charAt($index, $throwException = true) : Str {
         if(isset($this->string[$index])){
             return new Str($this->string[$index]);
         }
-        throw new \System\Core\IndexOutOfRangeException(sprintf("The index '%s' was out or range.", $index));
+        if($throwException){
+            throw new \System\Core\IndexOutOfRangeException(sprintf("The index '%s' was out or range.", $index));
+        }
     }
     
     /**
      * Gets a new instance of Str with the character at $index position removed.
      * Throws System.Core.IndexOutOfRangeException when index is out of range.
      */
-    public function removeAt($index) : Str {
+    public function removeAt($index, $throwException = true) : Str {
         if(isset($this->string[$index])){
             return new Str(substr_replace($this->string, '', $index, 1));
         }
-        throw new \System\Core\IndexOutOfRangeException(sprintf("The index '%s' was out or range.", $index));
+        if($throwException){
+            throw new \System\Core\IndexOutOfRangeException(sprintf("The index '%s' was out or range.", $index));
+        }
     }
     
     /**
      * Gets a new instance of Str with $string inserted at $index position.
      * Throws System.Core.IndexOutOfRangeException when index is out of range.
      */
-    public function insertAt($index, $string) : Str {
+    public function insertAt($index, $string, $throwException = true) : Str {
         if(isset($this->string[$index])){
             return new Str(substr_replace($this->string, $string, $index, 0));
         }
-        throw new \System\Core\IndexOutOfRangeException(sprintf("The index '%s' was out or range.", $index));
+        if($throwException){
+            throw new \System\Core\IndexOutOfRangeException(sprintf("The index '%s' was out or range.", $index));
+        }
     }
     
     /**
