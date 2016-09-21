@@ -8,6 +8,9 @@ class TemplateToken {
     protected $value;
     protected $line;
     
+    const T_STRING = 1;
+    const T_CODE = 2;
+    
     public function __construct($type, $value, $line){
         $this->type = $type;
         $this->value = $value;
@@ -22,8 +25,8 @@ class TemplateToken {
         return $this->value;
     }
     
-    public function getLine(){
-        return $this->value;
+    public function getLineNumber(){
+        return $this->line;
     }
 }
 
