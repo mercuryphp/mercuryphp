@@ -15,7 +15,7 @@ class TemplateTokenCollection {
         $this->tokens->add($token);
     }
     
-    public function read(){
+    public function read() : bool {
         ++$this->index;
         
         if($this->tokens->hasKey($this->index)){
@@ -24,15 +24,15 @@ class TemplateTokenCollection {
         return false;
     }
     
-    public function current(){
+    public function current() : TemplateToken {
         return $this->tokens->get($this->index);
     }
     
-    public function prev(){
+    public function prev() : TemplateToken {
         return $this->tokens->get($this->index-1);
     }
     
-    public function next(){
+    public function next() : TemplateToken {
         return $this->tokens->get($this->index+1);
     }
 }

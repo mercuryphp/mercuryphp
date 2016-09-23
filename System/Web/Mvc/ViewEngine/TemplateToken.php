@@ -6,15 +6,20 @@ class TemplateToken {
     
     protected $type;
     protected $value;
-    protected $line;
+    protected $lineNumber;
     
     const T_STRING = 1;
     const T_CODE = 2;
+    const T_SPACE = 3;
+    const T_OPERATOR = 4;
+    const T_TEN = 5;
+    const T_NAK = 6;
+    const T_DOUBLE_QUOTE = 7;
     
-    public function __construct($type, $value, $line){
+    public function __construct($type, $value, $lineNumber = 0){
         $this->type = $type;
-        $this->value = $value;
-        $this->line = $line;
+        $this->value = \System\Core\Str::set($value);
+        $this->lineNumber = $lineNumber;
     }
     
     public function getType(){
@@ -26,7 +31,7 @@ class TemplateToken {
     }
     
     public function getLineNumber(){
-        return $this->line;
+        return $this->lineNumber;
     }
 }
 
