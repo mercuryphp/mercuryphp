@@ -8,7 +8,7 @@ class Application extends System\Web\Mvc\HttpApplication {
     }
     
     public function beforeAction(\System\Web\Mvc\Controller $controller) {
-        $controller->setViewEngine(new \System\Web\Mvc\ViewEngine\TemplateView());
+        $controller->setViewEngine(new \System\Web\Mvc\ViewEngine\StringTemplateView());
         //$controller->getViewEngine()->setLayout('/Views/Shared/Main.php');
     }
 
