@@ -74,7 +74,15 @@ class Str implements \IteratorAggregate, \Countable {
     }
     
     /**
-     * Gets the string after the last occurrence of the specified $string
+     * Gets the sub string before the first occurrence of the specified $string
+     * in the current instance.
+     */
+    public function getIndexOf(string $string) : Str {
+        return $this->subString(0, $this->indexOf($string));
+    }
+    
+    /**
+     * Gets the sub string before the last occurrence of the specified $string
      * in the current instance.
      */
     public function getLastIndexOf(string $string) : Str {
