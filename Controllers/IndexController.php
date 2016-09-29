@@ -7,8 +7,10 @@ use System\Web\Mvc\ViewEngine\StringTemplate;
 class IndexController extends \System\Web\Mvc\Controller {
     
     public function index(){
-$db = new \System\Data\Database('driver   =    mysql    ; host=127.0.0.1;dbname=merc;uid=root;pwd=Yellow77','syed','Yellow77');
-        $this->getHttpContext()->getSession()->set('pass', 'ive changed');
+$db = new \System\Data\Database('driver   =    mysql    ; host=127.0.0.1;dbname=merc;uid=root;pwd=Yellow77');
+      //print $db->
+
+$this->getHttpContext()->getSession()->set('pass', 'ive changed');
         //$this->getHttpContext()->getSession()->remove('username');
         //print $this->getHttpContext()->getSession()->get('pass');
         
