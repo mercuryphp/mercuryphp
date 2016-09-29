@@ -24,59 +24,73 @@ class LibraryController extends \System\Web\Mvc\Controller {
             $className = array_pop($arr);
             $tmp[join('.', $arr)][] = ['url' => $class->url_key, 'name' => $className];
         }
-        
+        ksort($tmp);
         //print_R($tmp); exit;
         $this->library = $tmp;
     }
     
-    public function index(){
+    public function test(){
+        return $this->view();
+    }
+    
+    public function index(string $className){
+
+        $this->getViewEngine()->setLayout('/Views/Shared/Library.php');
         $request = $this->getRequest();
 
         $this->openDir('/var/www/mercuryphp/System');
-        
+
+        //print_R($this->getRequest()->getUserAgent()); exit;
         /*
         $this->pdo->query('TRUNCATE class');
-        
+
         foreach($this->classList as $class){
             $stm = $this->pdo->query("INSERT INTO class (url_key, class_name) VALUES('" . strtolower($class) . "', '" . $class . "')");
         }
         */
-        
-        try{
+        if($className == 'system'){
             
-            $stm = $this->pdo->query("SELECT * FROM class where url_key='" . $request->getUriSegments()->get(1) . "'");
-            
-            $class = $stm->fetch(\PDO::FETCH_OBJ);
-            
-            $ref = new \ReflectionClass(str_replace('.', '\\', $class->class_name));
-            
-            $methods = $ref->getMethods();
-            
-            $arrMethods = [];
-            foreach($methods as $method){
-                $params = $method->getParameters();
-                
-                $arrParams = [];
-                foreach( $params as $param ){
-                    $arrParams[] = ['type' => (string)$param->getType(), 'name' => $param->getName()];
-                }
-                $arrMethods[$method->getName()]['description'] = str_replace('@class', $class->class_name, $this->getDescription($method->getFileName(), $method->getName()));
-                $arrMethods[$method->getName()]['modifiers'] = \Reflection::getModifierNames($method->getModifiers());
-                $arrMethods[$method->getName()]['return'] = (string)$method->getReturnType();
-                $arrMethods[$method->getName()]['params'] = $arrParams;
-            }
-
-            ksort($arrMethods);
-            //print_R($arrMethods); exit;
             return $this->view([
-                'library' => $this->library, 
-                'className' => $class->class_name,
-                'classDescription' => $ref->getDocComment(),
-                'methods' => $arrMethods
-            ]);
+                'library' => $this->library
+            ], 'Main');
             
-        }catch(\Exception $se){
-            print $se->getMessage();
+        }else{
+            try{
+
+                $stm = $this->pdo->query("SELECT * FROM class where url_key='" . $className . "'");
+
+                $class = $stm->fetch(\PDO::FETCH_OBJ);
+
+                $ref = new \ReflectionClass(str_replace('.', '\\', $class->class_name));
+
+                $methods = $ref->getMethods();
+
+                $arrMethods = [];
+                foreach($methods as $method){
+                    $params = $method->getParameters();
+
+                    $arrParams = [];
+                    foreach( $params as $param ){
+                        $arrParams[] = ['type' => (string)$param->getType(), 'name' => $param->getName()];
+                    }
+                    $arrMethods[$method->getName()]['description'] = str_replace('@class', $class->class_name, $this->getDescription($method->getFileName(), $method->getName()));
+                    $arrMethods[$method->getName()]['modifiers'] = \Reflection::getModifierNames($method->getModifiers());
+                    $arrMethods[$method->getName()]['return'] = (string)$method->getReturnType();
+                    $arrMethods[$method->getName()]['params'] = $arrParams;
+                }
+
+                ksort($arrMethods);
+                //print_R($arrMethods); exit;
+                return $this->view([
+                    'library' => $this->library, 
+                    'className' => $class->class_name,
+                    'classDescription' => $ref->getDocComment(),
+                    'methods' => $arrMethods
+                ]);
+
+            }catch(\Exception $se){
+                print $se->getMessage();
+            }
         }
     }
     
@@ -144,7 +158,9 @@ class LibraryController extends \System\Web\Mvc\Controller {
             if(substr($entry, 0,1) !='.'){
                 
                 if(is_dir($path.'/'.$entry)){
-                    $this->openDir($path.'/'.$entry);
+                    if($path.'/'.$entry !='/var/www/mercuryphp/System/Globalization/Data'){
+                        $this->openDir($path.'/'.$entry);
+                    }
                 }else{
                     $this->classList[] = trim(str_replace("/", ".", str_replace("/var/www/mercuryphp/", "", $path.'.'.$entry)), '.php');
                 }
