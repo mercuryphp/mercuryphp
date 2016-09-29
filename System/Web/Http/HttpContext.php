@@ -6,16 +6,17 @@ final class HttpContext {
     
     private $httpRequest;
     private $httpResponse;
-    
-    public function __construct(HttpRequest $httpRequest, HttpResponse $httpResponse) {
+    private $session;
+
+
+    public function __construct(HttpRequest $httpRequest, HttpResponse $httpResponse, Session\Session $session) {
         $this->httpRequest = $httpRequest;
         $this->httpResponse = $httpResponse;
+        $this->session = $session;
     }
     
     /**
      * Gets the HttpRequest object for the current request.
-     * 
-     * @return  System.Web.HttpRequest
      */
     public function getRequest() : HttpRequest {
         return $this->httpRequest;
@@ -23,11 +24,16 @@ final class HttpContext {
     
     /**
      * Gets the HttpResponse object for this context.
-     * 
-     * @return  System.Web.HttpResponse
      */
-    public function getResponse() : HttpResponse{
+    public function getResponse() : HttpResponse {
         return $this->httpResponse;
+    } 
+    
+    /**
+     * Gets the Session object for this context.
+     */
+    public function getSession() : Session\Session {
+        return $this->session;
     } 
 }
 
