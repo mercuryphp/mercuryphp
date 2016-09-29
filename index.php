@@ -1,7 +1,12 @@
 <?php
 
-class Core {
-    public static function init(){
+final class System {
+    public static function initialize(){
+        
+        set_error_handler(function($errno, $errstr, $errfile, $errline ){
+            throw new \ErrorException($errstr, $errno, 0, $errfile, $errline);
+        });
+        
         $rootPath = str_replace('\\', '/', __DIR__);
         $autoload = [
             $rootPath, 
@@ -28,13 +33,13 @@ class Core {
         try{
             $app->load();
             $app->run();
-            $app->end();
         } catch (Exception $ex) {
             $app->error($ex);
         }
+        $app->end();
     }
 }
 
-Core::init();
+System::initialize();
 
 ?>

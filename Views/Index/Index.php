@@ -1,5 +1,3 @@
-
-
 <div class="bg">
     <div id="bgCode">
     </div>

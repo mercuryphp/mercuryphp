@@ -8,12 +8,15 @@ class Application extends System\Web\Mvc\HttpApplication {
     }
     
     public function beforeAction(\System\Web\Mvc\Controller $controller) {
-        $controller->setViewEngine(new \System\Web\Mvc\ViewEngine\StringTemplateView());
-        //$controller->getViewEngine()->setLayout('/Views/Shared/Main.php');
+        //$controller->setViewEngine(new \System\Web\Mvc\ViewEngine\StringTemplateView());
+        $controller->getViewEngine()->setLayout('/Views/Shared/Main.php');
     }
 
 
-    public function error(Exception $e){
-    	print_R($e);
+    public function error(Exception $e){ print_R($e); exit;
+    	$this->getHttpContext()->getRequest()->getRouteData()->set('action', 'test');
+                $this->getHttpContext()->getRequest()->getRouteData()->set('controller', 'index');
+        $controller = new \Controllers\LibraryController();
+        $controller->execute($this->getHttpContext());
     }
 }
