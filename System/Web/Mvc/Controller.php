@@ -4,23 +4,23 @@ namespace System\Web\Mvc;
 
 abstract class Controller {
     
-    private $rootPath;
     private $httpContext;
     private $viewEngine;
 
-    public function __construct(string $rootPath, \System\Web\Http\HttpContext $httpContext){
-        $this->rootPath = $rootPath;
-        $this->httpContext = $httpContext;
+    public function __construct(){
         $this->viewEngine = new ViewEngine\NativeView();
-        $this->viewEngine->setPath($this->rootPath);
     }
     
-    public function getRequest(){
+    public function getHttpContext() : \System\Web\Http\HttpContext {
+        return $this->httpContext;
+    }
+    
+    public function getRequest() : \System\Web\Http\HttpRequest {
         return $this->httpContext->getRequest();
     }
     
-    public function view(array $data = [], $actionName = null){
-        $viewResult = new ViewResult($this->getViewEngine(), new ViewContext($this->httpContext, $data, $actionName));
+    public function view(array $data = [], string $viewName = ''){
+        $viewResult = new ViewResult($this->getViewEngine(), new ViewContext($this->httpContext, $data, $viewName));
         return $viewResult;
     }
     
@@ -29,17 +29,96 @@ abstract class Controller {
         return $jsonResult;
     }
     
-    public function setViewEngine(ViewEngine\View $viewEngine) : Controller {
+    public function setViewEngine(ViewEngine\IView $viewEngine) : Controller {
         $this->viewEngine = $viewEngine;
         $this->viewEngine->setPath($this->rootPath);
         return $this;
     }
     
-    public function getViewEngine() : ViewEngine\View {
+    public function getViewEngine() : ViewEngine\IView {
         return $this->viewEngine;
     }
     
     public function load(){}
+    
+    public function execute(\System\Web\Http\HttpContext $httpContext){
+
+        $this->httpContext = $httpContext;
+
+        $refClass = new \ReflectionClass($this);
+        $actionName = $this->httpContext->getRequest()->getRouteData()->get('action');
+
+        if(!$refClass->hasMethod($actionName)){
+            throw new ActionNotFoundException($this->httpContext, get_class($this));
+        }
+        
+        $moduleFile = \System\Core\Str::set($refClass->getFileName())->getLastIndexOf('/')->append('/Module.php');
+        $module = null;
+        
+        if(is_file($moduleFile)){
+            $moduleClass = (string)\System\Core\Str::set(get_class($this))->getLastIndexOf('\\')->append('\Module');
+            $module = new $moduleClass();
+
+            if(!$module instanceof HttpModule){
+                throw new HttpException(sprintf("The module '%s' does not inherit from System.Web.Mvc.HttpModule.", $moduleClass));
+            }
+            
+            $module->load($this);
+        }
+        
+        $this->load();
+                        
+        $actionMethod = $refClass->getMethod($actionName);
+
+        $actionParameters = $actionMethod->getParameters();
+        $actionArgs = [];
+
+        foreach($actionParameters as $param){
+            switch($param->getType()){
+                case 'object':
+                    break;
+
+                case 'array':
+                    $actionArgs[] = $this->httpContext->getRequest()->getParams()->toArray();
+                    break;
+
+                default:
+                    if("int" == $param->getType()){
+                        $filter = FILTER_VALIDATE_INT;
+                    }
+                    else{
+                        $filter = FILTER_UNSAFE_RAW;
+                    }
+
+                    $defaultValue = $param->isOptional() ? $param->getDefaultValue() : null;
+
+                    $value = filter_var($this->httpContext->getRequest()->getParams($param->name, $defaultValue), $filter); 
+
+                    if(false === $value){
+                        print "its false";exit;
+                    }
+
+                    $actionArgs[] = $value;
+                    break;
+            }
+        }
+
+        $actionResult = $actionMethod->invokeArgs($this, $actionArgs);
+
+        if(!$actionResult instanceof \System\Web\Mvc\IActionResult){
+            if(is_array($actionResult)){
+                $actionResult = new \System\Web\Mvc\JsonResult($this->httpContext->getResponse(), $actionResult, null);
+            }else{
+                $actionResult = new \System\Web\Mvc\StringResult($actionResult);
+            }
+        }
+        
+        $this->render($actionResult);
+        
+        if($module instanceof HttpModule){
+            $module->unload($this);
+        }
+    }
     
     public function render(IActionResult $actionResult){
         $this->httpContext->getResponse()->getOutput()->write($actionResult->execute());

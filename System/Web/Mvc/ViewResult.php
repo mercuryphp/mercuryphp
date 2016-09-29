@@ -7,7 +7,7 @@ class ViewResult implements IActionResult {
     protected $viewEngine;
     protected $viewContext;
     
-    public function __construct(ViewEngine\View $viewEngine, ViewContext $viewContext){
+    public function __construct(ViewEngine\IView $viewEngine, ViewContext $viewContext){
         $this->viewEngine = $viewEngine;
         $this->viewContext = $viewContext;
     }

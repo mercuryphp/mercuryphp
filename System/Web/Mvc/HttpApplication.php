@@ -8,10 +8,11 @@ use System\Web\Routing\RouteCollection;
 use System\Web\Http\HttpContext;
 use System\Web\Http\HttpRequest;
 use System\Web\Http\HttpResponse;
+use System\Web\Http\Session\Session;
+use System\Web\Http\Session\Handlers\FileSessionHandler;
 
 abstract class HttpApplication {
     
-    private $rootPath;
     private $routes;
     private $httpContext;
     private $config;
@@ -21,10 +22,14 @@ abstract class HttpApplication {
      * root path.
      */
     public function __construct(string $rootPath){
-        $this->rootPath = $rootPath;
+        $httpRequest = new HttpRequest();
+        $httpResponse = new HttpResponse();
+        $session = new Session($httpRequest, $httpResponse);
         $this->routes = new RouteCollection();
-        $this->httpContext = new HttpContext(new HttpRequest(), new HttpResponse());
+        $this->httpContext = new HttpContext($httpRequest, $httpResponse, $session);
         $this->config = new \System\Configuration\Configuration('config.php');
+        $this->httpContext->getRequest()->setApplicationPath($rootPath);
+        $this->httpContext->getSession()->setHandler(new FileSessionHandler());
     }
     
     /**
@@ -32,6 +37,13 @@ abstract class HttpApplication {
      */
     protected function getRoutes() : \System\Web\Routing\RouteCollection {
         return $this->routes;
+    }
+    
+    /**
+     * Gets the HttpContext instance for the application.
+     */
+    protected function getHttpContext() : \System\Web\Http\HttpContext {
+        return $this->httpContext;
     }
 
     /**
@@ -60,10 +72,7 @@ abstract class HttpApplication {
                 )->trim('.');
 
                 try{
-                    $controller = Object::getInstance((string)$class, [
-                        $this->rootPath,
-                        $this->httpContext
-                    ]);
+                    $controller = Object::getInstance((string)$class);
                 }catch(\ReflectionException $e){
                     throw new ControllerNotFoundException($this->httpContext, $class);
                 }
@@ -72,31 +81,10 @@ abstract class HttpApplication {
                     throw new HttpException(sprintf("The controller '%s' does not inherit from System.Web.Mvc.Controller.", $class));
                 }
                 
-                $refClass = new \ReflectionClass($controller);
-                $actionName = $this->httpContext->getRequest()->getRouteData()->get('action');
-                
-                if(!$refClass->hasMethod($actionName)){
-                    throw new ActionNotFoundException($this->httpContext, get_class($controller));
-                }
-                
                 $this->beforeAction($controller);
                 
-                $controller->load();
-                
-                $actionMethod = $refClass->getMethod($actionName);
-                
-                $actionResult = $actionMethod->invokeArgs($controller, []);
-                
-                if(!$actionResult instanceof \System\Web\Mvc\IActionResult){
-                    if(is_array($actionResult)){
-                        $actionResult = new \System\Web\Mvc\JsonResult($this->httpContext->getResponse(), $actionResult, null);
-                    }else{
-                        $actionResult = new \System\Web\Mvc\StringResult($actionResult);
-                    }
-                }
-                
-                $controller->render($actionResult);
-                
+                $controller->execute($this->httpContext);
+
                 $this->afterAction($controller);
                 
                 break;
@@ -122,6 +110,7 @@ abstract class HttpApplication {
      * applications cycle. It is used to flush output to the browser.
      */
     public function end(){
+        $this->httpContext->getSession()->save();
         $this->httpContext->getResponse()->flush();
     }
 

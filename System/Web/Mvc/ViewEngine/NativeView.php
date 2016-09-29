@@ -5,8 +5,9 @@ namespace System\Web\Mvc\ViewEngine;
 use System\Core\Str;
 use System\Collections\Dictionary;
 
-class NativeView extends View {
+class NativeView implements IView {
     
+    protected $viewFilePattern = '{namespace}/{module}/Views/{controller}/{action}';
     protected $layoutFile;
     protected $output = [];
     
@@ -26,11 +27,14 @@ class NativeView extends View {
     public function render(\System\Web\Mvc\ViewContext $viewContext) : string {
         
         $request = $viewContext->getHttpContext()->getRequest(); 
-
-        $file = Str::set($this->getPath())->append($this->viewFilePattern)->template(
-            (new Dictionary())
-            ->merge($request->getRouteData()->toArray())
-            ->toArray(),
+        $fileParams = $request->getRouteData()->toArray();
+        
+        if($viewContext->getViewName()){
+            $fileParams['action'] = $viewContext->getViewName();
+        }
+        
+        $file = Str::set($request->getApplicationPath())->append($this->viewFilePattern)->template(
+            $fileParams,
             ['controller' => 'lc.ucf', 'action' => 'lc.ucf']
         )->append('.php');
 
@@ -42,7 +46,7 @@ class NativeView extends View {
             $this->output['view'] = ob_get_clean();
 
             if($this->layoutFile){
-                $layoutFile = $this->getPath().$this->layoutFile;
+                $layoutFile = $request->getApplicationPath().$this->layoutFile;
                 if (is_file(realpath($layoutFile))){
                     ob_start();
                     include $layoutFile;

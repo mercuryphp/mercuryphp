@@ -10,26 +10,27 @@ class RouteHandler implements IRouteHandler {
         
         $httpContext->getRequest()->getRouteData()->merge($route->getDefaults());
         
-        $uri = $httpContext->getRequest()->getUri();
-        
+        $uriPath = $httpContext->getRequest()->getUrl()->getPath();
+
         $tokens = Str::set($route->getRoute())->tokenize('{', '}')[1];
 
-        $uriSegments = Str::set($uri)->replace($tokens, '#', 1)->split('#');
+        $pathSegments = Str::set($uriPath)->replace($tokens, '#', 1)->split('#');
 
         $counter=0;
         foreach($tokens as $idx=>$token){ 
             if(substr($token, 0,1) == '{'){
                 $tokenName = Str::set($token)->get('{', '}');
-                $tokens[$idx] = $uriSegments->get($counter);
+                $tokens[$idx] = $pathSegments->get($counter);
                 
                 if($tokens[$idx]){
                     $httpContext->getRequest()->getRouteData()->set((string)$tokenName, $tokens[$idx]);
+                    $httpContext->getRequest()->getParams()->set((string)$tokenName, $tokens[$idx]);
                 }
                 ++$counter;
             }
         }
 
-        if(Str::join('',$tokens)->trim('/')->equals($uri)){
+        if(Str::join('',$tokens)->trim('/')->equals($uriPath)){
             return true;
         }
         return false;

@@ -6,12 +6,12 @@ class ViewContext {
 
     protected $httpContext;
     protected $params;
-    protected $actionName;
+    protected $viewName;
     
-    public function __construct(\System\Web\Http\HttpContext $httpContext, array $params, string $actionName = null){
+    public function __construct(\System\Web\Http\HttpContext $httpContext, array $params, string $viewName = ''){
         $this->httpContext = $httpContext;
         $this->params = $params;
-        $this->actionName = $actionName;
+        $this->viewName = $viewName;
     }
 
     public function getHttpContext() : \System\Web\Http\HttpContext {
@@ -22,8 +22,8 @@ class ViewContext {
         return $this->params;
     }
     
-    public function getActionName() : string {
-        return $this->actionName;
+    public function getViewName() : string {
+        return $this->viewName;
     }
 }
 
