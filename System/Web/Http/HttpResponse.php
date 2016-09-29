@@ -7,9 +7,11 @@ class HttpResponse {
     protected $contentType;
     protected $encoding;
     protected $contentLength = 0;
+    protected $cookies;
     protected $output;
     
     public function __construct() {
+        $this->cookies = new HttpCookieCollection([]);
         $this->output = new HttpResponseOutput();
     }
     
@@ -44,7 +46,29 @@ class HttpResponse {
         return $this->output;
     }
     
+    /**
+     * Gets a value from the cookie collection. If $name is not specified then 
+     * gets a System.Web.Http.HttpCookieCollection object of all cookies. 
+     */
+    public function getCookies($name = null) {
+        if(null === $name){
+            return $this->cookies;
+        }
+        if($this->cookies->hasKey($name)){
+            return $this->cookies->get($name);
+        }else{
+            $cookie = new HttpCookie($name);
+            $this->cookies->add($cookie);
+            return $cookie;
+        }
+    }
+    
     public function flush(){
+        
+        foreach($this->cookies as $cookie){
+            setcookie($cookie->getName(), $cookie->getValue(), $cookie->getExpires(), $cookie->getPath(), $cookie->getDomain(), $cookie->getIsSecure(), $cookie->getIsHttpOnly());
+        }
+        
         echo $this->output->getBody();
     }
 }
