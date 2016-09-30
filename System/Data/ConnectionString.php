@@ -8,6 +8,9 @@ class ConnectionString {
     private $username;
     private $password;
 
+    /**
+     * Initializes an instance of ConnectionString with a DSN.
+     */
     public function __construct(string $dsn){
         
         $this->params = \System\Core\Str::set($dsn)->split(';');
@@ -27,15 +30,24 @@ class ConnectionString {
         $this->params->removeAt('pwd');
     }
 
-    public function getUser(){
+    /**
+     * Gets the username for the connection string.
+     */
+    public function getUser() : string {
         return $this->username;
     }
     
-    public function getPassword(){
+    /**
+     * Gets the password for the connection string.
+     */
+    public function getPassword() : string {
         return $this->password;
     }
     
-    public function getDsn(){
+    /**
+     * Gets the DSN string.
+     */
+    public function getDsn() : string {
         $driver = '';
         $dsn = '';
         foreach($this->params as $param => $value){
@@ -46,5 +58,11 @@ class ConnectionString {
             }
         }
         return $driver.':'.$dsn;
+    }
+    
+    public function __debugInfo(){
+        return [
+            'dns' => $this->getDsn()
+        ];
     }
 }
