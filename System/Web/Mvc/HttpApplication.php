@@ -3,7 +3,7 @@
 namespace System\Web\Mvc;
 
 use System\Core\Str;
-use System\Core\Object;
+use System\Core\Obj;
 use System\Web\Routing\RouteCollection;
 use System\Web\Http\HttpContext;
 use System\Web\Http\HttpRequest;
@@ -72,7 +72,7 @@ abstract class HttpApplication {
                 )->trim('.');
 
                 try{
-                    $controller = Object::getInstance((string)$class);
+                    $controller = Obj::getInstance((string)$class);
                 }catch(\ReflectionException $e){
                     throw new ControllerNotFoundException($this->httpContext, $class);
                 }
