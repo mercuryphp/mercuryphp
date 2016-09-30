@@ -19,14 +19,17 @@
     .library ul {
         list-style-type: none;
         margin: 4px 0px;
+        padding-left: 25px;
     }
     .library h3 {
         color: #3C385B;
-        font-size: 14px;
-        margin: 3px 0px;
+        font-size: 13px;
+        margin: 7px 0px;
+        cursor: pointer;
+        
     }
     .library a {
-        color:#6D569E;
+        color:#403861;
         text-decoration: none;
         font-size: 13px;
     }
@@ -56,14 +59,21 @@
         background-color:#F9F9F9;
     }
     .width-200 { width:200px; }
+    .hide { display: none; }
 </style>
+
+<script type="text/javascript">
+    function expand(sender){
+        sender.nextElementSibling.style.display = 'block';
+    }
+</script>
 
 <div class="table">
     <div class="table-cell padding-right-40 width-200">
         <div class="library">
             <?php foreach($library as $class=>$args){ ?>
-                <h3><?php echo $class; ?></h3>
-                <ul>
+                <h3 onclick="expand(this)"><?php echo $class; ?></h3>
+                <ul class="<?php echo strtolower($class) == \System\Core\Str::set($request->getUrl()->getPathSegments()[1])->getLastIndexOf('.') ? '' : 'hide'; ?>">
                     <?php foreach($args as $arg){ ?>
                     <li><a href="<?php echo $arg['url']; ?>"><?php echo $arg['name']; ?></a></li>
                     <?php } ?>
