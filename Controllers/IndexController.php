@@ -14,12 +14,6 @@ class IndexController extends \System\Web\Mvc\Controller {
         //$this->pdo = new \PDO('mysql:host=127.0.0.1;dbname=merc','merc','Yellow@77');
         $db = new \System\Data\Database('driver=mysql;host=127.0.0.1;dbname=merc;uid=syed;pwd=Yellow77');
         
-        $db->insert('class', [
-            'class_name' => new \System\Data\DbFunction('now')
-        ]);
-        
-        print_R($db->getProfiler()); exit;
-        
         return $this->view([
             
         ]);
