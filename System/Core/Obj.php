@@ -210,6 +210,4 @@ final class Obj {
         $obj = new \ReflectionObject($object);
         return $obj->hasProperty($property);
     }
-} 
-
-
+}
