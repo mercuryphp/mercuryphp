@@ -2,6 +2,7 @@
 
 namespace System\Diagnostics;
 
+
 class TraceListenerCollection implements \IteratorAggregate, \Countable {
     
     protected $collection = [];
@@ -11,7 +12,7 @@ class TraceListenerCollection implements \IteratorAggregate, \Countable {
     }
 
     public function getIterator(){
-        return new \ArrayAccess($this->collection);
+        return new \ArrayIterator($this->collection);
     }
     
     public function count(){
