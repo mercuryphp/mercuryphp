@@ -2,6 +2,8 @@
 
 namespace System\Web\Mvc;
 
+use System\Diagnostics\Trace;
+
 abstract class Controller {
     
     private $httpContext;
@@ -63,11 +65,13 @@ abstract class Controller {
                 throw new HttpException(sprintf("The module '%s' does not inherit from System.Web.Mvc.HttpModule.", $moduleClass));
             }
             
+            Trace::write('Module load()');
             $module->load($this);
         }
         
+        Trace::write('Controller load()');
         $this->load();
-                        
+        
         $actionMethod = $refClass->getMethod($actionName);
 
         $actionParameters = $actionMethod->getParameters();
@@ -103,6 +107,7 @@ abstract class Controller {
             }
         }
 
+        Trace::write('Controller action()');
         $actionResult = $actionMethod->invokeArgs($this, $actionArgs);
 
         if(!$actionResult instanceof \System\Web\Mvc\IActionResult){
@@ -113,9 +118,11 @@ abstract class Controller {
             }
         }
         
+        Trace::write('Controller render()');
         $this->render($actionResult);
         
         if($module instanceof HttpModule){
+            Trace::write('Module unload()');
             $module->unload($this);
         }
     }

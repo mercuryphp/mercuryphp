@@ -4,6 +4,10 @@ namespace System\Web\Mvc;
 
 use System\Core\Str;
 use System\Core\Obj;
+use System\Diagnostics\Trace;
+use System\Diagnostics\TraceListenerCollection;
+use System\Diagnostics\DefaultTraceListener;
+use System\Configuration\Configuration;
 use System\Web\Routing\RouteCollection;
 use System\Web\Http\HttpContext;
 use System\Web\Http\HttpRequest;
@@ -13,6 +17,7 @@ use System\Web\Http\Session\Handlers\FileSessionHandler;
 
 abstract class HttpApplication {
     
+    private $trace;
     private $routes;
     private $httpContext;
     private $config;
@@ -25,9 +30,10 @@ abstract class HttpApplication {
         $httpRequest = new HttpRequest();
         $httpResponse = new HttpResponse();
         $session = new Session($httpRequest, $httpResponse);
+        $this->traceListeners = new TraceListenerCollection(new DefaultTraceListener());
         $this->routes = new RouteCollection();
         $this->httpContext = new HttpContext($httpRequest, $httpResponse, $session);
-        $this->config = new \System\Configuration\Configuration('config.php');
+        $this->config = new Configuration('config.php');
         $this->httpContext->getRequest()->setApplicationPath($rootPath);
         $this->httpContext->getSession()->setHandler(new FileSessionHandler());
     }
@@ -81,10 +87,12 @@ abstract class HttpApplication {
                     throw new HttpException(sprintf("The controller '%s' does not inherit from System.Web.Mvc.Controller.", $class));
                 }
                 
+                Trace::write('Application beforeAction()');
                 $this->beforeAction($controller);
                 
                 $controller->execute($this->httpContext);
 
+                Trace::write('Application afterAction()');
                 $this->afterAction($controller);
                 
                 break;
@@ -109,9 +117,14 @@ abstract class HttpApplication {
      * This method is an application event and is called at the end of the 
      * applications cycle. It is used to flush output to the browser.
      */
-    public function end(){
+    public final function end(){
         $this->httpContext->getSession()->save();
         $this->httpContext->getResponse()->flush();
+        
+        foreach($this->traceListeners as $listener){
+            $listener->setData(Trace::getData());
+            $listener->write();
+        }
     }
 
     public function error(\Exception $e){}
