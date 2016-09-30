@@ -119,7 +119,7 @@ class Str implements \IteratorAggregate, \Countable {
      */
     public function replace($search, string $replace, int $limit = -1) : Str {
         if(is_string($search)){
-            $search[] = $search;
+            $search = [$search];
         }
         foreach($search as $item){
             $this->string = preg_replace('#'.$item.'#', $replace, $this->string, $limit);
@@ -335,7 +335,7 @@ class Str implements \IteratorAggregate, \Countable {
      * ucf: uppercase first, lcf: lowercase first, t: trim). Transformations can
      * be chained using "." e.g "lc.ucf" transforms MERCURY to Mercury.  
      */
-    public function template($params, array $transformations = []) : Str{
+    public function template($params, array $transformations = []) : Str {
         $tokens = $this->tokenize('{', '}', false)[0];
 
         foreach($tokens as $idx => $token){
