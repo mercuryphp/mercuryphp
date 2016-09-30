@@ -42,7 +42,7 @@ final class System {
             $app->error($ex);
         }
         Trace::write('Application end()');
-        $app->end(); Trace::t();
+        $app->end();
     } 
 }
 
