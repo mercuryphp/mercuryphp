@@ -5,7 +5,7 @@ namespace Controllers;
 class LibraryController extends \System\Web\Mvc\Controller {
     
     protected $classList = [];
-    protected $pdo;
+    protected $db;
     protected $library = [];
     
     public function load(){
@@ -14,15 +14,15 @@ class LibraryController extends \System\Web\Mvc\Controller {
 
         
         //$this->pdo = new \PDO('mysql:host=127.0.0.1;dbname=merc','merc','Yellow@77');
-        $this->pdo = new \PDO('mysql:host=127.0.0.1;dbname=merc','syed','Yellow77');
-        $stm = $this->pdo->query("SELECT * FROM class order by class_name");
+        $this->db = new \System\Data\Database('driver=mysql;host=127.0.0.1;dbname=merc;uid=syed;pwd=Yellow77');
         
-        $classes = $stm->fetchAll(\PDO::FETCH_OBJ);
+        
+        $classes = $this->db->fetchAll("SELECT * FROM class order by class_name");
         $tmp = [];
         foreach($classes as $class){
             $arr = explode('.', $class->class_name);
             $className = array_pop($arr);
-            $tmp[join('.', $arr)][] = ['url' => $class->url_key, 'name' => $className];
+            $tmp[join('.', $arr)][] = ['url' => strtolower($class->class_name), 'name' => $className];
         }
         ksort($tmp);
         //print_R($tmp); exit;
@@ -41,13 +41,15 @@ class LibraryController extends \System\Web\Mvc\Controller {
         $this->openDir('/var/www/mercuryphp/System');
 
         //print_R($this->getRequest()->getUserAgent()); exit;
-        /*
-        $this->pdo->query('TRUNCATE class');
-
+        
+        /**
+        $this->db->query('TRUNCATE class');
         foreach($this->classList as $class){
-            $stm = $this->pdo->query("INSERT INTO class (url_key, class_name) VALUES('" . strtolower($class) . "', '" . $class . "')");
+            $this->db->insert("class", ['class_name' => $class]);
         }
-        */
+        exit;
+         * */
+
         if($className == 'system'){
             
             return $this->view([
@@ -57,9 +59,8 @@ class LibraryController extends \System\Web\Mvc\Controller {
         }else{
             try{
 
-                $stm = $this->pdo->query("SELECT * FROM class where url_key='" . $className . "'");
 
-                $class = $stm->fetch(\PDO::FETCH_OBJ);
+                $class = $this->db->fetch("SELECT * FROM class where LOWER(class_name) =:class_name", ['class_name' => $className]);
 
                 $ref = new \ReflectionClass(str_replace('.', '\\', $class->class_name));
 
