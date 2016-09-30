@@ -60,7 +60,7 @@ class Uri {
     /**
      * Gets a System.Collections.ArrayList of uri path segments.
      */
-    public function getPathSegments() : ArrayList {
+    public function getPathSegments() : \System\Collections\ArrayList {
         return $this->pathSegments;
     }
 }
