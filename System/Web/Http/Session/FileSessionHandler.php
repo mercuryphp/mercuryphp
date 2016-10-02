@@ -1,6 +1,6 @@
 <?php
 
-namespace System\Web\Http\Session\Handlers;
+namespace System\Web\Http\Session;
 
 class FileSessionHandler {
     

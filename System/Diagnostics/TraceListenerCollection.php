@@ -8,7 +8,7 @@ class TraceListenerCollection implements \IteratorAggregate, \Countable {
     protected $collection = [];
     
     public function add(TraceListener $listener){
-        $this->collection[] = $listener;
+        $this->collection[$listener->getName()] = $listener;
     }
 
     public function getIterator(){

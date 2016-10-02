@@ -33,12 +33,12 @@ final class System {
         $app = new Application($rootPath);
         
         try{
-            Trace::write('Application load()');
+            Trace::write('Application load()', 'User');
             $app->load();
             Trace::write('Application run()');
             $app->run();
         } catch (Exception $ex) {
-            Trace::write('Application error()');
+            Trace::write('Application error()', 'User');
             $app->error($ex);
         }
         Trace::write('Application end()');

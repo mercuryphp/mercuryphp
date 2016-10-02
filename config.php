@@ -8,8 +8,9 @@ connectionStrings:
         user: 
             uid: root;
             pass: yell;
-
+    db2:
+        host :34567890;
+        
 session:
     name : PHPSESSION;
     handler : System.Web.Mvc.Http.Session.FileSystem;
-    

@@ -54,9 +54,9 @@ abstract class Controller {
             throw new ActionNotFoundException($this->httpContext, get_class($this));
         }
         
-        $moduleFile = \System\Core\Str::set($refClass->getFileName())->getLastIndexOf('/')->append('/Module.php');
+        $moduleFile = \System\Core\Str::set($refClass->getFileName())->replace("\\\\",'/')->getLastIndexOf('/')->append('/Module.php');
         $module = null;
-        
+
         if(is_file($moduleFile)){
             $moduleClass = (string)\System\Core\Str::set(get_class($this))->getLastIndexOf('\\')->append('\Module');
             $module = new $moduleClass();

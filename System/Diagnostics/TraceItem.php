@@ -7,17 +7,24 @@ final class TraceItem {
     private $message;
     private $category;
     private $startTime;
-    private $httpMethod;
+    private $lastStartTime;
 
-    public function __construct(string $message, $category, $startTime, $httpMethod){
+    public function __construct(string $message, $category, float $startTime){
         $this->message = $message;
         $this->category = $category;
         $this->startTime = $startTime;
-        $this->httpMethod = $httpMethod;
     }
     
-    public function getMessage(){
+    public function getMessage() : string {
         return $this->message;
+    }
+    
+    public function getCategory() : string {
+        return $this->category;
+    }
+    
+    public function getStartTime() : float {
+        return $this->startTime;
     }
 }
 

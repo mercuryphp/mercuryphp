@@ -10,58 +10,17 @@ class Configuration implements IConfig {
         
         if(is_file($configFile)){
             $lines = file($configFile);
-
-            $tokens = [];
-            $token = '';
+            $segments = [];
 
             foreach($lines as $line){
 
-                if(!trim($line)){
-                    $tokens[] = ['type' => 'break'];
-                    continue;
-                }
-
                 $len = strlen($line);
+                
+                $count = strspn($line, " ");
 
-                for($i = 0; $i < $len; $i++){
-                    $cc = $line[$i];
-
-                    if($cc == ':'){
-                        $tokens[] = ['type' => 'section', 'name' => $token];
-                        $token = '';
-                        continue;
-                    }
-                    if($cc == ';'){
-                        $tokens[] = ['type' => 'value', 'value' => $token];
-                        end($tokens);
-                        $currentIndex = key($tokens); 
-                        $tokens[$currentIndex-1]['type'] = 'key';
-                        $token = '';
-                        continue;
-                    }
-
-                    $token .= trim($cc);
-                }
-            }
-
-            $this->config = new \System\Collections\Dictionary();
-            $key = '';
-
-            foreach($tokens as $idx => $token){
-
-                if($token['type'] == 'section'){
-                    $key .= $token['name'].'.';
-                }
-                elseif($token['type'] == 'key'){
-                    if(isset($tokens[$idx+1])){
-                        $nextToken = $tokens[$idx+1];
-                        $this->config->set($key.$token['name'], $nextToken['value']);
-                    }
-                }
-                elseif($token['type'] == 'break'){
-                    $key = '';
-                }
-            }
+                $segments[] = [$count, $line];
+            } print_R($segments); 
+            exit;
         }else{
             throw new ConfigurationException(sprintf("The configuration file '%s' does not exist.", $configFile));
         }

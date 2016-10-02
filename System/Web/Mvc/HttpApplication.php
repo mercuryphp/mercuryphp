@@ -13,7 +13,7 @@ use System\Web\Http\HttpContext;
 use System\Web\Http\HttpRequest;
 use System\Web\Http\HttpResponse;
 use System\Web\Http\Session\Session;
-use System\Web\Http\Session\Handlers\FileSessionHandler;
+use System\Web\Http\Session\FileSessionHandler;
 
 abstract class HttpApplication {
     
@@ -90,6 +90,7 @@ abstract class HttpApplication {
                 Trace::write('Application beforeAction()');
                 $this->beforeAction($controller);
                 
+                Trace::write('Controller execute()');
                 $controller->execute($this->httpContext);
 
                 Trace::write('Application afterAction()');
@@ -120,7 +121,7 @@ abstract class HttpApplication {
     public final function end(){
         $this->httpContext->getSession()->save();
         $this->httpContext->getResponse()->flush();
-        
+        //print_R(Trace::getData()); exit;
         foreach($this->traceListeners as $listener){
             $listener->setData(Trace::getData());
             $listener->write();
