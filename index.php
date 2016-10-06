@@ -28,11 +28,13 @@ final class System {
             });
         }
         
-        include 'global.php';
+        include 'app.php';
         
         $app = new Application($rootPath);
         
         try{
+            Trace::write('Application start()');
+            $app->start();
             Trace::write('Application load()', 'User');
             $app->load();
             Trace::write('Application run()');
