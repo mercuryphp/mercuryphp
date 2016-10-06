@@ -2,37 +2,29 @@
 
 namespace System\Configuration;
 
-class Configuration implements IConfig {
+final class Configuration {
+
+    private $config = [];
     
-    protected $config;
-    
-    public function __construct(string $configFile){
-        
-        if(is_file($configFile)){
-            $lines = file($configFile);
-            $segments = [];
-
-            foreach($lines as $line){
-
-                $len = strlen($line);
-                
-                $count = strspn($line, " ");
-
-                $segments[] = [$count, $line];
-            } print_R($segments); 
-            exit;
-        }else{
-            throw new ConfigurationException(sprintf("The configuration file '%s' does not exist.", $configFile));
-        }
+    public function __construct(Reader $configReader){
+        $this->config = $configReader->read();
     }
     
-    public function get($path, $default = null) : string {
+    public function hasPath($path){
         if($this->config->hasKey($path)){
-            return $this->config->get($path);
+            return true;
         }
-        if(null !== $default){
-            return $default;
+        return false;
+    }
+
+    public function get($path, $default = null) {
+        if($this->config->hasKey($path)){
+            return $this->config->get($path, $default);
         }
+        return $default;
+    }
+    
+    public function toArray(){
+        return $this->config;
     }
 }
-
