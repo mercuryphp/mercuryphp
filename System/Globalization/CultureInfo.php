@@ -15,7 +15,7 @@ class CultureInfo {
      */
     public function __construct($name){
         $this->cultureName = $name;
-        $dataFile = (string)\System\Core\Str::set(dirname(__FILE__).'/Data/'.$name.'.xml')->replace('\\', '/');
+        $dataFile = (string)\System\Core\Str::set(dirname(__FILE__).'/Data/'.$name.'.xml')->replace('\\\\', '/');
         
         if(is_file($dataFile)){
             $xml = simplexml_load_file($dataFile);
@@ -59,4 +59,4 @@ class CultureInfo {
     public function getNumberFormat() : NumberFormat {
         return $this->numberFormat;
     }
-}
+} 
