@@ -6,21 +6,30 @@ class FileSessionHandler {
     
     private $sessionPath;
     
-    public function __construct(){
-        $this->sessionPath = session_save_path();
+    public function __construct($sessionPath = null){
+        if(null === $sessionPath){
+            $this->sessionPath = session_save_path();
+        }else{
+            $this->sessionPath = $sessionPath;
+        }
     }
 
     public function read($id){
         try{
             return unserialize(file_get_contents($this->sessionPath.'/'.$id));
         }catch(\Exception $e){
-            $sessionEntry = new \System\Web\Http\Session\SessionData();
-            file_put_contents($this->sessionPath.'/'.$id, serialize($sessionEntry));
-            return $sessionEntry;
+            $sessionData = new SessionData(); 
+            try{
+                file_put_contents($this->sessionPath.'/'.$id, serialize($sessionData));
+            }
+            catch (\ErrorException $se){
+                throw new SessionException('Failed to write session data. Check that the session directory exists and is writeable.');
+            }
+            return $sessionData;
         }
     }
     
-    public function write($id, $sessionEntry){
-        return file_put_contents($this->sessionPath.'/'.$id, serialize($sessionEntry));
+    public function write($id, $sessionData){
+        return file_put_contents($this->sessionPath.'/'.$id, serialize($sessionData));
     }
 }

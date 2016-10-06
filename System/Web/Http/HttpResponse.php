@@ -64,9 +64,9 @@ class HttpResponse {
     }
     
     public function flush(){
-        
+       // print_R($this->cookies); exit;
         foreach($this->cookies as $cookie){
-            setcookie($cookie->getName(), $cookie->getValue(), $cookie->getExpires(), $cookie->getPath(), $cookie->getDomain(), $cookie->getIsSecure(), $cookie->getIsHttpOnly());
+            setcookie($cookie->getName(), $cookie->getValue(), $cookie->getExpires(), $cookie->getPath(), $cookie->getDomain(), $cookie->isSecure(), $cookie->isHttpOnly());
         }
         
         echo $this->output->getBody();

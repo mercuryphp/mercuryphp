@@ -4,9 +4,12 @@ namespace System\Web\Mvc;
 
 use System\Core\Str;
 use System\Core\Obj;
+use System\Core\Convert;
 use System\Diagnostics\Trace;
 use System\Diagnostics\TraceListenerCollection;
 use System\Diagnostics\DefaultTraceListener;
+use System\Configuration\ConfigurationReader;
+use System\Configuration\EmptyReader;
 use System\Configuration\Configuration;
 use System\Web\Routing\RouteCollection;
 use System\Web\Http\HttpContext;
@@ -17,11 +20,12 @@ use System\Web\Http\Session\FileSessionHandler;
 
 abstract class HttpApplication {
     
-    private $trace;
+    private $traceListeners;
     private $routes;
     private $httpContext;
     private $config;
-    
+
+
     /**
      * Initializes an instance of HttpApplication by providing the application 
      * root path.
@@ -33,7 +37,6 @@ abstract class HttpApplication {
         $this->traceListeners = new TraceListenerCollection(new DefaultTraceListener());
         $this->routes = new RouteCollection();
         $this->httpContext = new HttpContext($httpRequest, $httpResponse, $session);
-        $this->config = new Configuration('config.php');
         $this->httpContext->getRequest()->setApplicationPath($rootPath);
         $this->httpContext->getSession()->setHandler(new FileSessionHandler());
     }
@@ -50,6 +53,12 @@ abstract class HttpApplication {
      */
     protected function getHttpContext() : \System\Web\Http\HttpContext {
         return $this->httpContext;
+    }
+    
+    public final function start(){
+        $configurationReader = new ConfigurationReader('configx.php');
+        $this->config = $configurationReader->hasFile() ? new Configuration($configurationReader) : new Configuration(new EmptyReader());
+        $this->init();
     }
 
     /**
@@ -121,7 +130,7 @@ abstract class HttpApplication {
     public final function end(){
         $this->httpContext->getSession()->save();
         $this->httpContext->getResponse()->flush();
-        //print_R(Trace::getData()); exit;
+
         foreach($this->traceListeners as $listener){
             $listener->setData(Trace::getData());
             $listener->write();
@@ -129,4 +138,32 @@ abstract class HttpApplication {
     }
 
     public function error(\Exception $e){}
+    
+    private function init(){
+        print_R(\System\Core\Date::now()); exit;
+        
+        \System\Core\Date::parse('2017-09-02 10:34:23');
+        
+        if($this->config->hasPath('session.name')){
+            $this->getHttpContext()->getSession()->setName($this->config->get('session.name'));
+        }
+        
+        if($this->config->hasPath('session.http')){
+            $this->getHttpContext()->getSession()->isHttpOnly(Convert::toBoolean($this->config->get('session.http')));
+        }
+        
+        if($this->config->hasPath('session.secure')){
+            $this->getHttpContext()->getSession()->isSecure(Convert::toBoolean($this->config->get('session.secure')));
+        }
+
+        if($this->config->hasPath('session.handler')){
+            try{
+                $handlerInstance = Obj::getInstance($this->config->get('session.handler'), $this->config->get('session.handlerArgs', []));
+                $this->httpContext->getSession()->setHandler($handlerInstance);
+            }
+            catch(\ReflectionException $re){
+                throw new \System\Web\Http\Session\SessionException(sprintf("The session handler '%s' does not exist.", $this->config->get('session.handler')));
+            }
+        } 
+    }
 }

@@ -99,38 +99,26 @@ final class HttpCookie {
     public function getDomain() : string {
         return $this->domain;
     }
-
+    
     /**
-     * Sets a value indicating that the cookie should only be transmitted 
+     * Sets or gets a value indicating that the cookie should only be transmitted 
      * over a secure HTTPS connection from the client.
      */
-    public function setIsSecure(bool $bool) : HttpCookie {
+    public function isSecure(bool $bool = null){
+        if(null === $bool){
+            return $this->isSecure;
+        }
         $this->isSecure = $bool;
-        return $this;
-    }
-    
-    /**
-     * Gets a value indicating that the cookie should only be transmitted 
-     * over a secure HTTPS connection from the client.
-     */
-    public function getIsSecure() : bool {
-        return $this->isSecure;
     }
 
     /**
-     * Sets a value indicating that the cookie should be accessible only 
+     * Sets or gets a value indicating that the cookie should be accessible only 
      * through the HTTP protocol.
      */
-    public function setIsHttpOnly(bool $bool) : HttpCookie {
+    public function isHttpOnly(bool $bool = null){
+        if(null === $bool){
+            return $this->isHttpOnly;
+        }
         $this->isHttpOnly = $bool;
-        return $this;
-    }
-    
-    /**
-     * Gets a value indicating that the cookie should be accessible only 
-     * through the HTTP protocol.
-     */
-    public function getIsHttpOnly() : bool {
-        return $this->isHttpOnly;
     }
 }
