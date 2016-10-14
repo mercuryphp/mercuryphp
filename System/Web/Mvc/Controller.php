@@ -2,6 +2,8 @@
 
 namespace System\Web\Mvc;
 
+use System\Core\Obj;
+use System\Core\Attribute;
 use System\Diagnostics\Trace;
 
 abstract class Controller {
@@ -72,38 +74,46 @@ abstract class Controller {
         Trace::write('Controller load()');
         $this->load();
         
+        $attributes = Attribute::getAttributes($this, $actionName);
+        
+        foreach($attributes as $idx=>$attribute){
+            if($attribute instanceof FilterAttribute && !$attribute->isValid($this)){
+                return false;
+            }
+        }
+        
         $actionMethod = $refClass->getMethod($actionName);
 
         $actionParameters = $actionMethod->getParameters();
         $actionArgs = [];
 
         foreach($actionParameters as $param){
-            switch($param->getType()){
-                case 'object':
-                    break;
+            $defaultValue = $param->isOptional() ? $param->getDefaultValue() : null;
+            if(is_object($param->getClass())){
+                $actionArgs[] = (new ObjectModelBinder())->bind($param->getType(), $this->httpContext->getRequest(), $param->name);
+            }else{
+                switch($param->getType()){
+                    case 'array':
+                        $actionArgs[] = $this->httpContext->getRequest()->getParams()->toArray();
+                        break;
 
-                case 'array':
-                    $actionArgs[] = $this->httpContext->getRequest()->getParams()->toArray();
-                    break;
+                    default:
+                        if("int" == $param->getType()){
+                            $filter = FILTER_VALIDATE_INT;
+                        }
+                        else{
+                            $filter = FILTER_UNSAFE_RAW;
+                        }
 
-                default:
-                    if("int" == $param->getType()){
-                        $filter = FILTER_VALIDATE_INT;
-                    }
-                    else{
-                        $filter = FILTER_UNSAFE_RAW;
-                    }
+                        $value = filter_var($this->httpContext->getRequest()->getParams($param->name, $defaultValue), $filter); 
 
-                    $defaultValue = $param->isOptional() ? $param->getDefaultValue() : null;
+                        if(false === $value){
+                            print "its false";exit;
+                        }
 
-                    $value = filter_var($this->httpContext->getRequest()->getParams($param->name, $defaultValue), $filter); 
-
-                    if(false === $value){
-                        print "its false";exit;
-                    }
-
-                    $actionArgs[] = $value;
-                    break;
+                        $actionArgs[] = $value;
+                        break;
+                }
             }
         }
 

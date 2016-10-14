@@ -13,6 +13,6 @@ class ActionNotFoundException extends HttpException {
     public function __construct(\System\Web\Http\HttpContext $httpContext, $controllerName){
         $routeData = $httpContext->getRequest()->getRouteData();
         //$httpContext->getResponse()->setStatusCode(404)->flush();
-        parent::__construct(sprintf("The action '%s' does not exist in '%s'.", $routeData->get('action'), str_replace('\\', '.',$controllerName)));
+        parent::__construct(sprintf("The action '%s:%s()' does not exist.", str_replace('\\', '.',$controllerName), $routeData->get('action')));
     }
 }

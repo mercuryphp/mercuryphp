@@ -140,9 +140,6 @@ abstract class HttpApplication {
     public function error(\Exception $e){}
     
     private function init(){
-        print_R(\System\Core\Date::now()); exit;
-        
-        \System\Core\Date::parse('2017-09-02 10:34:23');
         
         if($this->config->hasPath('session.name')){
             $this->getHttpContext()->getSession()->setName($this->config->get('session.name'));
