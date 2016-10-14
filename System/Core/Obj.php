@@ -7,10 +7,6 @@ final class Obj {
     /**
      * A variadic method that converts key/value arrays or objects to an object
      * specified by $toClass name.
-     * 
-     * @param   string $toClass
-     * @param   array|object $data1, $data2...
-     * @return  object
      */
     public static function toObject(){
         $args = func_get_args();
@@ -139,45 +135,7 @@ final class Obj {
             return $property->getValue($object);
         }
     }
-    
-    public static function getMethodAnnotations($object, $methodName){
-        
-        if(!is_object($object)){
-            throw new \RuntimeException(sprintf('Object::getMethodAnnotations() expects parameter 1 to be object, %s given', gettype($object)));
-        }
-        
-        $refClass = new \ReflectionObject($object);
-        $tokens = token_get_all(file_get_contents($refClass->getFileName()));
 
-        $comments = array();
-        foreach($tokens as $idx=>$token){
-
-            if(isset($token[1]) && $token[0] == T_COMMENT){
-                $comments[$token[2]] = $token[1];
-            }
-            
-            if(isset($token[1]) && ($token[1] == $methodName) && ($tokens[$idx -2][0] == T_FUNCTION)){
-                $keys = array_reverse(array_keys($comments));
-                foreach ($keys as $i => $key) { 
-                    if($token[2] - ($i+$key+1) == 0){
-                        $attribute = Str::set($comments[$key])->get('@', '(');
-
-                        if((string)$attribute){
-                            $args = (string)Str::set($comments[$key])->get('(', ')');
-                            $args = $args ? str_getcsv($args, ',', '"') : array();
-                            $comments[$key] = Object::getInstance((string)$attribute->append('Attribute'), array_map('trim', $args));
-                        }else{
-                            unset($comments[$key]);
-                        }
-                    }else{
-                        unset($comments[$key]);
-                    }
-                }
-            }
-        }
-        return $comments;
-    }
-    
     /**
      * Gets a new instance of a class.
      * 

@@ -7,7 +7,7 @@ class Date extends \DateTime {
     /**
      * Initializes a new instance of the Date class.
      */
-    public function __construct($string, $timeZone = null){
+    public function __construct($string = 'now', $timeZone = null){
         
         if($timeZone){
             $timeZone = new \DateTimeZone($timeZone);
@@ -128,6 +128,20 @@ class Date extends \DateTime {
     public function addSeconds(int $seconds){
         $this->modify('+'.$seconds.' second');
         return $this;
+    }
+    
+    /**
+     * Gets the date using a short datetime format (yyyy-MM-dd).
+     */
+    public function toShortDate(){
+        return $this->toString('yyyy-MM-dd');
+    }
+    
+    /**
+     * Gets the time component from this date instance (HH:mm:ss).
+     */
+    public function toTime(){
+        return $this->toString('HH:mm:ss');
     }
 
     /**
