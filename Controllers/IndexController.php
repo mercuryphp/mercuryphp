@@ -4,8 +4,9 @@ namespace Controllers;
 
 class IndexController extends \System\Web\Mvc\Controller {
     
-    public function index(){
-        $this->getHttpContext()->getSession()->set('ssd', 'blaal');
+    //@System.Web.Http.HttpMethod("get")
+    public function index(\System\Web\Mvc\ $date){
+        print_R($date); exit;
        return  "ff";
     }
 }
