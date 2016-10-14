@@ -158,7 +158,7 @@ final class HttpRequest {
      * Gets the HTTP data transfer method.
      */
     public function getHttpMethod() : string {
-        return $this->server->getString('REQUEST_METHOD');
+        return $this->server->getString('REQUEST_METHOD')->toUpper();
     }
     
     /**
