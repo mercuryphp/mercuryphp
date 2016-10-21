@@ -40,10 +40,6 @@ final class Obj {
     
     /**
      * Sets the property values of an object using an array.
-     * 
-     * @param   object $object
-     * @param   array $properties
-     * @return  object
      */
     public static function setProperties($object, array $properties){
         

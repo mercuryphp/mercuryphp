@@ -4,6 +4,49 @@ namespace System\Core;
  
 final class Attribute {
     
+    public static function getPropertyAttributes($object, $propertyName = null){
+        
+        if(!is_object($object)){
+            throw new \RuntimeException(sprintf('Attribute::getPropertyAttributes() expects parameter 1 to be object, %s given', gettype($object)));
+        }
+        
+        $refClass = new \ReflectionObject($object);
+        $tokens = token_get_all(file_get_contents($refClass->getFileName()));
+
+        $tmp = [];
+        $attributes = [];
+        foreach($tokens as $idx=>$token){
+
+            if(isset($token[0])){
+                switch($token[0]){
+                    case T_COMMENT:
+                        $attributeName = Str::set($token[1])->get('@', '(')->trim();
+                        if((string)$attributeName){
+                            try{
+                                $tmp[] = Obj::getInstance($attributeName);
+                            }
+                            catch(\ReflectionException $re){
+                                throw new AttributeException($re->getMessage());
+                            }
+                        }
+                        break;
+                        
+                    case T_VARIABLE:
+                        $attributes[substr($token[1], 1)] = $tmp;
+                        $tmp = [];
+                        break;
+                }
+            }
+        }
+        
+        unset($tmp);
+        
+        if(null !== $propertyName){
+            return array_key_exists($propertyName, $attributes) ? $attributes[$propertyName] : false;
+        }
+        return $attributes;
+    }
+    
     public static function getAttributes($object, $methodName){
         
         if(!is_object($object)){

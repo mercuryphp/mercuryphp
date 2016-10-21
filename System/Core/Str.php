@@ -61,7 +61,7 @@ class Str implements \IteratorAggregate, \Countable {
      * Gets the zero-based index of the first occurrence of the specified $char
      * in the current instance.
      */
-    public function indexOf($string) : int {
+    public function indexOf($string) {
         return stripos($this->string, $string);
     }
     
@@ -69,7 +69,7 @@ class Str implements \IteratorAggregate, \Countable {
      * Gets the zero-based index of the last occurrence of the specified $string
      * in the current instance.
      */
-    public function lastIndexOf(string $string) : int {
+    public function lastIndexOf(string $string) {
         return strripos($this->string, $string);
     }
     
@@ -131,7 +131,7 @@ class Str implements \IteratorAggregate, \Countable {
      * Gets a new Str instance where all occurrences of $char are removed from 
      * the beginning and end of this instance.
      */
-    public function trim($charList = null) : Str {
+    public function trim($charList = ' ') : Str {
         return new Str(trim($this->string, $charList));
     }
     
@@ -139,7 +139,7 @@ class Str implements \IteratorAggregate, \Countable {
      * Gets a new Str instance where all occurrences of $char are removed from 
      * the start of this instance.
      */
-    public function leftTrim($charList = null) : Str {
+    public function leftTrim($charList = ' ') : Str {
         return new Str(ltrim($this->string, $charList));
     }
     
@@ -147,7 +147,7 @@ class Str implements \IteratorAggregate, \Countable {
      * Gets a new Str instance where all occurrences of $char are removed from 
      * the end of this instance.
      */
-    public function rightTrim($charList = null) : Str {
+    public function rightTrim($charList = ' ') : Str {
         return new Str(rtrim($this->string, $charList));
     }
     
@@ -243,7 +243,9 @@ class Str implements \IteratorAggregate, \Countable {
                 $pos2 = $this->lastIndexOf($toChar);
                 break;
         }
-
+        if(false === $pos1 || false === $pos2 ){
+            return new Str();
+        }
         return new Str($this->subString((int)$pos1+1, (int)$pos2-$this->count()));
     }
     
