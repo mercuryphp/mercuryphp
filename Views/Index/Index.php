@@ -3,7 +3,7 @@
     </div>
     <div class="container">
         <div class="padding-all-40">
-            <p class="max-width-600 margin-auto">mercuryphp is a fast, simple and lightweight micro web-framework for PHP.</p>
+            <p class="max-width-600 margin-auto">mercuryphp is a fast, simple and lightweight web-framework for PHP.</p>
         </div>
 
         <div class="center-text">
@@ -20,6 +20,12 @@
         </div>
     </div>
 </div>
+
+<form method="post">
+    <input type="text" name="models.user.username" />
+    <input type="text" name="models.user.email" />
+    <input type="submit" />
+</form>
 
 <script>
     for(var i=0; i<15; i++){
