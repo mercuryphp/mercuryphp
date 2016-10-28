@@ -2,19 +2,19 @@
 
 namespace Models;
 
+
+//@System.Data.Entity.TableName("user")
+//@System.Data.Entity.Key("id")
 class User {
-    //@System.Data.Entity.ColumnName("Test")
+    
     public $id;
     
-    
-    protected $username;
-    
-    
-    
-    
-    protected $email;
+    //@System.Data.Entity.RandomString("12")
+    public $username;
     
     //@System.Data.Entity.DataType("datetime")
-    protected $created_date;
+    public $created_date;
+    
+    public $parent_id;
 }
 
