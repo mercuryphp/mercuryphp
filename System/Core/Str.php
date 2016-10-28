@@ -198,6 +198,14 @@ class Str implements \IteratorAggregate, \Countable {
     }
     
     /**
+     * Gets a new Str instance with a line break appended to this 
+     * instance.
+     */
+    public function appendLine($multiplier = 1) : Str {
+        return new Str($this->string.str_repeat("\n", $multiplier));
+    }
+    
+    /**
      * Gets a new Str instance which is a sub string of this instance. If $start
      * is a string, the characters index position is used as the start position.
      */

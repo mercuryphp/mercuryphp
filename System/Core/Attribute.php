@@ -4,18 +4,25 @@ namespace System\Core;
  
 final class Attribute {
     
-    public static function getPropertyAttributes($object, $propertyName = null){
-        
-        if(!is_object($object)){
+    public static function getClassAttributes($object){
+
+        if(is_object($object)){
+            $refClass = new \ReflectionObject($object);
+        }elseif(is_string($object)){
+            $refClass = new \ReflectionClass($object);
+        }else{
             throw new \RuntimeException(sprintf('Attribute::getPropertyAttributes() expects parameter 1 to be object, %s given', gettype($object)));
         }
         
-        $refClass = new \ReflectionObject($object);
-        $tokens = token_get_all(file_get_contents($refClass->getFileName()));
+        $tokens = token_get_all(file_get_contents($refClass->getFileName())); 
 
-        $tmp = [];
         $attributes = [];
+        $break = false;
         foreach($tokens as $idx=>$token){
+            
+            if($break){
+                break;
+            }
 
             if(isset($token[0])){
                 switch($token[0]){
@@ -23,7 +30,55 @@ final class Attribute {
                         $attributeName = Str::set($token[1])->get('@', '(')->trim();
                         if((string)$attributeName){
                             try{
-                                $tmp[] = Obj::getInstance($attributeName);
+                                $strArgs = Str::set($token[1])->get('(', ')')->trim();
+                                
+                                $objectArgs = $strArgs ? str_getcsv((string)$strArgs, ",", '"', "\\") : null;
+                                $attributes[(string)$attributeName] = Obj::getInstance($attributeName, $objectArgs);
+                            }
+                            catch(\ReflectionException $re){
+                                throw new AttributeException($re->getMessage());
+                            }
+                        }
+                        break;
+                        
+                    case T_CLASS:
+                        $break = true;
+                        break;
+                }
+            }
+        }
+        return $attributes;
+    }
+
+    public static function getPropertyAttributes($object, $propertyName = null){
+        
+        if(is_object($object)){
+            $refClass = new \ReflectionObject($object);
+        }elseif(is_string($object)){
+            $refClass = new \ReflectionClass($object);
+        }else{
+            throw new \RuntimeException(sprintf('Attribute::getPropertyAttributes() expects parameter 1 to be object, %s given', gettype($object)));
+        }
+        
+        $tokens = token_get_all(file_get_contents($refClass->getFileName()));
+
+        $tmp = [];
+        $attributes = [];
+
+        foreach($tokens as $idx=>$token){
+            if(isset($token[0])){
+                switch($token[0]){
+                    case T_CLASS:
+                        $tmp = [];
+                        break;
+                    case T_COMMENT:
+                        $attributeName = Str::set($token[1])->get('@', '(')->trim();
+                        if((string)$attributeName){
+                            try{
+                                $strArgs = Str::set($token[1])->get('(', ')')->trim();
+                                
+                                $objectArgs = $strArgs ? str_getcsv((string)$strArgs, ",", '"', "\\") : null;
+                                $tmp[(string)$attributeName] = Obj::getInstance($attributeName, $objectArgs);
                             }
                             catch(\ReflectionException $re){
                                 throw new AttributeException($re->getMessage());
@@ -49,11 +104,14 @@ final class Attribute {
     
     public static function getAttributes($object, $methodName){
         
-        if(!is_object($object)){
-            throw new \RuntimeException(sprintf('Attribute::getAttributes() expects parameter 1 to be object, %s given', gettype($object)));
+        if(is_object($object)){
+            $refClass = new \ReflectionObject($object);
+        }elseif(is_string($object)){
+            $refClass = new \ReflectionClass($object);
+        }else{
+            throw new \RuntimeException(sprintf('Attribute::getPropertyAttributes() expects parameter 1 to be object, %s given', gettype($object)));
         }
         
-        $refClass = new \ReflectionObject($object);
         $tokens = token_get_all(file_get_contents($refClass->getFileName()));
 
         $comments = array();

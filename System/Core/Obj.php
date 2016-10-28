@@ -21,7 +21,7 @@ final class Obj {
             foreach($args as $arg){
                 
                 if(is_object($arg)){
-                    $arg = Object::getProperties($arg);
+                    $arg = Obj::getProperties($arg);
                 }
                 
                 if(is_array($arg)){
@@ -59,10 +59,6 @@ final class Obj {
     
     /**
      * Gets the properties of an object as an array.
-     * 
-     * @param   object $object
-     * @param   mixed $filter = null
-     * @return  array
      */
     public static function getProperties($object, $filter = null){
         
@@ -90,11 +86,6 @@ final class Obj {
     
     /**
      * Sets the property value of an object.
-     * 
-     * @param   object $object
-     * @param   string $propertyName
-     * @param   mixed $value
-     * @return  void
      */
     public static function setPropertyValue($object, $propertyName, $value){
         
@@ -113,10 +104,6 @@ final class Obj {
    
     /**
      * Gets the property value of an object.
-     * 
-     * @param   object $object
-     * @param   string $propertyName
-     * @return  mixed
      */
     public static function getPropertyValue($object, $propertyName){
         
@@ -134,19 +121,13 @@ final class Obj {
 
     /**
      * Gets a new instance of a class.
-     * 
-     * @method  getInstance
-     * @param   string $name
-     * @param   array $args
-     * @param   bool $throwException = true
-     * @return  object
      */
-    public static function getInstance($name, array $args = array(), $throwException = true){
+    public static function getInstance($name, array $args = null, $throwException = true){
         try{
             $name = str_replace(".", "\\", $name);
             $refClass = new \ReflectionClass($name);
 
-            if(count($args) > 0){
+            if(is_array($args)){
                 $instance = $refClass->newInstanceArgs($args);
             }else{
                 $instance = $refClass->newInstance();
