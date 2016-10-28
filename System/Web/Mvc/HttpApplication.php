@@ -81,13 +81,14 @@ abstract class HttpApplication {
     	foreach($this->routes as $route){
             if($route->getRouteHandler()->execute($route, $this->httpContext)){
 
-                $class = Str::set('{namespace}.{module}.Controllers.{controller}Controller')->template(
+                $class = Str::set($route->getControllerPathPattern())->template(
                     $this->httpContext->getRequest()->getRouteData()->toArray(),
                     ['module' => 'lc.ucf', 'controller' => 'lc.ucf']
                 )->trim('.');
 
                 try{
                     $controller = Obj::getInstance((string)$class);
+                    $controller->getRegistry()->merge(Obj::getProperties($this, \ReflectionProperty::IS_PUBLIC |  \ReflectionProperty::IS_PROTECTED));
                 }catch(\ReflectionException $e){
                     throw new ControllerNotFoundException($this->httpContext, $class);
                 }

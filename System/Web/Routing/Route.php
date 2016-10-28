@@ -8,6 +8,7 @@ class Route {
     protected $defaults = [];
     protected $conditions = [];
     protected $routeHandler;
+    protected $controllerPathPattern = '{namespace}.{module}.Controllers.{controller}Controller';
 
     public function __construct($route, array $defaults = [], array $conditions = []){
         $this->route = $route;
@@ -28,11 +29,21 @@ class Route {
         return $this->conditions;
     }
 
-    public function setRouteHandler(IRouteHandler $routeHandler){
+    public function setRouteHandler(IRouteHandler $routeHandler) : Route {
         $this->routeHandler = $routeHandler;
+        return $this;
     }
 
     public function getRouteHandler() : IRouteHandler {
         return $this->routeHandler;
+    }
+    
+    public function setControllerPathPattern(string $controllerPathPattern) : Route {
+        $this->controllerPathPattern = $controllerPathPattern;
+        return $this;
+    }
+    
+    public function getControllerPathPattern() : string {
+        return $this->controllerPathPattern;
     }
 }

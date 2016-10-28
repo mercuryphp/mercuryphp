@@ -9,22 +9,15 @@ class RouteCollection implements \IteratorAggregate {
     /**
      * Adds a new Route instance to the route collection. The Route instance
      * is then returned.
-     *
-     * @param   string $route
-     * @param   array $defaults
-     * @param   array $conditions
-     * @return  System.Web.Routing.Route
      */
-    public function add(string $route, $defaults = [], $conditions = []){
+    public function add(string $route, array $defaults = [], array $conditions = []) : Route {
     	$route = new Route($route, $defaults, $conditions);
         $this->routes[] = $route;
-        return $this;
+        return $route;
     }
 
     /**
      * Gets a count of all routes in the collection.
-     *
-     * @return  int
      */
     public function count() : int {
     	return count($this->routes);

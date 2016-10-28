@@ -7,9 +7,15 @@ use System\Collections\Dictionary;
 
 class NativeView implements IView {
     
-    protected $viewFilePattern = '{namespace}/{module}/Views/{controller}/{action}';
+    protected $viewFilePattern = '/{namespace}/{module}/Views/{controller}/{action}';
+    protected $viewFilePatternTokens = [];
     protected $layoutFile;
     protected $output = [];
+    
+    public function setViewFilePattern(string $viewFilePattern, array $viewFilePatternTokens = []){
+        $this->viewFilePattern = $viewFilePattern;
+        $this->viewFilePatternTokens = $viewFilePatternTokens;
+    }
     
     public function setLayout(string $layoutFile = ''){
         $this->layoutFile = $layoutFile;
@@ -28,15 +34,15 @@ class NativeView implements IView {
         
         $request = $viewContext->getHttpContext()->getRequest(); 
         $fileParams = $request->getRouteData()->toArray();
-        
+
         if($viewContext->getViewName()){
             $fileParams['action'] = $viewContext->getViewName();
         }
         
         $file = Str::set($request->getApplicationPath())->append($this->viewFilePattern)->template(
-            $fileParams,
-            ['controller' => 'lc.ucf', 'action' => 'lc.ucf']
-        )->append('.php');
+            array_merge($this->viewFilePatternTokens,$fileParams),
+            ['module' => 'lc.ucf', 'controller' => 'lc.ucf', 'action' => 'lc.ucf']
+        )->replace('\.', '/')->append('.php');
 
         if(is_file(realpath($file))){
             extract($viewContext->getParams());

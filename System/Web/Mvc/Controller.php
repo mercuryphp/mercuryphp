@@ -5,14 +5,17 @@ namespace System\Web\Mvc;
 use System\Core\Obj;
 use System\Core\Attribute;
 use System\Diagnostics\Trace;
+use System\Collections\Dictionary;
 
 abstract class Controller {
     
     private $httpContext;
     private $viewEngine;
+    private $registry;
 
     public function __construct(){
         $this->viewEngine = new ViewEngine\NativeView();
+        $this->registry = new Dictionary();
     }
     
     public function getHttpContext() : \System\Web\Http\HttpContext {
@@ -23,6 +26,18 @@ abstract class Controller {
         return $this->httpContext->getRequest();
     }
     
+    public function getResponse() : \System\Web\Http\HttpResponse {
+        return $this->httpContext->getResponse();
+    }
+    
+    public function getSession() : \System\Web\Http\Session\Session {
+        return $this->httpContext->getSession();
+    }
+    
+    public function getRegistry() : Dictionary {
+        return $this->registry;
+    }
+
     public function view(array $data = [], string $viewName = ''){
         $viewResult = new ViewResult($this->getViewEngine(), new ViewContext($this->httpContext, $data, $viewName));
         return $viewResult;
@@ -139,5 +154,9 @@ abstract class Controller {
     
     public function render(IActionResult $actionResult){
         $this->httpContext->getResponse()->getOutput()->write($actionResult->execute());
+    }
+    
+    public function __get($name) {
+        return $this->registry->get($name);
     }
 } 
