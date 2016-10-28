@@ -21,14 +21,22 @@ abstract class Collection implements \IteratorAggregate, \ArrayAccess, \Countabl
      * Gets the first element from the collection.
      */
     public function first(){
-        return reset($this->collection);
+        $item = reset($this->collection);
+        if(is_string($item)){
+            return new \System\Core\Str($item);
+        }
+        return $item;
     }
     
     /**
      * Gets the last element from the collection.
      */
     public function last(){
-        return end($this->collection);
+        $item = end($this->collection);
+        if(is_string($item)){
+            return new \System\Core\Str($item);
+        }
+        return $item;
     }
     
     /**
