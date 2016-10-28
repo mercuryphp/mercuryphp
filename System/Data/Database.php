@@ -102,6 +102,45 @@ class Database {
     }
     
     /**
+     * Updates data specified by $table and returns the number 
+     * of rows affected.
+     * Throws QueryException if an SQL exception occurs.
+     */
+    public function update(string $table, array $values, array $conditions) : int {
+        
+        if(is_object($values)){
+            $values = \System\Core\Obj::getProperties($values);
+        }
+
+        $sql = \System\Core\Str::set('UPDATE {table} SET ')->template(['table' => $table]);
+
+        $params = [];
+        foreach($values as $field => $value){
+            if($value instanceof DbFunction){
+                $sql = $sql->append($field.'='.$value->toString().', ');
+            }else{
+                $params[':'.$field] = $value;
+                $sql = $sql->append($field.'=:'.$field.', ');
+            }
+        }
+
+        $sql = $sql->trim(', ')->append(' WHERE ');
+        
+        $idx=0;
+        foreach($conditions as $field=>$value){
+            if($idx > 0){
+                $sql = $sql->append(' AND ');
+            }
+
+            $sql = $sql->append($field.'=:c_'.$field);
+            $params[':c_'.$field] = $value;
+            ++$idx;
+        }
+
+        return $this->query($sql, $params)->rowCount();
+    }
+    
+    /**
      * Initiates a transaction.
      */
     public function beginTransaction() : bool {
