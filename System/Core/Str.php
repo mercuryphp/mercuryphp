@@ -131,7 +131,7 @@ class Str implements \IteratorAggregate, \Countable {
      * Gets a new Str instance where all occurrences of $char are removed from 
      * the beginning and end of this instance.
      */
-    public function trim($charList = ' ') : Str {
+    public function trim($charList = " \n") : Str {
         return new Str(trim($this->string, $charList));
     }
     
@@ -139,7 +139,7 @@ class Str implements \IteratorAggregate, \Countable {
      * Gets a new Str instance where all occurrences of $char are removed from 
      * the start of this instance.
      */
-    public function leftTrim($charList = ' ') : Str {
+    public function leftTrim($charList = " \n") : Str {
         return new Str(ltrim($this->string, $charList));
     }
     
@@ -147,7 +147,7 @@ class Str implements \IteratorAggregate, \Countable {
      * Gets a new Str instance where all occurrences of $char are removed from 
      * the end of this instance.
      */
-    public function rightTrim($charList = ' ') : Str {
+    public function rightTrim($charList = " \n") : Str {
         return new Str(rtrim($this->string, $charList));
     }
     

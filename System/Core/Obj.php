@@ -100,6 +100,7 @@ final class Obj {
             $property->setAccessible(true);
             $property->setValue($object, $value);
         }
+        return false;
     }
    
     /**
@@ -117,6 +118,7 @@ final class Obj {
             $property->setAccessible(true);
             return $property->getValue($object);
         }
+        return false;
     }
 
     /**

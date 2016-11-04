@@ -9,15 +9,16 @@ final class Attribute {
         if(is_object($object)){
             $refClass = new \ReflectionObject($object);
         }elseif(is_string($object)){
-            $refClass = new \ReflectionClass($object);
+            $refClass = new \ReflectionClass(str_replace(".", "\\",$object));
         }else{
-            throw new \RuntimeException(sprintf('Attribute::getPropertyAttributes() expects parameter 1 to be object, %s given', gettype($object)));
+            throw new AttributeException(sprintf('Attribute::getPropertyAttributes() expects parameter 1 to be object, %s given', gettype($object)));
         }
         
         $tokens = token_get_all(file_get_contents($refClass->getFileName())); 
 
         $attributes = [];
         $break = false;
+        
         foreach($tokens as $idx=>$token){
             
             if($break){
@@ -64,8 +65,14 @@ final class Attribute {
 
         $tmp = [];
         $attributes = [];
-
+        $break = false;
+        
         foreach($tokens as $idx=>$token){
+            
+            if($break){
+                break;
+            }
+            
             if(isset($token[0])){
                 switch($token[0]){
                     case T_CLASS:
@@ -85,11 +92,14 @@ final class Attribute {
                             }
                         }
                         break;
-                        
                     case T_VARIABLE:
                         $attributes[substr($token[1], 1)] = $tmp;
                         $tmp = [];
                         break;
+                    case T_FUNCTION:
+                        $break = true;
+                        break;
+                    
                 }
             }
         }
