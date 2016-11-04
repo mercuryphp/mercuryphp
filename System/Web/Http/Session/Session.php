@@ -83,9 +83,9 @@ final class Session {
         $this->sessionData->set($name, $data);
     }
     
-    public function get(string $name){
+    public function get(string $name, $default = null){
         $this->load();
-        return $this->sessionData->get($name);
+        return $this->sessionData->get($name, $default);
     }
     
     public function remove(string $name){

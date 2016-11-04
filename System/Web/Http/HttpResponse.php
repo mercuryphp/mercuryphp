@@ -9,6 +9,7 @@ class HttpResponse {
     protected $contentLength = 0;
     protected $cookies;
     protected $output;
+    protected $redirect;
     
     public function __construct() {
         $this->cookies = new HttpCookieCollection([]);
@@ -63,12 +64,18 @@ class HttpResponse {
         }
     }
     
+    public function redirect(string $location){
+        $this->redirect = $location;
+    }
+
     public function flush(){
-       // print_R($this->cookies); exit;
         foreach($this->cookies as $cookie){
             setcookie($cookie->getName(), $cookie->getValue(), $cookie->getExpires(), $cookie->getPath(), $cookie->getDomain(), $cookie->isSecure(), $cookie->isHttpOnly());
         }
-        
+        if($this->redirect){
+            header('Location: ' . $this->redirect);
+            exit;
+        }
         echo $this->output->getBody();
     }
 }

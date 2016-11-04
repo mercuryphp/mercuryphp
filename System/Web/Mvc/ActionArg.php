@@ -13,7 +13,7 @@ class ActionArg extends \System\Collections\Dictionary {
                     parent::__construct($array);
                 }
             } catch (\Exception $e){
-                throw new ModelBinderException(sprintf("Model binding failed. ActionArg expects a valid base64 encoded string. (%s).", $e->getMessage()));
+                throw new ModelBinderException(sprintf("Model binding failed. ActionArg expects a valid base64 encoded string. (%s).", $e->getMessage()), $e->getCode(), $e, get_class($this));
             }
         }
     }

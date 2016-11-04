@@ -3,6 +3,7 @@
 namespace System\Web\Http;
 
 use System\Core\Str;
+use System\Core\Obj;
 use System\Collections\Dictionary;
 
 final class HttpRequest {
@@ -216,6 +217,22 @@ final class HttpRequest {
             return true;
         }
         return false;
+    }
+    
+    public function bind($object){
+        if(is_object($object)){
+            $properties = Obj::getProperties($object);
+
+            $className = Str::set(get_class($object))->split("\\\\")->last()->toLower();
+            $params = $this->getParams();
+
+            foreach($params as $key => $value){
+                if(Str::set($key)->startsWith($className)){
+                    $len = count($className);
+                    Obj::setPropertyValue($object, Str::set($key)->subString($len)->trim('_'), $value);
+                }
+            }
+        }
     }
     
     /**

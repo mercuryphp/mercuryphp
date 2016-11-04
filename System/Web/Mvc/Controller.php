@@ -39,15 +39,17 @@ abstract class Controller {
     }
 
     public function view(array $data = [], string $viewName = ''){
-        $viewResult = new ViewResult($this->getViewEngine(), new ViewContext($this->httpContext, $data, $viewName));
-        return $viewResult;
+        return new ViewResult($this->getViewEngine(), new ViewContext($this->httpContext, $data, $viewName));
     }
     
     public function json($data = [], $options = null){
-        $jsonResult = new JsonResult($this->httpContext->getResponse(), $data, $options);
-        return $jsonResult;
+        return new JsonResult($this->httpContext->getResponse(), $data, $options);
     }
     
+    public function redirect($location){
+        return new RedirectResult($this->httpContext, $location);
+    }
+
     public function setViewEngine(ViewEngine\IView $viewEngine) : Controller {
         $this->viewEngine = $viewEngine;
         $this->viewEngine->setPath($this->rootPath);
@@ -102,34 +104,28 @@ abstract class Controller {
         $actionParameters = $actionMethod->getParameters();
         $actionArgs = [];
 
-        foreach($actionParameters as $param){
+        foreach($actionParameters as $param){ 
             $defaultValue = $param->isOptional() ? $param->getDefaultValue() : null;
-            if(is_object($param->getClass())){
-                $actionArgs[] = (new ObjectModelBinder())->bind($param->getType(), $this->httpContext->getRequest(), $param->name);
-            }else{
-                switch($param->getType()){
+                $type = $param->getType() ? $param->getType() : 'string';
+                switch($type){
                     case 'array':
                         $actionArgs[] = $this->httpContext->getRequest()->getParams()->toArray();
                         break;
-
-                    default:
-                        if("int" == $param->getType()){
-                            $filter = FILTER_VALIDATE_INT;
-                        }
-                        else{
-                            $filter = FILTER_UNSAFE_RAW;
-                        }
-
-                        $value = filter_var($this->httpContext->getRequest()->getParams($param->name, $defaultValue), $filter); 
+                    case "boolean":
+                    case "int":
+                    case "float":  
+                    case "string":
+                        $value = filter_var($this->httpContext->getRequest()->getParams($param->name, $defaultValue), FILTER_UNSAFE_RAW); 
 
                         if(false === $value){
                             print "its false";exit;
                         }
-
                         $actionArgs[] = $value;
                         break;
+                    default:
+                        $actionArgs[] = (new ObjectModelBinder())->bind($param->getType(), $this->httpContext->getRequest(), $param->name);
                 }
-            }
+            
         }
 
         Trace::write('Controller action()');

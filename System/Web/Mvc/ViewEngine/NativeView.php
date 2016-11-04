@@ -11,6 +11,7 @@ class NativeView implements IView {
     protected $viewFilePatternTokens = [];
     protected $layoutFile;
     protected $output = [];
+    protected $dynamicMethods = [];
     
     public function setViewFilePattern(string $viewFilePattern, array $viewFilePatternTokens = []){
         $this->viewFilePattern = $viewFilePattern;
@@ -20,6 +21,10 @@ class NativeView implements IView {
     public function setLayout(string $layoutFile = ''){
         $this->layoutFile = $layoutFile;
         return $this;
+    }
+    
+    public function addMethod($name, $function){
+        $this->dynamicMethods[$name] = $function;
     }
 
     public function renderBody(){
@@ -70,5 +75,9 @@ class NativeView implements IView {
         }else{
             throw new ViewNotFoundException("The View '%s' was not found.", (string)$file);
         }
+    }
+    
+    public function __call($name, $arguments){
+        return $this->dynamicMethods[$name]->call($this, ...$arguments);
     }
 }

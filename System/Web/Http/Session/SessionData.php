@@ -10,10 +10,11 @@ class SessionData {
         $this->data[$name] = $data;
     }
     
-    public function get($name){
+    public function get($name, $default = null){
         if($this->hasKey($name)){
             return $this->data[$name];
         }
+        return $default;
     }
     
     public function remove($name){

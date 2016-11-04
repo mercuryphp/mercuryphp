@@ -19,10 +19,15 @@ class ObjectModelBinder {
             case 'System\Web\Mvc\ActionArg':
                 return new ActionArg($request->getParams($paramName, ''));
             default:
-                $model = Obj::getInstance($type);
+                try{
+                    $model = Obj::getInstance($type);
+                }catch(\ReflectionException $re){
+                    throw new ModelBinderException($re->getMessage(), $re->getCode(), $re, (string)$type);
+                }
+                
                 $properties = Obj::getProperties($model);
 
-                $className = Str::set($type)->replace("\\\\", "_" )->toLower();
+                $className = Str::set($type)->split("\\\\")->last()->toLower();
 
                 foreach($properties as $property => $value){
                     $properties[$property] = $request->getParams($className.'_'.strtolower($property));
