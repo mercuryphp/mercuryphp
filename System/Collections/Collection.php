@@ -48,6 +48,14 @@ abstract class Collection implements \IteratorAggregate, \ArrayAccess, \Countabl
     }
     
     /**
+     * Joins all elements in the collection using $join and returns a new 
+     * System.Core.Str instance.
+     */
+    public function join($join) : \System\Core\Str {
+        return new \System\Core\Str(join($join, $this->collection));
+    }
+    
+    /**
      * Determines if the collection contains an element with the specified $key.
      */
     public function hasKey($key) : bool {
