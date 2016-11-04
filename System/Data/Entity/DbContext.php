@@ -3,6 +3,7 @@
 namespace System\Data\Entity;
 
 use System\Core\Obj;
+use System\Core\Date;
 use System\Data\Database;
 use System\Collections\Dictionary;
 
@@ -11,7 +12,6 @@ abstract class DbContext {
     private $db;
     private $dbSets;
     private $entitySchemaCollection;
-    private $entityContextCollection;
 
     public function __construct(string $connectionString = null){
         
@@ -21,13 +21,12 @@ abstract class DbContext {
 
         $this->dbSets = new Dictionary();
         $this->entitySchemaCollection = new EntitySchemaCollection(new AttributeReader());
-        $this->entityContextCollection = new EntityContextCollection();
     }
     
     /**
      * Gets the database object for this context.
      */
-    public function getDatabase() : \System\Data\Database {
+    public function getDatabase() : Database {
         return $this->db;
     }
 
@@ -35,22 +34,23 @@ abstract class DbContext {
      * Sets or gets a DbSet using the specified $entityName.
      */
     public function dbSet(string $entityName){
+        $entityName = str_replace('.', '\\', $entityName);
         if(!$this->dbSets->hasKey($entityName)){
             $this->dbSets->set($entityName, new DbSet($this, $entityName));
         }
         return $this->dbSets->get($entityName);
     }
     
-    public function getEntities(){
-        return $this->entityContextCollection;
+    public function query($mql){
+        return new Query($this->getDatabase(), $this->entitySchemaCollection, $mql);
     }
-    
+
     public function getEntitySchemaCollection() : EntitySchemaCollection {
         return $this->entitySchemaCollection;
     }
 
     public function saveChanges(){
-
+        $logs = [];
         foreach($this->dbSets as $dbSet){ 
             foreach($dbSet as $entityContext){
 
@@ -61,12 +61,11 @@ abstract class DbContext {
                     $propertySchemaCollection = $schema->getProperty($property);
                     
                     if(is_object($value)){
-                        if($value instanceof \System\Core\Date){
+                        if($value instanceof Date){
                             $entityData[$property] = $value->toString();
                         }else{
-
-                            if($this->entityContextCollection->hasEntity($value)){
-                                $associatedEntityContext = $this->entityContextCollection->get($value);
+                            if($this->dbSets->hasKey(get_class($value))){
+                                $associatedEntityContext = $this->dbSets->get(get_class($value))->entry($value);
                                 $associatedEntitySchema = $this->entitySchemaCollection->getSchema($associatedEntityContext->getEntity());
                                 $entityData[$property] = Obj::getPropertyValue($associatedEntityContext->getEntity(), $associatedEntitySchema->getKey());
                             }
@@ -88,23 +87,23 @@ abstract class DbContext {
                 switch($entityContext->getState()){
                     case EntityContext::PERSIST:
 
-                        $this->db->insert($schema->getTableName(), $entityData);
+                        $logs[] = $this->db->insert($schema->getTableName(), $entityData);
                         $id = $this->db->getInsertId($schema->getKey());
                         
                         if($id){
                             Obj::setPropertyValue($entityContext->getEntity(), $schema->getKey(),$id);
                         }
-                        $this->entityContextCollection->add($entityContext);
-                        $entityContext->setState(2);
+                        $entityContext->setState(EntityContext::PERSISTED);
                         break;
                         
                     case EntityContext::PERSISTED:
                         $params = [$schema->getKey() => $entityData[$schema->getKey()]];
-                        $this->db->update($schema->getTableName(), $entityData, $params);
+                        $logs[] = $this->db->update($schema->getTableName(), $entityData, $params);
                         break;
                 }
             }
         }
+        return array_sum($logs);
     }
 }
 

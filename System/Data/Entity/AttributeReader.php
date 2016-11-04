@@ -12,7 +12,7 @@ class AttributeReader {
         try{
             $class = Attribute::getClassAttributes($entityName); 
         }catch(\ReflectionException $e){
-            throw new EntityException($e->getMessage());
+            throw new EntityNotFoundException(sprintf("The entity '%s' does not exist.", $entityName), $e->getCode(), $e, $entityName);
         }
         
         $properties = Attribute::getPropertyAttributes($entityName);

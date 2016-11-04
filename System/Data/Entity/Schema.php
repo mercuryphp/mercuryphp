@@ -14,8 +14,12 @@ class Schema {
         $this->path = $path;
     }
     
-    public function export($modelName, $tableName){
+    public function export($entityName, $tableName = null, array $defaultAttributes = []){
 
+        if(null === $tableName){
+            $tableName = Str::set($entityName)->split('\\\\')->last()->split('(?=[A-Z])')->join('_')->toLower();
+        }
+        
         $columns = $this->db->fetchAll("SELECT c.COLUMN_NAME, c.COLUMN_DEFAULT, c.IS_NULLABLE, c.DATA_TYPE, c.CHARACTER_MAXIMUM_LENGTH, c.COLUMN_KEY FROM information_schema.TABLES t
             INNER JOIN information_schema.COLUMNS c ON c.TABLE_NAME = t.TABLE_NAME
             WHERE t.TABLE_NAME = :table_name AND t.TABLE_SCHEMA = :db_name AND c.TABLE_SCHEMA = :db_name", ['table_name' => $tableName, 'db_name' => 'plex']);
@@ -28,6 +32,12 @@ class Schema {
         
             if($column->COLUMN_KEY == 'PRI'){
                 $primaryKey = $column->COLUMN_NAME;
+            }
+            
+            if(array_key_exists($column->DATA_TYPE, $defaultAttributes)){
+                foreach($defaultAttributes[$column->DATA_TYPE] as $attribute){
+                    $strProperties = $strProperties->append('    //@' . $attribute)->appendLine();
+                }
             }
             
             $strProperties = $strProperties->append('    //@System.Data.Entity.DataType("' . $column->DATA_TYPE . '")')->appendLine();
@@ -45,9 +55,10 @@ class Schema {
             $strMethods = $strMethods->append('    }')->appendLine(2);
         }
         
-        $className = Str::set($modelName)->split('\.')->last();
         $file = \System\Core\Str::set('<?php');
-        $file = $file->appendLine(2)->append('namespace ' . Str::set($modelName)->getLastIndexOf('.') . ';')->appendLine(2)
+        $namespace = Str::set($entityName)->getLastIndexOf('\\');
+        $className = Str::set($entityName)->split('\\\\')->last();
+        $file = $file->appendLine(2)->append('namespace ' . $namespace. ';')->appendLine(2)
             ->append('//@System.Data.Entity.TableName("' . $tableName . '")')->appendLine() 
             ->append('//@System.Data.Entity.Key("' . $primaryKey . '")')->appendLine() 
             ->append('class ' . $className . ' {')->appendLine(2);
