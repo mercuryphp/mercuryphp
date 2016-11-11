@@ -13,6 +13,15 @@ class QueryExecution {
         $this->db = $db;
         $this->sql = $sql;
     }
+    
+    public function toColumn(string $name, array $params = []){
+        $data = $this->db->fetch((string)$this->sql, $params, \PDO::FETCH_ASSOC);
+        
+        if(array_key_exists($name, $data)){
+            return $data[$name];
+        }
+        return false;
+    }
 
     public function toSingle(string $className, array $params = []){
         $data = $this->db->fetch((string)$this->sql, $params, \PDO::FETCH_ASSOC);
@@ -32,7 +41,11 @@ class QueryExecution {
                 $data[$idx] = $this->toEntity($item, $className);
             }
         }
-        return $data;
+        return new DbResultList($data);
+    }
+    
+    public function toArray(array $params = []){
+        return new DbResultList($this->db->fetchAll((string)$this->sql, $params, \PDO::FETCH_ASSOC));
     }
     
     protected function toEntity($data, $className){

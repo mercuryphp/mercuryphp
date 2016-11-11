@@ -29,9 +29,7 @@ class TextBox extends Element {
             $properties = Obj::getProperties($this->value);
             
             if(array_key_exists($this->name, $properties)){
-                $className = Str::set(get_class($this->value))->split("\\\\")->last()->toLower();
                 $this->value = $properties[$this->name];
-                $this->name = $className.'.'.$this->name;
             }
         }
         

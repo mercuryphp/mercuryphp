@@ -40,6 +40,11 @@ class QueryBuilder {
         return $this;
     }
     
+    public function orderBy($fieldName, $order){
+        $this->sql = $this->sql->append(" ORDER BY ")->append($fieldName)->append(' ')->append($order);
+        return $this;
+    }
+
     public function toSingle(string $className, array $params = []){
         $execute = new QueryExecution($this->db, $this->sql);
         return $execute->toSingle($className, array_merge($this->params, $params));

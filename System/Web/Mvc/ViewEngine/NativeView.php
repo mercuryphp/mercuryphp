@@ -11,6 +11,7 @@ class NativeView implements IView {
     protected $viewFilePatternTokens = [];
     protected $layoutFile;
     protected $output = [];
+    protected $params = [];
     protected $dynamicMethods = [];
     
     public function setViewFilePattern(string $viewFilePattern, array $viewFilePatternTokens = []){
@@ -25,6 +26,10 @@ class NativeView implements IView {
     
     public function addMethod($name, $function){
         $this->dynamicMethods[$name] = $function;
+    }
+    
+    public function addParam(string $name, $value){
+        $this->params[$name] = $value;
     }
 
     public function renderBody(){
@@ -50,6 +55,7 @@ class NativeView implements IView {
         )->replace('\.', '/')->append('.php');
 
         if(is_file(realpath($file))){
+            extract($this->params);
             extract($viewContext->getParams());
             ob_start();
             
@@ -78,6 +84,17 @@ class NativeView implements IView {
     }
     
     public function __call($name, $arguments){
-        return $this->dynamicMethods[$name]->call($this, ...$arguments);
+        if($this->dynamicMethods[$name] instanceof \Closure){
+            return $this->dynamicMethods[$name]->call($this, ...$arguments);
+        }
+        elseif($this->dynamicMethods[$name] instanceof IViewMethod){
+            return $this->dynamicMethods[$name]->getClosure()->call($this, ...$arguments);
+        }
+    }
+    
+    public function __get($name){
+        if(array_key_exists($name, $this->params)){
+            return $this->params[$name];
+        }
     }
 }

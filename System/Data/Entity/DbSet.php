@@ -60,6 +60,11 @@ class DbSet implements \IteratorAggregate {
         return new DbResultList($entities);
     }
     
+    public function toList(){
+        $query = new QueryBuilder($this->dbContext->getDatabase(), $this->schema->getTableName(), '*');
+        return $query->toList($this->entityName);
+    }
+    
     public function select($fields = '*'){
         return new QueryBuilder($this->dbContext->getDatabase(), $this->schema->getTableName(), $fields);
     }

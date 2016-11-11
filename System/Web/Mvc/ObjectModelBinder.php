@@ -27,10 +27,8 @@ class ObjectModelBinder {
                 
                 $properties = Obj::getProperties($model);
 
-                $className = Str::set($type)->split("\\\\")->last()->toLower();
-
                 foreach($properties as $property => $value){
-                    $properties[$property] = $request->getParams($className.'_'.strtolower($property));
+                    $properties[$property] = $request->getParams(strtolower($property));
                 }
 
                 Obj::setProperties($model, $properties);

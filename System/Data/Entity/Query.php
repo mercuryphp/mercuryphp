@@ -7,9 +7,8 @@ class Query {
     protected $db;
     protected $sql;
     
-    public function __construct($db, $entitySchemaCollection, $sql){
+    public function __construct($db, $entitySchemaCollection, string $sql){
         $this->db = $db;
-        
         $segments = \System\Core\Str::set($sql)->split(' ');
         $this->sql = new \System\Core\Str();
         
@@ -26,6 +25,11 @@ class Query {
         }
     }
     
+    public function toColumn($name, array $params = []){
+        $execute = new QueryExecution($this->db, $this->sql);
+        return $execute->toColumn($name, $params);
+    }
+
     public function toSingle(string $className, array $params = []){
         $execute = new QueryExecution($this->db, $this->sql);
         return $execute->toSingle($className, $params);
@@ -35,6 +39,12 @@ class Query {
         $this->sql = $this->sql->template($params);
         $execute = new QueryExecution($this->db, $this->sql);
         return $execute->toList($className, $params);
+    }
+    
+    public function toArray(array $params = []){
+        $this->sql = $this->sql->template($params);
+        $execute = new QueryExecution($this->db, $this->sql);
+        return $execute->toArray($params);
     }
 
     public function __toString(){
