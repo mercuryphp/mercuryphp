@@ -12,11 +12,12 @@ class Dropdown extends Element {
     protected $memberValue;
     protected $memberName;
     
-    public function __construct($name, \Traversable $datasource, string $memberValue = '', string $memberName){
+    public function __construct($name, \Traversable $datasource, string $memberValue = '', string $memberName = '', array $attributes = []){
         $this->name = $name;
         $this->datasource = $datasource;
         $this->memberValue = $memberValue;
         $this->memberName = $memberName;
+        $this->attributes = $attributes;
     }
     
     public function render(){
