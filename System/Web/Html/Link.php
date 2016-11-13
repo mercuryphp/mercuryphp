@@ -31,7 +31,7 @@ class Link extends Element {
         return $control->append('<a href="{href}"{attributes}>{title}</a>')->template([
             'href' => $this->href,
             'attributes' => $this->renderAttributes(),
-            'title' => $this->title
+            'title' => $this->escape($this->title)
         ]);
     }
 }

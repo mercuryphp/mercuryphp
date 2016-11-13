@@ -46,7 +46,7 @@ class Database {
             $this->profiler->log($sql, $params);
             return $stm;
         }catch (\PDOException $e){
-            throw new QueryException($e->getMessage(), $sql, $params);
+            throw new QueryException($e->getMessage(), $sql, $params, $e->getCode(), $e);
         }
     }
     
