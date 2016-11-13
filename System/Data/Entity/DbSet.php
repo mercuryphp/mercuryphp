@@ -52,12 +52,12 @@ class DbSet implements \IteratorAggregate {
 
         $query = new QueryBuilder($this->dbContext->getDatabase(), $this->schema->getTableName(), '*');
         $entities = $query->where($params)->toList($this->entityName);
-        
+
         foreach($entities as $entity){
             $this->add($entity)->setState(EntityContext::PERSISTED);
         }
         
-        return new DbResultList($entities);
+        return $entities;
     }
     
     public function toList(){
