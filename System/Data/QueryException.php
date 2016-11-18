@@ -13,10 +13,11 @@ class QueryException extends \PDOException {
     /**
      * Initializes an instance of QueryException.
      */
-    public function __construct($message, $sql, $params, $code, $previous) {
-        parent::__construct($message, $code, $previous);
+    public function __construct($message, $sql, $params, $code) { 
+        parent::__construct($message);
         $this->sql = $sql;
         $this->params = $params;
+        $this->code = $code;
     }
 
     /**
@@ -31,5 +32,9 @@ class QueryException extends \PDOException {
      */
     public function getParams() : array {
         return $this->params;
+    }
+    
+    public function getsStateCode(){
+        return $this->code;
     }
 }
