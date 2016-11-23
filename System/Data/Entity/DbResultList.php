@@ -34,6 +34,11 @@ class DbResultList implements \IteratorAggregate, \ArrayAccess {
         return new \ArrayIterator($this->result);
     }
     
+    public function count(){
+        return count($this->result);
+    }
+
+
     /**
      * Gets a boolean value indicating if the collection offset exists.
      * This method is not intended to be used directly.

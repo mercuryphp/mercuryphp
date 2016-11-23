@@ -28,6 +28,10 @@ class NativeView implements IView {
         $this->dynamicMethods[$name] = $function;
     }
     
+    public function getMethods(){
+        return $this->dynamicMethods;
+    }
+    
     public function addParam(string $name, $value){
         $this->params[$name] = $value;
     }

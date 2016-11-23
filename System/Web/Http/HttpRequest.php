@@ -17,6 +17,7 @@ final class HttpRequest {
     private $post;
     private $params;
     private $cookies;
+    private $files;
     private $inputStream;
     private $userLanguages;
 
@@ -32,6 +33,7 @@ final class HttpRequest {
         $this->post = new Dictionary($_POST);
         $this->params = new Dictionary($_REQUEST);
         $this->cookies = new HttpCookieCollection($_COOKIE);
+        $this->files = new HttpFileCollection($_FILES);
         $this->inputStream = file_get_contents("php://input"); 
         $this->userLanguages = Str::set($this->server->getString('HTTP_ACCEPT_LANGUAGE'))->split(',')->each(function($value){
             return explode(';', $value)[0];
@@ -154,7 +156,14 @@ final class HttpRequest {
         }
         return $this->cookies->get($name, $default);
     }
-    
+
+    /**
+     * Gets a collection of posted files. 
+     */
+    public function getFiles(){
+        return $this->files;
+    }
+
     /**
      * Gets the HTTP data transfer method.
      */

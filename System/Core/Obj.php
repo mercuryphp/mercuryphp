@@ -147,4 +147,9 @@ final class Obj {
         $obj = new \ReflectionObject($object);
         return $obj->hasProperty($property);
     }
+    
+    public static function hasMethod($object, $method){
+        $obj = new \ReflectionObject($object);
+        return $obj->hasMethod($method);
+    }
 }

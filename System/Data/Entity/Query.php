@@ -16,8 +16,12 @@ class Query {
             $segment = $segments->getString($idx);
             switch($segment->toLower()->trim()){
                 case 'from':
-                case 'join':
-                    $segment = $segment.' '.$entitySchemaCollection->add($segments->get($idx+1))->getTableName();
+                case 'join': 
+                    try{
+                        $segment = $segment.' '.$entitySchemaCollection->add($segments->get($idx+1))->getTableName();
+                    }catch(EntityNotFoundException $e){
+                        $segment = $segment.' '.$segments->get($idx+1);
+                    }
                     $idx++;
                     break;
             }
