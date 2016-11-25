@@ -59,8 +59,8 @@ class NativeView implements IView {
         )->replace('\.', '/')->append('.php');
 
         if(is_file(realpath($file))){
+            $this->params = array_merge($this->params, $viewContext->getParams());
             extract($this->params);
-            extract($viewContext->getParams());
             ob_start();
             
             include $file;
