@@ -35,6 +35,10 @@ class NativeView implements IView {
     public function addParam(string $name, $value){
         $this->params[$name] = $value;
     }
+    
+    public function escape(string $value){
+        return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8', false);
+    }
 
     public function renderBody(){
         if(isset($this->output['view'])){

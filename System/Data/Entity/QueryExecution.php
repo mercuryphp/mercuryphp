@@ -48,11 +48,17 @@ class QueryExecution {
         return new DbResultList($this->db->fetchAll((string)$this->sql, $params, \PDO::FETCH_ASSOC));
     }
     
+    public function nonQuery(array $params = []){
+        $stm = $this->db->query((string)$this->sql, $params);
+        return $stm->rowCount();
+    }
+
+
     protected function toEntity($data, $className){
         try{
             $entity = Obj::getInstance($className);
         }catch(\ReflectionException $re){
-            throw new EntityNotFoundException(sprintf("The entity '%s' does not exist.", $className), $re->getCode(), $re, $className);
+            throw new EntityNotFoundException(sprintf("The entity '%s' does not exist.", $className), $re->getCode(), $re, $className, $data);
         }
         $entityProperties = Obj::getProperties($entity);
 

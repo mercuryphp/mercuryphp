@@ -50,6 +50,11 @@ class Query {
         $execute = new QueryExecution($this->db, $this->sql);
         return $execute->toArray($params);
     }
+    
+    public function nonQuery(array $params = []){
+        $execute = new QueryExecution($this->db, $this->sql);
+        return $execute->nonQuery($params);
+    }
 
     public function __toString(){
         return (string)$this->sql;
