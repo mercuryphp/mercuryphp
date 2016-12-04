@@ -4,7 +4,7 @@ namespace System\Web\Validation;
 
 class Required extends Validator {
     
-    public function __construct($message){
+    public function __construct(string $message){
         $this->message = $message;
     }
     
