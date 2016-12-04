@@ -7,14 +7,20 @@ class ValidationContext {
     protected $stackCollection = [];
     protected $errors = [];
     
-    public function add(string $value, Validator ...$validators){
-        $this->stackCollection[] = new ValidationStack($value, $validators);
+    public function add(string $value, Validator ...$validators) : ValidationStack{
+        $stack = new ValidationStack($value, $validators);
+        $this->stackCollection[] = $stack;
+        return $stack;
     }
     
     public function isValid(){
         foreach($this->stackCollection as $stack){
             if(!$stack->isValid()){
-                $this->errors[] = $stack->getErrors();
+                if($stack->getName()){
+                    $this->errors[$stack->getName()] = $stack->getErrors();
+                }else{
+                    $this->errors[] = $stack->getErrors();
+                }
             }
         }
         return count($this->errors) > 0 ? false : true;
