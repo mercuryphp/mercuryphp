@@ -7,7 +7,7 @@ class EntityNotFoundException extends \Exception {
     protected $entityName;
     protected $data;
     
-    public function __construct(string $message = "", int $code = 0, \Throwable $previous = null, string $entityName, $data = null) {
+    public function __construct(string $message, int $code, \Throwable $previous, string $entityName, $data = null) {
         parent::__construct($message, $code, $previous);
         $this->entityName = $entityName;
         $this->data = $data;
