@@ -21,7 +21,7 @@ class DbFunction {
     }
     
     public function toString() : string {
-        return \System\Core\Str::set('{func}({args})')->template([
+        return \System\Core\Str::set('{func}({args})')->tokens([
             'func' => $this->functionName, 
             'args' => join(',', $this->args)
         ]);

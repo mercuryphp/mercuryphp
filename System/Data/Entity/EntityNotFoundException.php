@@ -5,19 +5,20 @@ namespace System\Data\Entity;
 class EntityNotFoundException extends \Exception {
     
     protected $entityName;
-    protected $data;
+    protected $object;
     
-    public function __construct(string $message, int $code, \Throwable $previous, string $entityName, $data = null) {
-        parent::__construct($message, $code, $previous);
+    public function __construct($entityName, $object){
+        parent::__construct(sprintf("The entity '%s' does not exist.", $entityName));
         $this->entityName = $entityName;
-        $this->data = $data;
+        $this->object = $object;
     }
     
-    public function getEntityName() : string {
+    public function getEntityName(){
         return $this->entityName;
     }
     
-    public function getData(){
-        return $this->data;
+    public function getObject(){
+        return $this->object;
     }
 }
+

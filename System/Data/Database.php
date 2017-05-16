@@ -2,6 +2,9 @@
 
 namespace System\Data;
 
+use System\Core\Str;
+use System\Core\Obj;
+
 /**
  * An instance of this class can be used to perform CRUD operations on a database.
  */
@@ -73,31 +76,26 @@ class Database {
      * of rows affected.
      * Throws QueryException if an SQL exception occurs.
      */
-    public function insert(string $table, array $values) : int {
+    public function insert(string $table, $values) : int {
         
         if(is_object($values)){
-            $values = \System\Core\Obj::getProperties($values);
+            $values = Obj::getProperties($values);
         }
         
         $fields = array_keys($values);
-        $sql = \System\Core\Str::set('INSERT INTO {table} ({fields}) ')->template(['table' => $table, 'fields' => join(',', $fields)]);
+        $sql = Str::set('INSERT INTO {table} ({fields}) VALUES (')->tokens(['table' => $table, 'fields' => join(',', $fields)]);
 
         $params = [];
         foreach($fields as $field){
             if($values[$field] instanceof DbFunction){
-                $params['@'.$field] = $values[$field]->toString();
+                $sql = $sql->append($values[$field]->toString())->append(',');
             }else{
+                $sql = $sql->append(':'.$field)->append(',');
                 $params[':'.$field] = $values[$field];
             }
         } 
-        $sql = $sql->append('VALUES ({values})')->template(['values' => join(',', array_keys($params))]);
+        $sql = $sql->trim(',')->append(')');
 
-        foreach($params as $param => $value){
-            if(substr($param, 0,1) == '@'){
-                $sql = $sql->replace($param, $value);
-                unset($params[$param]);
-            }
-        }
         return $this->query($sql, $params)->rowCount();
     }
     
@@ -106,13 +104,13 @@ class Database {
      * of rows affected.
      * Throws QueryException if an SQL exception occurs.
      */
-    public function update(string $table, array $values, array $conditions) : int {
+    public function update(string $table, $values, array $conditions) : int {
         
         if(is_object($values)){
-            $values = \System\Core\Obj::getProperties($values);
+            $values = Obj::getProperties($values);
         }
 
-        $sql = \System\Core\Str::set('UPDATE {table} SET ')->template(['table' => $table]);
+        $sql = Str::set('UPDATE {table} SET ')->tokens(['table' => $table]);
 
         $params = [];
         foreach($values as $field => $value){
@@ -193,4 +191,3 @@ class Database {
         return $this->profiler;
     }
 }
-

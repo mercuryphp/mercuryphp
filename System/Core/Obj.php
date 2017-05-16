@@ -1,69 +1,50 @@
 <?php
 
 namespace System\Core;
- 
+
 final class Obj {
-
-    /**
-     * A variadic method that converts key/value arrays or objects to an object
-     * specified by $toClass name.
-     */
-    public static function toObject(){
-        $args = func_get_args();
-        
-        if(count($args) >=2){
-            $className = '\\'.str_replace('.', '\\', $args[0]);
-            $refClass = new \ReflectionClass($className);
-            $toObjInstance = $refClass->newInstance();
-
-            unset($args[0]);
-            
-            foreach($args as $arg){
-                
-                if(is_object($arg)){
-                    $arg = Obj::getProperties($arg);
-                }
-                
-                if(is_array($arg)){
-                    foreach($arg as $propertyName=>$propertyValue){
-                        if($refClass->hasProperty($propertyName)){
-                            $property = $refClass->getProperty($propertyName);
-                            $property->setAccessible(true);
-                            $property->setValue($toObjInstance, $propertyValue);
-                        }
-                    }
-                }
-            }
-            return $toObjInstance;
-        }
-    }
     
     /**
-     * Sets the property values of an object using an array.
+     * Sets the property values for the gieven $object. The $object argument 
+     * can be either a class name or an instance of a class.
      */
-    public static function setProperties($object, array $properties){
+    public static function setProperties($object, array $properties = []){ 
         
-        if(!is_object($object)){
-            throw new \RuntimeException(sprintf('Object::getProperties() expects parameter 1 to be object, %s given', gettype($object)));
+        if(is_string($object)){
+            $refClass = new \ReflectionClass($object);
+            $object = $refClass->newInstance();
+        }elseif(is_object($object)){
+            $refClass = new \ReflectionObject($object);
+        }else{
+            throw new \RuntimeException(sprintf('Obj::setProperties() expects parameter 1 to be object or string.', gettype($object)));
         }
-        
-        $refClass = new \ReflectionObject($object);
 
         foreach($properties as $key=>$value){
-            $property = $refClass->getProperty($key);
-            $property->setAccessible(true);
-            $property->setValue($object, $value);
+            if($refClass->hasProperty($key)){
+                $property = $refClass->getProperty($key);
+                $property->setAccessible(true);
+                $property->setValue($object, $value);
+            }
         }
         return $object;
     }
     
     /**
      * Gets the properties of an object as an array.
+     * 
+     * @param   object $object
+     * @param   mixed $filter = null
+     * @return  array
      */
-    public static function getProperties($object, $filter = null){
-        
-        if(!is_object($object)){
-            throw new \RuntimeException(sprintf('Object::getProperties() expects parameter 1 to be object, %s given', gettype($object)));
+    public static function getProperties($object, $filter = null) : array{
+
+        if(is_string($object)){
+            $refClass = new \ReflectionClass($object);
+            $object = $refClass->newInstance();
+        }elseif(is_object($object)){
+            $refClass = new \ReflectionObject($object);
+        }else{
+            throw new \RuntimeException(sprintf('Obj::getProperties() expects parameter 1 to be object or string.', gettype($object)));
         }
         
         if(is_null($filter)){
@@ -73,7 +54,6 @@ final class Obj {
                 \ReflectionProperty::IS_STATIC;
         }
         
-        $refClass = new \ReflectionObject($object);
         $properties = $refClass->getProperties($filter);
         $array = array();
 
@@ -85,71 +65,101 @@ final class Obj {
     }
     
     /**
-     * Sets the property value of an object.
+     * Gets a boolean value that determines if the specified $object has a method.
      */
-    public static function setPropertyValue($object, $propertyName, $value){
-        
-        if(!is_object($object)){
-            throw new \RuntimeException(sprintf('Object::setPropertyValue() expects parameter 1 to be object, %s given', gettype($object)));
-        }
-        
-        $refClass = new \ReflectionObject($object);
-
-        if($refClass->hasProperty($propertyName)){
-            $property = $refClass->getProperty($propertyName);
-            $property->setAccessible(true);
-            $property->setValue($object, $value);
-        }
-        return false;
+    public static function hasMethod($object, string $method) : bool{
+        $object = new \ReflectionObject($object);
+        return $object->hasMethod($method);
     }
-   
+    
     /**
-     * Gets the property value of an object.
+     * Invokes a method on an object. The $args argument can be used to provide 
+     * method parameters.
      */
-    public static function getPropertyValue($object, $propertyName){
-        
-        if(!is_object($object)){
-            throw new \RuntimeException(sprintf('Object::getPropertyValue() expects parameter 1 to be object, %s given', gettype($object)));
+    public static function invokeMethod($object, string $method, $args = []){
+        $refMethod = new \ReflectionMethod($object, $method);
+        $params = $refMethod->getParameters();
+
+        $actionArgs = [];
+        foreach($params as $param){
+            $defaultValue = $param->isOptional() ? $param->getDefaultValue() : null;
+            $type = is_object($param->getClass()) ? 'object' : $param->getType();
+
+            switch($type){
+                case '';
+                case 'string':
+                case 'int':
+                case 'float':
+                case 'bool':
+                    if(array_key_exists($param->name, $args)){
+                        $actionArgs[] = $args[$param->name] !==null ? $args[$param->name] : $defaultValue;
+                    }else{
+                        $actionArgs[] = $defaultValue;
+                    }
+                    break;
+                case 'object':
+                        $type = (string)$param->getType(); 
+                        if($type){
+                            $actionArgs[] = Obj::setProperties($type, $args);
+                        }
+                    break; 
+            }
         }
-        
-        $refClass = new \ReflectionObject($object);
-        if($refClass->hasProperty($propertyName)){
-            $property = $refClass->getProperty($propertyName);
-            $property->setAccessible(true);
-            return $property->getValue($object);
-        }
-        return false;
+        return $refMethod->invokeArgs($object, $actionArgs);
     }
 
+    public static function getAttributes($object, string $method) : array{
+        if(is_string($object)){
+            $refClass = new \ReflectionClass($object);
+            $object = $refClass->newInstance();
+        }elseif(is_object($object)){
+            $refClass = new \ReflectionObject($object);
+        }else{
+            throw new \RuntimeException(sprintf('Obj::getAttributes() expects parameter 1 to be object or string.', gettype($object)));
+        }
+        
+        $lines = Str::set($refClass->getMethod($method)->getDocComment())->split("\\n");
+        $attributes = [];
+        
+        foreach($lines as $line){
+            if(Str::set($line)->trim(" *")->first() == '@'){
+                $attribute = Str::set($line)->get('@', '(');
+                $args = Str::set($line)->get('(', ')');
+                $attributes[(string)$attribute->replace('.', '\\')] = json_decode('['.(string)$args.']');
+            }
+        }
+        return $attributes;
+    }
+    
+    /**
+     * Gets the filename of a class/object. The $object argument can be either a 
+     * class name or an instance of a class.
+     * Throws RuntimeException if $object is not a string or an object.
+     */
+    public static function getFileName($object){
+        if(is_string($object)){
+            $refClass = new \ReflectionClass($object);
+            $object = $refClass->newInstance();
+        }elseif(is_object($object)){
+            $refClass = new \ReflectionObject($object);
+        }else{
+            throw new \RuntimeException(sprintf('Obj::getFileName() expects parameter 1 to be object or string, %s given.', gettype($object)));
+        }
+        
+        return $refClass->getFileName();
+    }
+    
     /**
      * Gets a new instance of a class.
      */
-    public static function getInstance($name, array $args = null, $throwException = true){
-        try{
-            $name = str_replace(".", "\\", $name);
-            $refClass = new \ReflectionClass($name);
+    public static function getInstance(string $name, array $args = array()){
+        $name = str_replace('.', '\\', $name);
+        $refClass = new \ReflectionClass($name);
 
-            if(is_array($args)){
-                $instance = $refClass->newInstanceArgs($args);
-            }else{
-                $instance = $refClass->newInstance();
-            }
-        }catch(\ReflectionException $rex){
-            if($throwException){
-                throw $rex;
-            }
-            return null;
+        if(count($args) > 0){
+            return $refClass->newInstanceArgs($args);
+        }else{
+            return $refClass->newInstance();
         }
-        return $instance;
-    }
-    
-    public static function hasProperty($object, $property){
-        $obj = new \ReflectionObject($object);
-        return $obj->hasProperty($property);
-    }
-    
-    public static function hasMethod($object, $method){
-        $obj = new \ReflectionObject($object);
-        return $obj->hasMethod($method);
     }
 }

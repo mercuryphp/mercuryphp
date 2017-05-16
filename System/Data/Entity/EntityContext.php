@@ -4,53 +4,33 @@ namespace System\Data\Entity;
 
 class EntityContext {
     
-    protected $entityHash;
-    protected $entityName;
     protected $entity;
-    protected $state = 1;
-
-    const PERSIST = 1;
-    const PERSISTED = 2;
-    const DELETE = 3;
+    protected $name;
+    protected $hash;
+    protected $state;
     
-    public function __construct($entity){
-        $this->entityHash = spl_object_hash($entity);
-        $this->entityName = get_class($entity);
+    const INSERT = 1;
+
+    public function __construct($entity, int $state){
         $this->entity = $entity;
+        $this->name = str_replace("\\", ".", get_class($entity));
+        $this->hash = spl_object_hash($entity);
+        $this->state = $state;
     }
     
-    /**
-     * Gets the entity object stored in the context.
-     */
+    public function getName(){
+        return $this->name;
+    }
+
     public function getEntity(){
         return $this->entity;
     }
     
-    /**
-     * Sets the entity state.
-     */
-    public function setState(int $state){
-        $this->state = $state;
+    public function getHash(){
+        return $this->hash;
     }
-
-    /**
-     * Gets the entity state.
-     */
-    public function getState() : int {
+    
+    public function getState(){
         return $this->state;
-    }
-    
-    /**
-     * Gets the entity type name.
-     */
-    public function getEntityName() : string {
-        return $this->entityName;
-    }
-    
-    /**
-     * Gets a unique hash code of the entity stored in the context.
-     */
-    public function getHashCode() : string {
-        return $this->entityHash;
     }
 }

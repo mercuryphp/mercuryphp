@@ -19,10 +19,6 @@ class CultureInfo {
         
         if(is_file($dataFile)){
             $xml = simplexml_load_file($dataFile);
-        }elseif(is_file($name)){
-            $name = \System\Core\Str::set($name)->replace('\\', '/');
-            $xml = simplexml_load_file($name);
-            $this->cultureName = (string)$name->get('/', '.', \System\Core\Str::LAST_FIRST);
         }else{
             throw new \Exception(sprintf("Culture '%s' is not supported", $name));
         }

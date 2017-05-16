@@ -28,17 +28,14 @@ class ConnectionString {
         
         $params->removeAt('uid');
         $params->removeAt('pwd');
-        
-        $driver = '';
-        $dsn = '';
+
         foreach($params as $param => $value){
             if($param == 'driver'){
-                $driver = $value;
+                $this->dsn = $value.':';
             }else{
-                $dsn .= $param.'='.$value.';';
+                $this->dsn .= $param.'='.$value.';';
             }
         }
-        $this->dsn = $driver.':'.$dsn;
     }
 
     /**
