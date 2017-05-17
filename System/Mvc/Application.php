@@ -5,6 +5,7 @@ namespace System\Mvc;
 use System\Core\Environment;
 use System\Core\Obj;
 use System\Core\Str;
+use System\Core\Date;
 use System\Core\Configuration;
 use System\Core\ExceptionHandler;
 use System\Mvc\Routing\RouteCollection;
@@ -20,7 +21,6 @@ abstract class Application {
     private $exceptionHandler;
     private $routes;
     private $config = null;
-    private $services;
     private $viewEngine;
     
     public function start(Environment $environment){
@@ -34,12 +34,14 @@ abstract class Application {
         
         if(is_file($configFile)){
             $this->config = new Configuration($configFile);
-            $viewMethods = $this->config->get('system.view.methods');
+            
+            Date::timezone($this->config->get('environment.timezone'));
+            Date::dateFormat($this->config->get('environment.dateFormat', 'Y-m-d H:i:s'));
+            
+            $viewMethods = $this->config->get('system.view.methods', []);
 
-            if(is_array($viewMethods)){
-                foreach($viewMethods as $name => $classMethod){
-                    $this->viewEngine->addMethod($name, $classMethod);
-                }
+            foreach($viewMethods as $name => $classMethod){
+                $this->viewEngine->addMethod($name, $classMethod);
             }
         }
 
@@ -59,6 +61,10 @@ abstract class Application {
         return $this->environment;
     }
 
+    protected function getConfiguration() : Configuration{
+        return $this->config;
+    }
+    
     public function load(){}
     
     public function run(){
@@ -80,7 +86,8 @@ abstract class Application {
                         throw new HttpException('Controller ' . $controllerName . ' must be an instance of System\Mvc\Controller.');
                     }
                     
-                    $controller->getRegistry()->merge(Obj::getProperties($this));
+                    $controller->setConfiguration($this->config);
+                    $controller->getRegistry()->merge(Obj::getProperties($this, \ReflectionProperty::IS_PUBLIC | \ReflectionProperty::IS_PROTECTED));
                 }catch(\Exception $e){
                     throw new HttpException($e->getMessage().'.');
                 }

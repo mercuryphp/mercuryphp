@@ -9,8 +9,9 @@ use System\Core\Arr;
 abstract class Controller {
     
     private $httpContext;
-    private $view;
     private $registry;
+    private $config;
+    private $view;
     
     public function __construct(){
         $this->registry = new Arr();
@@ -40,6 +41,14 @@ abstract class Controller {
         return $this->registry;
     }
     
+    public function setConfiguration(\System\Core\Configuration $config){
+        $this->config = $config;
+    }
+    
+    public function getConfiguration() : \System\Core\Configuration{
+        return $this->config;
+    }
+
     protected function view(array $params = []) : IActionResult{
         return new ViewResult($this->view, $this->httpContext, $params);
     }

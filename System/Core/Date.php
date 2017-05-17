@@ -7,15 +7,24 @@ class Date extends \DateTime {
     protected static $dateFormat = 'Y-m-d H:i:s';
     protected static $timezone = null;
     
-    public static function dateFormat($format){
-        self::$dateFormat = $format;
-    }
-    
-    public static function timezone($timezone){
-        self::$timezone = $timezone;
+    public function __construct(string $time = '', $object = null) {
+        parent::__construct($time, $object);
     }
 
+    public function toString(string $format = '', $timezone = null){
+        
+        if(null !== $timezone){
+            $this->setTimezone(new \DateTimeZone($timezone));
+        }
+        
+        $format = $format ? $format : self::$dateFormat;
+        return $this->format($format);
+    }
+    
     public static function now(){
+        if(null !== self::$timezone){
+            return new Date('now', new \DateTimeZone(self::$timezone));
+        }
         return new Date();
     }
     
@@ -26,22 +35,16 @@ class Date extends \DateTime {
         }
         return $dates;
     }
-
-    public function toString(string $format = '', $timezone = null){
-        
-        if(null != $timezone){
-            $this->setTimezone(new \DateTimeZone($timezone));
-        }else{
-            if(null != self::$timezone){
-                $this->setTimezone(new \DateTimeZone(self::$timezone));
-            }
-        }
-        
-        $format = $format ? $format : self::$dateFormat;
-        return $this->format($format);
+    
+    public static function dateFormat($format){
+        self::$dateFormat = $format;
     }
     
-    public function __toString(){
+    public static function timezone($timezone){
+        self::$timezone = $timezone;
+    }
+    
+    public function __toString(){ print self::$timezone; exit;
         return $this->toString();
     }
 }
