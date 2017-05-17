@@ -28,6 +28,13 @@ class Date extends \DateTime {
         return new Date();
     }
     
+    public static function parse($dateTime){
+        if(null !== self::$timezone){
+            return new Date($dateTime, new \DateTimeZone(self::$timezone));
+        }
+        return new Date();
+    }
+    
     public static function getDateRange(Date $date, int $days, string $format = 'Y-m-d') : array{
         $dates = [];
         for($d = 0; $d < $days; $d++){
