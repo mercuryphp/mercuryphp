@@ -132,4 +132,8 @@ final class Request {
         }
         return false;
     }
+    
+    public function bindTo($object){
+        \System\Core\Obj::setProperties($object, $this->getParam());
+    }
 }

@@ -100,7 +100,7 @@ abstract class DbContext {
                         if($insertId){
                             Obj::setProperties($entity, [$entityAttributeData->getKey() => $insertId]);
                         }
-                        
+                        $entityContext->setState(EntityContext::UPDATE);
                         $this->entities->add($entityContext, $entityContext->getHash());
                         break;
                         
