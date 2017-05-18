@@ -2,27 +2,32 @@
 
 namespace System\Data\Entity\Mapping;
 
+use System\Core\Obj;
+
 class EntityAttributeData {
 
     protected $tableName;
     protected $key;
+    protected $fields = [];
     
     public function __construct(array $data){
+
+        $tableNameClass = 'System\Data\Entity\Mapping\Attributes\Table';
+        $keyClass = 'System\Data\Entity\Mapping\Attributes\Key';
         
-        if(array_key_exists('table', $data)){
-            $this->tableName = $data['table'];
+        if(!array_key_exists($tableNameClass, $data)){
+            throw new EntityAttributeException(sprintf("Table attribute not found in entity %s.", $data['name']));
         }
         
-        if(array_key_exists('fields', $data)){
-            $fields = $data['fields'];
-            
-            if(is_array($fields)){
-                foreach($fields as $field){
-                    if(array_key_exists('key', $field)){
-                        $this->key = $field['name'];
-                    }
-                }
-            }
+        if(!array_key_exists($keyClass, $data)){
+            throw new EntityAttributeException(sprintf("Key attribute not found in entity %s.", $data['name']));
+        }
+        
+        $this->tableName = Obj::getInstance($tableNameClass, $data[$tableNameClass])->getName();
+        $this->key = Obj::getInstance($keyClass, $data[$keyClass])->getName();
+
+        foreach($data['fields'] as $field => $attributes){
+            $this->fields[$field] = $attributes;
         }
     }
     
@@ -32,5 +37,9 @@ class EntityAttributeData {
     
     public function getKey(){
         return $this->key;
+    }
+    
+    public function getFields(){
+        return $this->fields;
     }
 }

@@ -50,12 +50,14 @@ class DbQuery {
 
         $row = $this->db->fetch($this->sql, $this->params, \PDO::FETCH_ASSOC);
 
-        try {
-            $entity = Obj::getInstance($entityName);
-            Obj::setProperties($entity, $row);
-            return $entity;
-        } catch (\ReflectionException $re){
-            throw new EntityNotFoundException($entityName, $row);
+        if($row){
+            try {
+                $entity = Obj::getInstance($entityName);
+                Obj::setProperties($entity, $row);
+                return $entity;
+            } catch (\ReflectionException $re){
+                throw new EntityNotFoundException($entityName, $row);
+            }
         }
         
         return false;

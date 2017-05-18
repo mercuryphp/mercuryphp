@@ -10,6 +10,7 @@ class EntityContext {
     protected $state;
     
     const INSERT = 1;
+    const UPDATE = 2;
 
     public function __construct($entity, int $state){
         $this->entity = $entity;
@@ -28,6 +29,11 @@ class EntityContext {
     
     public function getHash(){
         return $this->hash;
+    }
+    
+    public function setState($state){
+        $this->state = $state;
+        return $this;
     }
     
     public function getState(){

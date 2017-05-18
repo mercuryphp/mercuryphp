@@ -72,6 +72,20 @@ class Database {
     }
     
     /**
+     * Executes an SQL query and returns a single row.
+     * Throws QueryException if an SQL exception occurs.
+     */
+    public function table(string $tableName, array $params = array(), int $fetchSytle = \PDO::FETCH_OBJ){
+        $conditions = '';
+        foreach($params as $name=>$value){
+            $conditions .= ' AND ' . $name . '=:' . $name; 
+        }
+        $sql = Str::set("SELECT * FROM {table} WHERE {conditions}")->tokens(['table' => $tableName, 'conditions' => trim($conditions, ' AND')]);
+
+        return $this->fetch($sql, $params, $fetchSytle);
+    }
+    
+    /**
      * Inserts data into a table specified by $table and returns the number 
      * of rows affected.
      * Throws QueryException if an SQL exception occurs.

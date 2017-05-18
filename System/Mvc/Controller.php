@@ -53,7 +53,7 @@ abstract class Controller {
         return new ViewResult($this->view, $this->httpContext, $params);
     }
     
-    protected function json(array $params = [], int $options = null) : IActionResult{
+    protected function json($params, int $options = null) : IActionResult{
         return new JsonResult($this->getResponse(), $params, $options);
     }
     
@@ -95,7 +95,7 @@ abstract class Controller {
         $this->load();
         
         
-        $attributes = Obj::getAttributes($this, $routeData->getAction());
+        $attributes = Obj::getMethodAttributes($this, $routeData->getAction());
         
         foreach($attributes as $attribute => $args){
             $attributeInstance = Obj::getInstance($attribute);

@@ -16,7 +16,7 @@ class DbQueryBuilder {
         $this->sql = new StrBuilder();
     }
     
-    public function select($fields){
+    public function select($fields = '*'){
         $this->sql->append('SELECT ')->append($fields)->appendLine();
         return $this;
     }
@@ -31,7 +31,7 @@ class DbQueryBuilder {
         return $this;
     }
     
-    public function where($expr, array $params = []){
+    public function where(string $field, $value){
         
         if(false == $this->isWhere){
             $this->sql->append("WHERE ");
@@ -39,13 +39,13 @@ class DbQueryBuilder {
             $this->sql->appendLine()->append("AND ");
         }
         
-        $this->sql->append($expr)->appendLine();
+        $this->sql->append($field)->append('=:')->append($field);
         $this->isWhere = true;
-        $this->params = array_merge($this->params, $params);
+        $this->params[$field] = $value;
         return $this;
     }
     
-    public function orWhere($expr, array $params = []){
+    public function orWhere(string $field, $value){
         
         if(false == $this->isWhere){
             $this->sql->append("WHERE ");
@@ -53,9 +53,9 @@ class DbQueryBuilder {
             $this->sql->appendLine()->append("OR ");
         }
         
-        $this->sql->append($expr)->appendLine();
+        $this->sql->append($field)->append('=:')->append($field);
         $this->isWhere = true;
-        $this->params = array_merge($this->params, $params);
+        $this->params[$field] = $value;
         return $this;
     }
     
@@ -80,6 +80,11 @@ class DbQueryBuilder {
             $this->sql->append("ON $condition ")->appendLine();
         }
         return $this;
+    }
+    
+    public function single($entityName = '', array $params = []){
+        $this->params = array_merge($this->params, $params);
+        return $this->db->query((string)$this->sql, $this->params)->single($entityName);
     }
     
     public function toList($entityName = '', array $params = []){
