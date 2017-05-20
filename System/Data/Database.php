@@ -57,7 +57,7 @@ class Database {
      * Executes an SQL query and returns a single row.
      * Throws QueryException if an SQL exception occurs.
      */
-    public function fetch(string $sql, array $params = array(), int $fetchSytle = \PDO::FETCH_OBJ){
+    public function fetch(string $sql, array $params = [], int $fetchSytle = \PDO::FETCH_OBJ){
         $stm = $this->query($sql, $params);
         return $stm->fetch($fetchSytle);
     }
@@ -66,16 +66,25 @@ class Database {
      * Executes an SQL query and returns an array of rows.
      * Throws QueryException if an SQL exception occurs.
      */
-    public function fetchAll(string $sql, array $params = array(), int $fetchSytle = \PDO::FETCH_OBJ){
+    public function fetchAll(string $sql, array $params = [], int $fetchSytle = \PDO::FETCH_OBJ){
         $stm = $this->query($sql, $params);
         return $stm->fetchAll($fetchSytle);
+    }
+    
+    public function fetchRecordSet(string $sql, array $params = []) : array{
+        $rows = $this->fetchAll($sql, $params, \PDO::FETCH_ASSOC);
+        
+        foreach($rows as $idx => $row){
+            $rows[$idx] = new RecordSet($row);
+        }
+        return $rows;
     }
     
     /**
      * Executes an SQL query and returns a single row.
      * Throws QueryException if an SQL exception occurs.
      */
-    public function table(string $tableName, array $params = array(), int $fetchSytle = \PDO::FETCH_OBJ){
+    public function table(string $tableName, array $params = [], int $fetchSytle = \PDO::FETCH_OBJ){
         $conditions = '';
         foreach($params as $name=>$value){
             $conditions .= ' AND ' . $name . '=:' . $name; 

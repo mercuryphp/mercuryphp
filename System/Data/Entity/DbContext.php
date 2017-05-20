@@ -7,23 +7,26 @@ use System\Core\Arr;
 
 abstract class DbContext {
     
-    protected $db;
-    protected $config;
-    protected $query;
-    protected $dbSets = [];
-    protected $entityAttributeData;
-    protected $entities;
+    private $db;
+    private $config;
+    private $query;
+    private $schema;
+    private $dbSets = [];
+    private $entityAttributeData;
+    private $entities;
     
-    public function __construct($dsn = '', DbConfiguration $config = null){
+    public function __construct(string $dsn = ''){
         if($dsn){
             $this->db = new \System\Data\Database($dsn);
         }
-        if(null == $config){
-            $this->config = new DbConfiguration();
-        }
+        
+        $this->config = new DbConfiguration();
+        $this->query = new DbQuery($this->db);
+        $this->schema = new Mapping\Schema\Schema($this->db);
         $this->entityAttributeData = new Arr();
         $this->entities = new Arr();
-        $this->query = new DbQuery($this->db);
+        
+        $this->config->setEntityAttributeDriver(new Mapping\Driver\AnnotationDriver());
     }
     
     public function getConfiguration() : DbConfiguration{
@@ -38,6 +41,10 @@ abstract class DbContext {
         return new DbQueryBuilder($this);
     }
     
+    public function getSchema(){
+        return $this->schema;
+    }
+
     public function getEntityAttributeData(){
         return $this->entityAttributeData;
     }
@@ -55,7 +62,7 @@ abstract class DbContext {
         if(array_key_exists($name, $this->dbSets)){
             return $this->dbSets[$name];
         }
-        
+
         $this->entityAttributeData->add($this->config->getEntityAttributeDriver()->read($name), $name);
         $this->dbSets[$name] = new DbSet($this, $name);
         

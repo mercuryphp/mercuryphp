@@ -7,6 +7,8 @@ use System\Core\Obj;
 use System\Core\Str;
 use System\Core\Date;
 use System\Core\Configuration;
+use System\Core\ServiceContainer;
+use System\Core\Service;
 use System\Core\ExceptionHandler;
 use System\Mvc\Routing\RouteCollection;
 use System\Mvc\Http\HttpContext;
@@ -21,6 +23,7 @@ abstract class Application {
     private $exceptionHandler;
     private $routes;
     private $config = null;
+    private $serviceContainer;
     private $viewEngine;
     
     public function start(Environment $environment){
@@ -28,6 +31,7 @@ abstract class Application {
         $this->httpContext = new HttpContext($this->environment, new Request(), new Response(), new FileSession());
         $this->exceptionHandler = new ExceptionHandler($this->httpContext->getResponse());
         $this->routes = new RouteCollection();
+        $this->serviceContainer = new ServiceContainer();
         $this->viewEngine = new \System\Mvc\View\NativeView($this->environment->getRootDirectory());
         
         $configFile = $environment->getRootDirectory().'/config.php';
@@ -38,6 +42,16 @@ abstract class Application {
             Date::timezone($this->config->get('environment.timezone'));
             Date::dateFormat($this->config->get('environment.dateFormat', 'Y-m-d H:i:s'));
             
+            $services = $this->config->get('system.services', []);
+            
+            foreach($services as $service => $params){
+                if(!array_key_exists('class', $params)){
+                    throw new \RuntimeException("service error");
+                }
+                $serviceConstrArgs = array_key_exists('args', $params) ? $params['args'] : [];
+                $this->serviceContainer->addService(new Service($service, $params['class'], $serviceConstrArgs)); 
+            }
+
             $viewMethods = $this->config->get('system.view.methods', []);
 
             foreach($viewMethods as $name => $classMethod){
@@ -65,6 +79,10 @@ abstract class Application {
         return $this->config;
     }
     
+    protected function getServices() : ServiceContainer{
+        return $this->serviceContainer;
+    }
+
     public function load(){}
     
     public function run(){
@@ -72,7 +90,8 @@ abstract class Application {
             $routeData = $route->execute($this->httpContext->getRequest());
             
             if($routeData){
-                $controllerName = (string)Str::set('App\{module}\Controllers\{controller}Controller')->tokens([
+                $controllerName = (string)Str::set('{namespace}\{module}\Controllers\{controller}Controller')->tokens([
+                    'namespace' => $routeData->getNamespace(),
                     'module' => Str::set($routeData->getModule())->toLower()->toUpperFirst(),
                     'controller' => Str::set($routeData->getController())->toLower()->toUpperFirst()
                 ])->replace('\\\\', '\\');

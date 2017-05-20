@@ -81,6 +81,12 @@ class Arr implements \IteratorAggregate, \ArrayAccess, \Countable {
         return false;
     }
     
+    public function map($func){
+        $this->array = array_map($func, $this->array);
+        return $this;
+    }
+
+
     /**
      * Gets the underlying PHP array for this instance.
      */

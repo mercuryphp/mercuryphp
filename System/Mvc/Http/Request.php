@@ -38,39 +38,8 @@ final class Request {
         return $this->url;
     }
     
-    public function isQuery() : bool{
-        if($this->getServer('REQUEST_METHOD') == 'GET'){
-            return true;
-        }
-        return false;
-    }
-    
-    public function isPost() : bool{
-        if($this->getServer('REQUEST_METHOD') == 'POST'){
-            return true;
-        }
-        return false;
-    }
-    
-    public function isPut() : bool{
-        if($this->getServer('REQUEST_METHOD') == 'PUT'){
-            return true;
-        }
-        return false;
-    }
-    
-    public function isDelete() : bool{
-        if($this->getServer('REQUEST_METHOD') == 'DELETE'){
-            return true;
-        }
-        return false;
-    }
-    
-    public function isAjax() : bool{
-        if($this->getServer('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'){
-            return true;
-        }
-        return false;
+    public function setQuery(string $name, $value = null){
+        $this->query[$name] = $value;
     }
     
     public function getQuery(string $name = '', $default = null){
@@ -84,6 +53,10 @@ final class Request {
             return $default;
         }
         return false;
+    }
+    
+    public function setPost(string $name, $value = null){
+        $this->post[$name] = $value;
     }
     
     public function getPost(string $name = '', $default = null){
@@ -129,6 +102,41 @@ final class Request {
     public function getServer(string $name){
         if(array_key_exists($name, $this->server)){
             return $this->server[$name];
+        }
+        return false;
+    }
+    
+    public function isQuery() : bool{
+        if($this->getServer('REQUEST_METHOD') == 'GET'){
+            return true;
+        }
+        return false;
+    }
+    
+    public function isPost() : bool{
+        if($this->getServer('REQUEST_METHOD') == 'POST'){
+            return true;
+        }
+        return false;
+    }
+    
+    public function isPut() : bool{
+        if($this->getServer('REQUEST_METHOD') == 'PUT'){
+            return true;
+        }
+        return false;
+    }
+    
+    public function isDelete() : bool{
+        if($this->getServer('REQUEST_METHOD') == 'DELETE'){
+            return true;
+        }
+        return false;
+    }
+    
+    public function isAjax() : bool{
+        if($this->getServer('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'){
+            return true;
         }
         return false;
     }

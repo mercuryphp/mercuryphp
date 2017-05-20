@@ -7,7 +7,9 @@ class RouteCollection implements \IteratorAggregate {
     protected $routes = [];
     
     public function add(string $routePattren, array $defaults = []){
-        $this->routes[] = new Route($routePattren, $defaults);
+        $route = new Route($routePattren, $defaults);
+        $this->routes[] = $route;
+        return $route;
     }
     
     public function getIterator(){

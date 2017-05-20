@@ -10,6 +10,13 @@ class RouteData {
         $this->data = $data;
     }
     
+    public function getNamespace() : string{
+        if(array_key_exists('namespace', $this->data)){
+            return $this->data['namespace'];
+        }
+        return '';
+    }
+    
     public function getModule() : string{
         if(array_key_exists('module', $this->data)){
             return $this->data['module'];

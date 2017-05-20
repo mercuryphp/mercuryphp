@@ -5,6 +5,7 @@ namespace System\Data;
 class ConnectionString {
     
     private $dsn;
+    private $dbname;
     private $username;
     private $password;
 
@@ -23,6 +24,7 @@ class ConnectionString {
             }
         }
         
+        $this->dbname = $params->get('dbname');
         $this->username = $params->get('uid');
         $this->password = $params->get('pwd');
         
@@ -36,6 +38,13 @@ class ConnectionString {
                 $this->dsn .= $param.'='.$value.';';
             }
         }
+    }
+    
+    /**
+     * Gets the database name for the connection string.
+     */
+    public function getDbName() : string {
+        return $this->dbname;
     }
 
     /**

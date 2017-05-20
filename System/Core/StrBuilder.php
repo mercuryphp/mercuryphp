@@ -27,7 +27,16 @@ class StrBuilder {
      * instance.
      */
     public function appendLine(int $multiplier = 1) : StrBuilder{
-        $this->string .= str_repeat(PHP_EOL, $multiplier);
+        $this->string .= str_repeat("\n", $multiplier);
+        return $this;
+    }
+    
+    /**
+     * Gets a new Str instance with a line break appended to this 
+     * instance.
+     */
+    public function appendTab(int $multiplier = 1) : StrBuilder{
+        $this->string .= str_repeat("    ", $multiplier);
         return $this;
     }
 
@@ -57,7 +66,11 @@ class StrBuilder {
         $this->string = rtrim($this->string, $charList);
         return $this;
     }
-   
+    
+    public function tokens(array $tokens){
+        $this->string = Str::set($this->string)->tokens($tokens);
+    }
+
     /**
      * Gets the number of characters in the current instance.
      */

@@ -14,6 +14,10 @@ class Route {
         $this->routeHandler = new RouteHandler();
     }
     
+    public function setRouteHandler(IRouteHandler $routeHandler){
+        $this->routeHandler = $routeHandler;
+    }
+
     public function execute(\System\Mvc\Http\Request $request){
         return $this->routeHandler->execute($request, $this->routePattern, $this->defaults);
     }
