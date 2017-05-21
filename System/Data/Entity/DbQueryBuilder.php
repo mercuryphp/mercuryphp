@@ -2,6 +2,7 @@
 
 namespace System\Data\Entity;
 
+use System\Core\Str;
 use System\Core\StrBuilder;
 
 class DbQueryBuilder {
@@ -21,12 +22,11 @@ class DbQueryBuilder {
         return $this;
     }
     
-    public function from($table, $alias = ''){
-        $this->sql->append('FROM ')->append($table);
-        
-        if($alias){
-            $this->sql->append(" $alias ");
-        }
+    public function from(string $entityName){
+        $table = $this->getTable($entityName);
+        $this->sql->append('FROM ')->append($table->name)
+            ->append(" " . $table->alias . " ");
+
         $this->sql->trim()->appendLine();
         return $this;
     }
@@ -38,10 +38,10 @@ class DbQueryBuilder {
         }else{
             $this->sql->appendLine()->append("AND ");
         }
-        
-        $this->sql->append($field)->append('=:')->append($field);
+        $bindField = str_replace('.', '_', $field);
+        $this->sql->append($field)->append('=:')->append($bindField);
         $this->isWhere = true;
-        $this->params[$field] = $value;
+        $this->params[$bindField] = $value;
         return $this;
     }
     
@@ -69,27 +69,55 @@ class DbQueryBuilder {
         return $this;
     }
 
-    public function join($table, $alias = '', $condition = ''){
-        $this->sql->append("JOIN ")->append($table);
-        
-        if($alias){
-            $this->sql->append(" $alias ");
-        }
-        
+    public function join(string $entityName, string $condition = ''){
+        $table = $this->getTable($entityName);
+        $this->sql->append("JOIN ")
+            ->append($table->name)
+            ->append(" " . $table->alias . " ");
+
         if($condition){
             $this->sql->append("ON $condition ")->appendLine();
         }
         return $this;
     }
     
-    public function single($entityName = '', array $params = []){
+    public function setParams(array $params){
         $this->params = array_merge($this->params, $params);
+    }
+
+    public function single($entityName = ''){
         return $this->db->query((string)$this->sql, $this->params)->single($entityName);
     }
     
-    public function toList($entityName = '', array $params = []){
-        $this->params = array_merge($this->params, $params);
+    public function toList($entityName = ''){
         return $this->db->query((string)$this->sql, $this->params)->toList($entityName);
+    }
+    
+    protected function getTable(string $entityName){
+        
+        $str = new Str($entityName);
+        
+        if($str->indexOf(':')){
+            $entityName = (string)$str->getIndexOf(':');
+            $alias = (string)$str->subString($str->indexOf(':')+1);
+        }else{
+            $alias = (string)$str->subString($str->lastIndexOf('.'))->getUpperChars()->join()->toLower();
+        }
+
+        if($this->db->getEntityAttributeData()->hasKey($entityName)){
+            $tableName = $this->db->getEntityAttributeData()->get($entityName)->getTableName();
+        }else{
+            
+            $entityAttributeData = $this->db->getConfiguration()->getEntityAttributeDriver()->read($entityName);
+            $this->db->getEntityAttributeData()->add($entityAttributeData, $entityName);
+            $tableName = $entityAttributeData->getTableName();
+        }
+        
+        $data = new \stdClass();
+        $data->name = $tableName;
+        $data->alias = $alias;
+        
+        return $data;
     }
 
     public function __toString(){

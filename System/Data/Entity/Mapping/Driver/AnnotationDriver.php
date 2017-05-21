@@ -16,9 +16,7 @@ class AnnotationDriver {
             $data['fields'][$property] = $attributes;
         }
         
-        $data['name'] = $className;
-        
-        return new EntityAttributeData($data);
+        return new EntityAttributeData($entityName,$data);
     }
 }
 

@@ -44,8 +44,12 @@ abstract class DbContext {
     public function getSchema(){
         return $this->schema;
     }
+    
+    public function getRepository(string $name){
+        return Obj::getInstance($name, [$this]);
+    }
 
-    public function getEntityAttributeData(){
+    public function getEntityAttributeData() : Arr{
         return $this->entityAttributeData;
     }
     

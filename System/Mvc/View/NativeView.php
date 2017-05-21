@@ -7,7 +7,7 @@ use System\Core\Str;
 class NativeView extends View {
     
     protected $rootDirectory;
-    protected $viewDirectoryPattern = '{root}/App/{module}/Views/{controller}/{action}';
+    protected $viewDirectoryPattern = '{root}/{namespace}/{module}/Views/{controller}/{action}';
     protected $layout;
     protected $output;
 
@@ -40,6 +40,7 @@ class NativeView extends View {
         
         $viewFile = (string)\System\Core\Str::set($this->viewDirectoryPattern)->tokens([
             'root' => $this->rootDirectory,
+            'namespace' => Str::set($request->getRouteData()->getNamespace())->replace('\\', '/'),
             'module' => Str::set($request->getRouteData()->getModule())->toLower()->toUpperFirst(),
             'controller' => Str::set($request->getRouteData()->getController())->toLower()->toUpperFirst(),
             'action' => Str::set($viewName)->toLower()->toUpperFirst()

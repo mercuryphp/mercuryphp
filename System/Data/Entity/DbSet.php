@@ -38,7 +38,9 @@ class DbSet implements \IteratorAggregate{
     }
     
     protected function getQueryBuilder($params){
-        $qb = $this->db->getQueryBuilder()->select()->from($this->entityAttributeData->getTableName());
+        $qb = $this->db->getQueryBuilder()
+            ->select()
+            ->from($this->entityAttributeData->getEntityName());
             
         foreach($params as $field => $value){
             $qb->where($field, $value);

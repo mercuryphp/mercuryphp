@@ -5,9 +5,11 @@ namespace System\Core;
 class ServiceContainer {
     
     protected $services;
+    protected $cached;
     
     public function __construct(array $services = []){
         $this->services = new Arr($services);
+        $this->cached= new Arr();
     }
     
     public function addService(Service $service){
@@ -15,8 +17,13 @@ class ServiceContainer {
     }
 
 
-    public function get(string $service){
-        $service = $this->services->get($service);
+    public function get(string $serviceName){
+        
+        if($this->cached->hasKey($serviceName)){
+            return $this->cached->get($serviceName);
+        }
+        
+        $service = $this->services->get($serviceName);
         
         $args = $service->getArgs();
         
@@ -28,7 +35,7 @@ class ServiceContainer {
         }
         
         $serviceObj = Obj::getInstance($service->getClass(), $args);
-        
+        $this->cached->add($serviceObj, $serviceName);
         return $serviceObj;
     }
 }

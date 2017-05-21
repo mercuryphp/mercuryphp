@@ -123,7 +123,7 @@ class Str {
      */
     public function toUpper() : Str{
         return new Str(strtoupper($this->string));
-    }
+    } 
     
     /**
      * Gets a copy of this string where the first character is converted to uppercase.
@@ -132,6 +132,20 @@ class Str {
         return new Str(ucfirst($this->string));
     }
     
+    /**
+     * Gets a copy of this string where the first character is converted to uppercase.
+     */
+    public function toLowerFirst() : Str{
+        return new Str(lcfirst($this->string));
+    }
+    
+    public function getUpperChars() : Arr{
+        $matches = [];
+        preg_match_all('/[A-Z]/', $this->string, $matches);
+        return new Arr($matches[0]);
+    }
+
+
     /**
      * Gets a new Str instance where all occurrences of $search is replaced 
      * with a $replace string. The $search argument can be either a string or

@@ -40,7 +40,7 @@ class Arr implements \IteratorAggregate, \ArrayAccess, \Countable {
     public function add($value, $key = null) : Arr{
         if(null !=$key){
             if($this->hasKey($key)){
-                throw new \InvalidArgumentException(sprintf("An item with the key '%s' already exists in the array. Use the set(key, value) method to override the item value.", $args[0]));
+                throw new \InvalidArgumentException(sprintf("An item with the key '%s' already exists in the array. Use the set(key, value) method to override the item value.", $key));
             }
             $this->array[$key] = $value;
         }else{
@@ -81,6 +81,11 @@ class Arr implements \IteratorAggregate, \ArrayAccess, \Countable {
         return false;
     }
     
+    public function join(string $glue = '') : Str{
+        return new Str(join($glue, $this->array));
+    }
+
+
     public function map($func){
         $this->array = array_map($func, $this->array);
         return $this;

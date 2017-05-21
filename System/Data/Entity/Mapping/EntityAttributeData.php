@@ -6,11 +6,12 @@ use System\Core\Obj;
 
 class EntityAttributeData {
 
+    protected $entityName;
     protected $tableName;
     protected $key;
     protected $fields = [];
     
-    public function __construct(array $data){
+    public function __construct(string $entityName, array $data){
 
         $tableNameClass = 'System\Data\Entity\Mapping\Attributes\Table';
         $keyClass = 'System\Data\Entity\Mapping\Attributes\Key';
@@ -31,6 +32,7 @@ class EntityAttributeData {
             throw new EntityAttributeException(sprintf("Key name not specified in entity %s.", $data['name']));
         }
 
+        $this->entityName = $entityName;
         $this->tableName = Obj::getInstance($tableNameClass, $data[$tableNameClass])->getName();
         $this->key = Obj::getInstance($keyClass, $data[$keyClass])->getName();
 
@@ -39,15 +41,19 @@ class EntityAttributeData {
         }
     }
     
-    public function getTableName(){
+    public function getEntityName() : string{
+        return $this->entityName;
+    }
+    
+    public function getTableName() : string{
         return $this->tableName;
     }
     
-    public function getKey(){
+    public function getKey() : string{
         return $this->key;
     }
     
-    public function getFields(){
+    public function getFields() : array{
         return $this->fields;
     }
 }
