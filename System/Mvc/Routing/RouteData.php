@@ -4,48 +4,39 @@ namespace System\Mvc\Routing;
 
 class RouteData {
     
-    protected $data;
+    protected $namespace;
+    protected $module;
+    protected $controller;
+    protected $action;
     
-    public function __construct($data){
-        $this->data = $data;
+    public function __construct(\System\Core\Arr $data){
+        $this->namespace = $data->get('namespace');
+        $this->module = $data->get('module');
+        $this->controller = $data->get('controller');
+        $this->action = $data->get('action');
+    }
+    
+    public function setNamespace(string $namespace){
+        $this->namespace = $namespace;
     }
     
     public function getNamespace() : string{
-        if(array_key_exists('namespace', $this->data)){
-            return $this->data['namespace'];
-        }
-        return '';
+        return $this->namespace;
     }
     
     public function getModule() : string{
-        if(array_key_exists('module', $this->data)){
-            return $this->data['module'];
-        }
-        return '';
+        return $this->module;
     }
     
     public function getController() : string{
-        if(array_key_exists('controller', $this->data)){
-            return $this->data['controller'];
-        }
-        return '';
+        return $this->controller;
     }
     
     public function getAction() : string{
-        if(array_key_exists('action', $this->data)){
-            return $this->data['action'];
-        }
-        return '';
+        return $this->action;
     }
     
-    public function get($name) : string{
-        if(array_key_exists($name, $this->data)){
-            return $this->data[$name];
-        }
-        return '';
-    }
-    
-    public function toArray() : array{
-        return $this->data;
+    public function toArray(){
+        return get_object_vars($this);
     }
 }
