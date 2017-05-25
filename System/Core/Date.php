@@ -51,7 +51,7 @@ class Date extends \DateTime {
         self::$timezone = $timezone;
     }
     
-    public function __toString(){ print self::$timezone; exit;
+    public function __toString(){
         return $this->toString();
     }
 }
