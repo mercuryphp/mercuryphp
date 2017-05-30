@@ -18,7 +18,7 @@ class Route {
         $this->routeHandler = $routeHandler;
     }
 
-    public function execute(\System\Mvc\Http\Request $request){
-        return $this->routeHandler->execute($request, $this->routePattern, $this->defaults);
+    public function execute(\System\Mvc\Http\HttpContext $httpContext){
+        return $this->routeHandler->execute($httpContext, $this->routePattern, $this->defaults);
     }
 }

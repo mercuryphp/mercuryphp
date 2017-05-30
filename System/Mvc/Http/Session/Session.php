@@ -54,4 +54,13 @@ abstract class Session {
         }
         return false;
     }
+    
+    public function start(){
+        $this->active = true;
+        $this->write();
+    }
+    
+    public abstract function open();
+    
+    public abstract function write();
 }

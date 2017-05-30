@@ -14,7 +14,7 @@ abstract class View {
         return $this->methods;
     }
         
-    public abstract function render(\System\Mvc\Http\HttpContext $httpContext, array $params = [], string $viewName) : string;
+    public abstract function render(\System\Mvc\Http\HttpContext $httpContext, array $params = [], string $viewName = '') : string;
     
     public function __call($name, $arguments){
         if(is_string($this->methods[$name])){

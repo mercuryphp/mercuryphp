@@ -31,7 +31,7 @@ class NativeView extends View {
         }
     }
     
-    public function render(\System\Mvc\Http\HttpContext $httpContext, array $params = [], string $viewName) : string{
+    public function render(\System\Mvc\Http\HttpContext $httpContext, array $params = [], string $viewName = '') : string{
         
         extract($params);
         
@@ -75,5 +75,4 @@ class NativeView extends View {
 
         return $this->output['view'];
     }
-    
 }

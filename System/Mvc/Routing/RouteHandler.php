@@ -4,8 +4,9 @@ namespace System\Mvc\Routing;
 
 class RouteHandler implements IRouteHandler {
     
-    public function execute(\System\Mvc\Http\Request $request, string $routePattern, array $defaults = []){
+    public function execute(\System\Mvc\Http\HttpContext $httpContext, string $routePattern, array $defaults = []){
         
+        $request = $httpContext->getRequest();
         $uri = $request->getUrl()->getUri() ? $request->getUrl()->getUri() : 'home/index';
 
         $routePattern =  str_replace('{', '(?P<', $routePattern);

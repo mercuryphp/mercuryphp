@@ -70,14 +70,12 @@ class DbQueryBuilder {
     }
 
     public function join(string $entityName, string $condition = ''){
-        $table = $this->getTable($entityName);
-        $this->sql->append("JOIN ")
-            ->append($table->name)
-            ->append(" " . $table->alias . " ");
-
-        if($condition){
-            $this->sql->append("ON $condition ")->appendLine();
-        }
+        $this->joinType('JOIN', $entityName, $condition);
+        return $this;
+    }
+    
+    public function leftJoin(string $entityName, string $condition = ''){
+        $this->joinType('LEFT JOIN', $entityName, $condition);
         return $this;
     }
     
@@ -91,6 +89,18 @@ class DbQueryBuilder {
     
     public function toList($entityName = ''){
         return $this->db->query((string)$this->sql, $this->params)->toList($entityName);
+    }
+    
+    protected function joinType(string $type, string $entityName, string $condition = ''){
+        $table = $this->getTable($entityName);
+        $this->sql->append($type)->append(" ")
+            ->append($table->name)
+            ->append(" " . $table->alias . " ");
+
+        if($condition){
+            $this->sql->append("ON $condition ")->appendLine();
+        }
+        return $this;
     }
     
     protected function getTable(string $entityName){

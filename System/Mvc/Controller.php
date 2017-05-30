@@ -32,8 +32,16 @@ abstract class Controller {
     public function getResponse() : Http\Response{
         return $this->httpContext->getResponse();
     }
+    
+    public function getSession() : Http\Session\Session{
+        return $this->httpContext->getSession();
+    }
 
-    public function getViewEngine() : View\NativeView{
+    public function setViewEngine(View\View $view){
+        $this->view = $view;
+    }
+
+    public function getViewEngine() : View\View{
         return $this->view;
     }
     

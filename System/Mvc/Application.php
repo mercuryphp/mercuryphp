@@ -87,7 +87,7 @@ abstract class Application {
     
     public function run(){
         foreach($this->routes as $route){
-            $routeData = $route->execute($this->httpContext->getRequest());
+            $routeData = $route->execute($this->httpContext);
             
             if($routeData){
                 $controllerName = (string)Str::set('{namespace}\{module}\Controllers\{controller}Controller')->tokens([
