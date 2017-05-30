@@ -20,7 +20,7 @@ class RouteHandler implements IRouteHandler {
                     unset($matches[$idx]);
                 }
             }
-            return new RouteData(array_merge($matches, $defaults));
+            return new RouteData(new \System\Core\Arr(array_merge($matches, $defaults)));
         }
         return false;
     }

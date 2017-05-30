@@ -123,6 +123,39 @@ class Database {
     }
     
     /**
+     * Inserts data into a table specified by $table and returns the number 
+     * of rows affected.
+     * Throws QueryException if an SQL exception occurs.
+     */
+    public function multiInsert(string $table, $rows) : int {
+        
+        $sb = new \System\Core\StrBuilder();
+        $params = [];
+        
+        foreach($rows as $idx=>$values){
+
+            if(is_object($values)){
+                $values = Obj::getProperties($values);
+            }
+
+            $fields = array_keys($values);
+            $sql = Str::set('INSERT INTO {table} ({fields}) VALUES (')->tokens(['table' => $table, 'fields' => join(',', $fields)]);
+
+            foreach($fields as $field){
+                if($values[$field] instanceof DbFunction){
+                    $sql = $sql->append($values[$field]->toString())->append(',');
+                }else{
+                    $sql = $sql->append(':'.$field.'_'.$idx)->append(',');
+                    $params[':'.$field.'_'.$idx] = $values[$field];
+                }
+            } 
+            $sb->append($sql->trim(',')->append(');'))->appendLine();
+        }
+
+        return $this->query($sb, $params)->rowCount();
+    }
+    
+    /**
      * Updates data specified by $table and returns the number 
      * of rows affected.
      * Throws QueryException if an SQL exception occurs.
