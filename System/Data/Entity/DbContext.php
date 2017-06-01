@@ -67,7 +67,7 @@ abstract class DbContext {
             return $this->dbSets[$name];
         }
 
-        $this->entityAttributeData->set($this->config->getEntityAttributeDriver()->read($name), $name);
+        $this->entityAttributeData->set($name, $this->config->getEntityAttributeDriver()->read($name));
         $this->dbSets[$name] = new DbSet($this, $name);
         
         return $this->dbSets[$name];
@@ -112,7 +112,7 @@ abstract class DbContext {
                             Obj::setProperties($entity, [$entityAttributeData->getKey() => $insertId]);
                         }
                         $entityContext->setState(EntityContext::UPDATE);
-                        $this->entities->add($entityContext, $entityContext->getHash());
+                        $this->entities->add($entityContext->getHash(), $entityContext);
                         break;
                         
                     case EntityContext::UPDATE:

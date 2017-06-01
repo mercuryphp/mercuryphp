@@ -13,7 +13,7 @@ class ServiceContainer {
     }
     
     public function addService(Service $service){
-        $this->services->add($service, $service->getName());
+        $this->services->add($service->getName(), $service);
     }
 
 
@@ -35,7 +35,7 @@ class ServiceContainer {
         }
         
         $serviceObj = Obj::getInstance($service->getClass(), $args);
-        $this->cached->add($serviceObj, $serviceName);
+        $this->cached->add($serviceName, $serviceObj);
         return $serviceObj;
     }
 }

@@ -27,7 +27,7 @@ class DbSet implements \IteratorAggregate{
         
         if($entity){
             $entityContext = $this->add($entity)->setState(EntityContext::UPDATE);
-            $this->db->getEntities()->add($entityContext, $entityContext->getHash());
+            $this->db->getEntities()->add($entityContext->getHash(),$entityContext);
             return $entity;
         }
         return false;

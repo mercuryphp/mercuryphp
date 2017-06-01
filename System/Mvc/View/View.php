@@ -23,6 +23,9 @@ abstract class View {
         }else{
             $object = $this->methods[$name];
         }
-        return $object->getClosure()->call($this, ...$arguments);
+
+        $ref = new \ReflectionMethod($object, 'execute');
+        $closure = $ref->getClosure($object)->bindTo($this);
+        return $closure(...$arguments);
     }
 }

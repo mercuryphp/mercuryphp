@@ -119,7 +119,7 @@ class DbQueryBuilder {
         }else{
             
             $entityAttributeData = $this->db->getConfiguration()->getEntityAttributeDriver()->read($entityName);
-            $this->db->getEntityAttributeData()->add($entityAttributeData, $entityName);
+            $this->db->getEntityAttributeData()->add($entityName, $entityAttributeData);
             $tableName = $entityAttributeData->getTableName();
         }
         

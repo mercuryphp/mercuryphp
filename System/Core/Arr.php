@@ -37,7 +37,15 @@ class Arr implements \IteratorAggregate, \ArrayAccess, \Countable {
      * 
      * Throws InvalidArgumentException if an item with the same key already exists.
      */
-    public function add($value, $key = null) : Arr{
+    public function add(...$args) : Arr{
+        if(count($args) == 2){
+            $key = $args[0];
+            $value = $args[1];
+        }else{
+            $key = null;
+            $value = $args[0];
+        }
+        
         if(null !=$key){
             if($this->hasKey($key)){
                 throw new \InvalidArgumentException(sprintf("An item with the key '%s' already exists in the array. Use the set(key, value) method to override the item value.", $key));
@@ -53,7 +61,7 @@ class Arr implements \IteratorAggregate, \ArrayAccess, \Countable {
      * Adds or overrides an item in the array. This method does not check if an
      * item with the same key already exists.
      */
-    public function set($value, $key) : Arr{
+    public function set($key, $value) : Arr{
         $this->array[$key] = $value;
         return $this;
     }

@@ -2,11 +2,9 @@
 
 namespace System\Mvc\View\Methods;
 
-class Escape implements IViewMethod {
+class Escape {
 
-    public function getClosure() : \Closure{
-        return function($string){
-            return htmlspecialchars($string, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8', false);
-        };
+    public function execute(string $string){
+        return htmlspecialchars($string, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8', false);
     }
 }

@@ -16,14 +16,14 @@ class ValidationContext {
     
     public function add(string $name, $value){
         $stack = new ValidationStack($value);
-        $this->context->add($stack, $name);
+        $this->context->add($name, $stack);
         return $stack;
     }
     
     public function isValid() : bool{
         foreach($this->context as $name => $stack){
             if(!$stack->isValid()){
-                $this->errors->add($stack->getError(), $name);
+                $this->errors->add($name, $stack->getError());
             }
         }
         return $this->errors->count() > 0 ? false : true;
