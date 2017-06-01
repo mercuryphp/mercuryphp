@@ -67,7 +67,7 @@ abstract class DbContext {
             return $this->dbSets[$name];
         }
 
-        $this->entityAttributeData->add($this->config->getEntityAttributeDriver()->read($name), $name);
+        $this->entityAttributeData->set($this->config->getEntityAttributeDriver()->read($name), $name);
         $this->dbSets[$name] = new DbSet($this, $name);
         
         return $this->dbSets[$name];

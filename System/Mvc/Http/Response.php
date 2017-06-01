@@ -110,6 +110,11 @@ final class Response {
         return $this;
     }
     
+    public function redirect(string $location){
+        header('Location: ' . $location);
+        exit;
+    }
+    
     public function flush(){
         if (!headers_sent()){    
             foreach($this->cookies as $cookie){

@@ -53,7 +53,7 @@ class Arr implements \IteratorAggregate, \ArrayAccess, \Countable {
      * Adds or overrides an item in the array. This method does not check if an
      * item with the same key already exists.
      */
-    public function set($key, $value) : Arr{
+    public function set($value, $key) : Arr{
         $this->array[$key] = $value;
         return $this;
     }

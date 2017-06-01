@@ -49,6 +49,9 @@ abstract class Session {
     }
     
     public function exists($name){
+        if(!$this->active){
+            $this->open();
+        }
         if(array_key_exists($name, $this->collection)){
             return true;
         }
