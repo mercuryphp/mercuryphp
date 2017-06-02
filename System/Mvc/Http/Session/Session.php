@@ -6,7 +6,7 @@ abstract class Session {
     
     protected $collection = [];
     protected $name;
-    protected $sessionId;
+    protected $sessionId = '';
     protected $active = false;
     
     public function setName($name){
@@ -48,7 +48,7 @@ abstract class Session {
         }
     }
     
-    public function exists($name){
+    public function exists($name){ 
         if(!$this->active){
             $this->open();
         }

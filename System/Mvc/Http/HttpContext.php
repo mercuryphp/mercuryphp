@@ -13,7 +13,7 @@ final class HttpContext {
         $this->environment = $environment;
         $this->request = $request;
         $this->response = $response;
-        $this->session = $session;
+        $this->setSession($session);
     }
     
     public function getEnvironment(){
@@ -30,6 +30,9 @@ final class HttpContext {
     
     public function setSession(Session\Session $session){
         $this->session = $session;
+        if($this->request->getCookie()->hasCookie($session->getName())){
+            $session->setSessionId($this->request->getCookie($session->getName())->getValue());
+        } 
     }
     
     public function getSession() : Session\Session{

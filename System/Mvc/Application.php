@@ -58,13 +58,6 @@ abstract class Application {
                 $this->viewEngine->addMethod($name, $classMethod);
             }
         }
-
-        $session = $this->httpContext->getSession();
-        $request = $this->httpContext->getRequest();
-        
-        if($request->getCookie()->hasCookie($session->getName())){
-            $session->setSessionId($request->getCookie($session->getName())->getValue());
-        } 
     }
     
     protected function getRoutes() : RouteCollection{
@@ -131,8 +124,8 @@ abstract class Application {
         $session = $this->httpContext->getSession();
         
         if($session->active()){
-            $this->httpContext->getResponse()->getCookies()->add(new \System\Mvc\Http\HttpCookie($session->getName(), $session->getSessionId()));
             $session->write();
+            $this->httpContext->getResponse()->getCookies()->add(new \System\Mvc\Http\HttpCookie($session->getName(), $session->getSessionId()));
         }
         $this->httpContext->getResponse()->flush();
     }

@@ -14,30 +14,43 @@ class DbRowCollection implements \IteratorAggregate {
         return $this->rows[$index];
     }
     
-    public function rowIndex($name){
+    public function setRowIndex($field){
         foreach($this->rows as $idx => $row){
             $data = is_object($row) ? \System\Core\Obj::getProperties($row) : $row;
             
-            if(is_array($data) && array_key_exists($name, $data)){
+            if(is_array($data) && array_key_exists($field, $data)){
                 unset($this->rows[$idx]);
-                $this->rows[$data[$name]] = $row;
+                $this->rows[$data[$field]] = $row;
             }
         }
         return $this;
     }
     
-    public function max($name){
+    public function max($field){
         $max = null;
         foreach($this->rows as $idx => $row){
             $data = is_object($row) ? \System\Core\Obj::getProperties($row) : $row;
             
-            if(is_array($data) && array_key_exists($name, $data)){
-                if($data[$name] > $max){
-                    $max = $data[$name];
+            if(is_array($data) && array_key_exists($field, $data)){
+                if($data[$field] > $max){
+                    $max = $data[$field];
                 }
             }
         }
         return $max;
+    }
+    
+    public function where($field, $value){
+        foreach($this->rows as $idx => $row){
+            $data = is_object($row) ? \System\Core\Obj::getProperties($row) : $row;
+            
+            if(is_array($data) && array_key_exists($field, $data)){ 
+                if($data[$field] != $value){
+                    unset($this->rows[$idx]);
+                }
+            }
+        } 
+        return $this;
     }
 
     public function merge($data){

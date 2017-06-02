@@ -43,6 +43,14 @@ class DropDown{
                 throw new \RuntimeException(sprintf('The supplied data source to DropDown::%s does not have property"%s."', $name, $dataText));
             }
             
+            if(is_object($selectedValue)){
+                try{
+                    $selectedValue = \System\Core\Obj::getProperty($selectedValue, $name);
+                }catch(\ReflectionException $re){
+                    throw new \RuntimeException(sprintf('Object "%s" does not have property "%s."', get_class($selectedValue), $name));
+                }
+            }
+            
             $key = $row[$dataValue];
             $value = $row[$dataText];
             
