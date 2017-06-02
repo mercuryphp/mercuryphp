@@ -4,6 +4,31 @@ namespace System\Core;
 
 final class Obj {
     
+    
+    /**
+     * Gets the properties of an object as an array.
+     * 
+     * @param   object $object
+     * @param   mixed $filter = null
+     * @return  array
+     */
+    public static function getProperty($object, string $property){
+
+        if(is_string($object)){
+            $refClass = new \ReflectionClass($object);
+            $object = $refClass->newInstance();
+        }elseif(is_object($object)){
+            $refClass = new \ReflectionObject($object);
+        }else{
+            throw new \RuntimeException(sprintf('Obj::getProperties() expects parameter 1 to be object or string.', gettype($object)));
+        }
+        
+        $property = $refClass->getProperty($property);
+        $property->setAccessible(true);
+        
+        return $property->getValue($object);
+    }
+    
     /**
      * Sets the property values for the gieven $object. The $object argument 
      * can be either a class name or an instance of a class.
@@ -28,6 +53,7 @@ final class Obj {
         }
         return $object;
     }
+
     
     /**
      * Gets the properties of an object as an array.

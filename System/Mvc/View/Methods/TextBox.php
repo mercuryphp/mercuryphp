@@ -5,14 +5,22 @@ namespace System\Mvc\View\Methods;
 use System\Core\Arr;
 use System\Core\StrBuilder;
 
-class Textbox {
+class TextBox {
 
-    public function execute(string $name, string $value = null, array $attributes = []){
+    public function execute(string $name, string $text = '', array $attributes = [], string $type = 'text'){
+        
+        if(is_object($text)){
+            try{
+                $text = Obj::getProperty($text, $name);
+            }catch(\ReflectionException $re){
+                throw new \RuntimeException(sprintf('Object "%s" does not have property "%s."', get_class($text), $name));
+            }
+        }
         
         $arr = new Arr($attributes);
 
         if(!$arr->hasKey('type')){
-            $arr->add('text', 'type');
+            $arr->add('text', $type);
         }
         if(!$arr->hasKey('name')){
             $arr->add('name', $name);
@@ -21,7 +29,7 @@ class Textbox {
             $arr->add('id', $arr->get('name'));
         }
         if(!$arr->hasKey('value')){
-            $arr->add('value', $value);
+            $arr->add('value', $text);
         }
 
         $control = new StrBuilder('<input ');

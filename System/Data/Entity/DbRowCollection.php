@@ -45,11 +45,15 @@ class DbRowCollection implements \IteratorAggregate {
         return $this;
     }
 
-    public function hasIndex($index){
+    public function hasIndex($index) : bool{
         if(array_key_exists($index, $this->rows)){
             return true;
         }
         return false;
+    }
+    
+    public function toArray() : array{
+        return $this->rows;
     }
 
     public function getIterator(){
