@@ -28,6 +28,10 @@ final class HttpContext {
         return $this->response;
     }
     
+    public function setSession(Session\Session $session){
+        $this->session = $session;
+    }
+    
     public function getSession() : Session\Session{
         return $this->session;
     }
