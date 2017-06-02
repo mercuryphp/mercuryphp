@@ -71,6 +71,10 @@ abstract class Application {
         return $this->routes;
     }
     
+    protected function getHttpContext() : HttpContext{
+        return $this->httpContext;
+    }
+    
     protected function getEnvironment() : Environment{
         return $this->environment;
     }
