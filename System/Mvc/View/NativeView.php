@@ -56,8 +56,7 @@ class NativeView extends View {
 
         if($this->layout){
             $layoutFile = Str::set($this->layout)->tokens([
-                'root' => $this->rootDirectory,
-                'module' => Str::set($request->getRouteData()->getModule())->toLower()->toUpperFirst()
+                'root' => $this->rootDirectory
             ]);
                 
             if(is_file($layoutFile)){

@@ -88,13 +88,9 @@ abstract class DbContext {
 
                         if($this->entities->hasKey($objHash)){
                             $refObjContext = $this->entities->get($objHash);
+                            $refObjAttrData = $this->entityAttributeData->get($refObjContext->getName());
                             $refObjProperties = Obj::getProperties($refObjContext->getEntity());
-
-                            if(array_key_exists($property, $refObjProperties)){
-                                $properties[$property] = $refObjProperties[$property];
-                            }else{
-                                throw new EntityRelationshipException(sprintf("One to one relationship between '%s' and '%s' failed because '%s' does not contain '%s' property.", get_class($entity), get_class($refObj), get_class($refObj), $property));
-                            }
+                            $properties[$property] = $refObjProperties[$refObjAttrData->getKey()];
                         }
                     }
                 }

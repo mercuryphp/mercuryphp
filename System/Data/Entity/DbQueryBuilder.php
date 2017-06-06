@@ -79,6 +79,11 @@ class DbQueryBuilder {
         return $this;
     }
     
+    public function raw(string $sql){
+        $this->sql->append($sql)->appendLine();
+        return $this;
+    }
+
     public function setParams(array $params){
         $this->params = array_merge($this->params, $params);
     }

@@ -2,12 +2,13 @@
 
 namespace System\Mvc\View\Methods;
 
+use System\Core\Obj;
 use System\Core\Arr;
 use System\Core\StrBuilder;
 
 class TextBox {
 
-    public function execute(string $name, string $text = '', array $attributes = [], string $type = 'text'){
+    public function execute(string $name, $text = '', array $attributes = [], string $type = 'text'){
         
         if(is_object($text)){
             try{
@@ -20,7 +21,7 @@ class TextBox {
         $arr = new Arr($attributes);
 
         if(!$arr->hasKey('type')){
-            $arr->add('text', $type);
+            $arr->add('type', $type);
         }
         if(!$arr->hasKey('name')){
             $arr->add('name', $name);
