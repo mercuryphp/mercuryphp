@@ -30,16 +30,10 @@ abstract class Session {
     }
 
     public function set($name, $value){
-        if(!$this->active){
-            $this->open();
-        }
         $this->collection[$name] = $value;
     }
     
     public function get($name, $default = null){
-        if(!$this->active){
-            $this->open();
-        }
         if($this->exists($name)){
             return $this->collection[$name];
         }
@@ -49,9 +43,6 @@ abstract class Session {
     }
     
     public function exists($name){ 
-        if(!$this->active){
-            $this->open();
-        }
         if(array_key_exists($name, $this->collection)){
             return true;
         }
@@ -60,7 +51,7 @@ abstract class Session {
     
     public function start(){
         $this->active = true;
-        $this->write();
+        $this->open();
     }
     
     public abstract function open();
