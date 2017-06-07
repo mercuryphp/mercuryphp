@@ -31,4 +31,8 @@ class Url {
     public function getUri() : string{
         return $this->uri;
     }
+    
+    public function getSegments(){
+        return \System\Core\Arr::split('/', $this->uri);
+    }
 }

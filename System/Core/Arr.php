@@ -57,6 +57,10 @@ class Arr implements \IteratorAggregate, \ArrayAccess, \Countable {
         return $this;
     }
     
+    public function first(){
+        return reset($this->array);
+    }
+
     /**
      * Adds or overrides an item in the array. This method does not check if an
      * item with the same key already exists.
@@ -99,7 +103,6 @@ class Arr implements \IteratorAggregate, \ArrayAccess, \Countable {
         return $this;
     }
 
-
     /**
      * Gets the underlying PHP array for this instance.
      */
@@ -132,5 +135,9 @@ class Arr implements \IteratorAggregate, \ArrayAccess, \Countable {
     
     public function count() : int {
         return count($this->array);
+    }
+    
+    public static function split(string $delimiter, string $string){
+        return new Arr(explode($delimiter, $string));
     }
 }

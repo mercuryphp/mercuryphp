@@ -16,11 +16,21 @@ class ServiceContainer {
         $this->services->add($service->getName(), $service);
     }
 
+    public function hasService(string $serviceName){
+        if($this->services->hasKey($serviceName)){
+            return true;
+        }
+        return false;
+    }
 
     public function get(string $serviceName){
         
         if($this->cached->hasKey($serviceName)){
             return $this->cached->get($serviceName);
+        }
+
+        if(!$this->services->hasKey($serviceName)){
+            throw new ServiceException(sprintf("Unknown service '%s'.", $serviceName));
         }
         
         $service = $this->services->get($serviceName);
