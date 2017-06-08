@@ -8,6 +8,7 @@ final class Response {
     private $statusCode;
     private $headers = [];
     private $cookies;
+    private $redirectLocation = '';
     private static $statusCodes = array(
         //Informational 1xx
         100 => '100 Continue',
@@ -110,9 +111,12 @@ final class Response {
         return $this;
     }
     
-    public function redirect(string $location){
-        header('Location: ' . $location);
-        exit;
+    public function redirect(string $location, bool $immediate = true){
+        if($immediate){
+            header('Location: ' . $location);
+            exit;
+        }
+        $this->redirectLocation = $location;
     }
     
     public function flush(){
@@ -124,6 +128,10 @@ final class Response {
                 header($header.':'.$value, true);
             }
             echo $this->string;
+        }
+        
+        if($this->redirectLocation){
+            $this->redirect($this->redirectLocation);
         }
         exit;
     }

@@ -61,8 +61,12 @@ abstract class Controller {
         return new ViewResult($this->view, $this->httpContext, $params);
     }
     
-    protected function json($params, int $options = null) : IActionResult{
+    protected function json(array $params, int $options = null) : IActionResult{
         return new JsonResult($this->getResponse(), $params, $options);
+    }
+    
+    protected function redirect(string $location) : IActionResult{
+        return new RedirectResult($this->getResponse(), $location);
     }
     
     protected function load(){}
