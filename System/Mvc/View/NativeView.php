@@ -10,6 +10,7 @@ class NativeView extends View {
     protected $viewDirectoryPattern = '{root}/{namespace}/{module}/Views/{controller}/{action}';
     protected $layout;
     protected $output;
+    protected $params = [];
 
     public function __construct(string $rootDirectory){
         $this->rootDirectory = $rootDirectory;
@@ -23,6 +24,13 @@ class NativeView extends View {
         $this->layout = $layout;
     }
     
+    public function includeFile(string $file){
+        extract($this->params);
+
+        $includeFile = Str::set($file)->tokens(['root' => $this->rootDirectory]);
+        return include $includeFile;
+    }
+
     public function renderBody(){
         if(isset($this->output['view'])){
             echo $this->output['view'];
@@ -32,12 +40,12 @@ class NativeView extends View {
     }
     
     public function render(\System\Mvc\Http\HttpContext $httpContext, array $params = [], string $viewName = '') : string{
+        $this->params = array_merge($this->params, $params);
+        $this->params['request'] = $httpContext->getRequest();
+        $this->params['session'] = $httpContext->getSession();
         
-        extract($params);
-        
-        $request = $httpContext->getRequest();
-        $response = $httpContext->getResponse();
-        
+        extract($this->params);
+
         $viewFile = (string)\System\Core\Str::set($this->viewDirectoryPattern)->tokens([
             'root' => $this->rootDirectory,
             'namespace' => Str::set($request->getRouteData()->getNamespace())->replace('\\', '/'),

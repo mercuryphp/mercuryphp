@@ -59,6 +59,20 @@ class DbQueryBuilder {
         return $this;
     }
     
+    public function whereNot(string $field, $value){
+        
+        if(false == $this->isWhere){
+            $this->sql->append("WHERE ");
+        }else{
+            $this->sql->appendLine()->append("AND ");
+        }
+        $bindField = str_replace('.', '_', $field);
+        $this->sql->append($field)->append('!=:')->append($bindField);
+        $this->isWhere = true;
+        $this->params[$bindField] = $value;
+        return $this;
+    }
+    
     public function groupBy($fields){
         $this->sql->append("GROUP BY ")->append($fields)->appendLine();
         return $this;

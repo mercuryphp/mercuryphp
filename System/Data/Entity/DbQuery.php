@@ -59,7 +59,6 @@ class DbQuery {
                 throw new EntityNotFoundException($entityName, $row);
             }
         }
-        
         return false;
     }
 }

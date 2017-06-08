@@ -8,12 +8,14 @@ class RouteData {
     protected $module;
     protected $controller;
     protected $action;
-    
+    protected $data = [];
+
     public function __construct(\System\Core\Arr $data){
         $this->namespace = $data->get('namespace');
         $this->module = $data->get('module');
         $this->controller = $data->get('controller');
         $this->action = $data->get('action');
+        $this->data = $data->toArray();
     }
     
     public function setNamespace(string $namespace){
@@ -37,6 +39,6 @@ class RouteData {
     }
     
     public function toArray(){
-        return get_object_vars($this);
+        return $this->data;
     }
 }

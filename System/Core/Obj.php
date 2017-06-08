@@ -70,7 +70,7 @@ final class Obj {
         }elseif(is_object($object)){
             $refClass = new \ReflectionObject($object);
         }else{
-            throw new \RuntimeException(sprintf('Obj::getProperties() expects parameter 1 to be object or string.', gettype($object)));
+            throw new \RuntimeException(sprintf('Obj::getProperties() expects parameter 1 to be object or string. %s given.', gettype($object)));
         }
         
         if(is_null($filter)){
