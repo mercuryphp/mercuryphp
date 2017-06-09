@@ -18,11 +18,11 @@ final class Request {
         $this->post = $_POST;
         $this->cookies = new HttpCookieCollection($_COOKIE);
 
-        $rawInput = file_get_contents("php://input");
-print_R($this->getServer('CONTENT_TYPE')); 
+        $rawInput = $this->getRawInput();
+
         if($rawInput && $this->getServer('CONTENT_TYPE') == 'application/json'){
             $data = json_decode($rawInput, true);
-            $this->post = array_merge($this->post, $data); print_R($this->post);exit;
+            $this->post = array_merge($this->post, $data);
         } 
     }
     
@@ -97,6 +97,14 @@ print_R($this->getServer('CONTENT_TYPE'));
     
     public function getHttpMethod(){
         return $this->getServer('REQUEST_METHOD');
+    }
+    
+    public function getContentType() : string{
+        return (string)\System\Core\Str::set($this->getServer('CONTENT_TYPE'))->getLastIndexOf(';');
+    }
+    
+    public function getRawInput(){
+        return file_get_contents("php://input");
     }
 
     public function getServer(string $name){
