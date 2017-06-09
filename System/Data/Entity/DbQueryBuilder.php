@@ -97,9 +97,17 @@ class DbQueryBuilder {
         $this->sql->append($sql)->appendLine();
         return $this;
     }
+    
+    public function addParam(string $name, $value){
+        $this->params[$name] = $value;
+    }
 
     public function setParams(array $params){
         $this->params = array_merge($this->params, $params);
+    }
+    
+    public function getParams() : array{
+        return $this->params;
     }
 
     public function single($entityName = ''){

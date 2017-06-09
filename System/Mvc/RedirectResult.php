@@ -10,6 +10,7 @@ class RedirectResult implements IActionResult {
     
     public function __construct(Http\Response $response, string $location, bool $immediate = false){
         $this->response = $response;
+        $this->location = $location;
         $this->immediate = $immediate;
     }
     
