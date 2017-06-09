@@ -19,10 +19,10 @@ final class Request {
         $this->cookies = new HttpCookieCollection($_COOKIE);
 
         $rawInput = file_get_contents("php://input");
-print_R($rawInput); exit;
+print_R($this->getServer('CONTENT_TYPE')); 
         if($rawInput && $this->getServer('CONTENT_TYPE') == 'application/json'){
             $data = json_decode($rawInput, true);
-            $this->post = array_merge($this->post, $data);
+            $this->post = array_merge($this->post, $data); print_R($this->post);exit;
         } 
     }
     
