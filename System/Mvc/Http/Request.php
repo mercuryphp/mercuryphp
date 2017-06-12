@@ -20,7 +20,7 @@ final class Request {
 
         $rawInput = $this->getRawInput();
 
-        if($rawInput && $this->getServer('CONTENT_TYPE') == 'application/json'){
+        if($rawInput && $this->getContentType() == 'application/json'){
             $data = json_decode($rawInput, true);
             $this->post = array_merge($this->post, $data);
         } 
