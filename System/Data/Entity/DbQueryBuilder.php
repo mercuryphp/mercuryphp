@@ -39,7 +39,7 @@ class DbQueryBuilder {
             $this->sql->appendLine()->append("AND ");
         }
         $bindField = str_replace('.', '_', $field);
-        $this->sql->append($field)->append('=:')->append($bindField);
+        $this->sql->append($field)->append('=:')->append($bindField)->appendLine();
         $this->isWhere = true;
         $this->params[$bindField] = $value;
         return $this;
@@ -53,7 +53,7 @@ class DbQueryBuilder {
             $this->sql->appendLine()->append("OR ");
         }
         
-        $this->sql->append($field)->append('=:')->append($field);
+        $this->sql->append($field)->append('=:')->append($field)->appendLine();
         $this->isWhere = true;
         $this->params[$field] = $value;
         return $this;
@@ -67,7 +67,7 @@ class DbQueryBuilder {
             $this->sql->appendLine()->append("AND ");
         }
         $bindField = str_replace('.', '_', $field);
-        $this->sql->append($field)->append('!=:')->append($bindField);
+        $this->sql->append($field)->append('!=:')->append($bindField)->appendLine();
         $this->isWhere = true;
         $this->params[$bindField] = $value;
         return $this;
@@ -100,10 +100,12 @@ class DbQueryBuilder {
     
     public function addParam(string $name, $value){
         $this->params[$name] = $value;
+        return $this;
     }
 
     public function setParams(array $params){
         $this->params = array_merge($this->params, $params);
+        return $this;
     }
     
     public function getParams() : array{
