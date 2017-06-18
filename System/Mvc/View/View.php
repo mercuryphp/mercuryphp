@@ -5,6 +5,7 @@ namespace System\Mvc\View;
 abstract class View {
     
     protected $methods = [];
+    protected $params = [];
     
     public function addMethod(string $name, $class){
         $this->methods[$name] = $class;
@@ -12,6 +13,10 @@ abstract class View {
     
     public function getMethods() : array{
         return $this->methods;
+    }
+    
+    public function addParam(string $name, $value){
+        $this->params[$name] = $value;
     }
         
     public abstract function render(\System\Mvc\Http\HttpContext $httpContext, array $params = [], string $viewName = '') : string;

@@ -10,7 +10,6 @@ class NativeView extends View {
     protected $viewDirectoryPattern = '{root}/{namespace}/{module}/Views/{controller}/{action}';
     protected $layout;
     protected $output;
-    protected $params = [];
 
     public function __construct(string $rootDirectory){
         $this->rootDirectory = $rootDirectory;
@@ -48,9 +47,9 @@ class NativeView extends View {
 
         $viewFile = (string)\System\Core\Str::set($this->viewDirectoryPattern)->tokens([
             'root' => $this->rootDirectory,
-            'namespace' => Str::set($request->getRouteData()->getNamespace())->replace('\\', '/'),
-            'module' => Str::set($request->getRouteData()->getModule())->toLower()->toUpperFirst(),
-            'controller' => Str::set($request->getRouteData()->getController())->toLower()->toUpperFirst(),
+            'namespace' => Str::set($this->params['request']->getRouteData()->getNamespace())->replace('\\', '/'),
+            'module' => Str::set($this->params['request']->getRouteData()->getModule())->toLower()->toUpperFirst(),
+            'controller' => Str::set($this->params['request']->getRouteData()->getController())->toLower()->toUpperFirst(),
             'action' => Str::set($viewName)->toLower()->toUpperFirst()
         ])->append('.php');
 
