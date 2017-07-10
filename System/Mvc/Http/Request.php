@@ -9,6 +9,7 @@ final class Request {
     private $query = [];
     private $post = [];
     private $cookies;
+    private $files;
     private $routeData;
 
     public function __construct(){
@@ -17,6 +18,7 @@ final class Request {
         $this->query = $_GET;
         $this->post = $_POST;
         $this->cookies = new HttpCookieCollection($_COOKIE);
+        $this->files = new HttpFileCollection($_FILES);
 
         $rawInput = $this->getRawInput();
 
@@ -78,6 +80,15 @@ final class Request {
         }
         if($this->cookies->hasCookie($name)){
             return $this->cookies->get($name);
+        }
+    }
+    
+    public function getFiles(string $name = ''){
+        if(!$name){
+            return $this->files;
+        }
+        if($this->files->hasFile($name)){
+            return $this->files->get($name);
         }
     }
     
