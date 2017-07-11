@@ -30,6 +30,32 @@ final class Obj {
     }
     
     /**
+     * Gets the properties of an object as an array.
+     * 
+     * @param   object $object
+     * @param   mixed $filter = null
+     * @return  array
+     */
+    public static function setProperty($object, string $property, $value){
+
+        if(is_string($object)){
+            $refClass = new \ReflectionClass($object);
+            $object = $refClass->newInstance();
+        }elseif(is_object($object)){
+            $refClass = new \ReflectionObject($object);
+        }else{
+            throw new \RuntimeException(sprintf('Obj::getProperties() expects parameter 1 to be object or string.', gettype($object)));
+        }
+        
+        if($refClass->hasProperty($property)){
+            $property = $refClass->getProperty($property);
+            $property->setAccessible(true);
+
+            $property->setValue($object, $value);
+        }
+    }
+    
+    /**
      * Sets the property values for the gieven $object. The $object argument 
      * can be either a class name or an instance of a class.
      */

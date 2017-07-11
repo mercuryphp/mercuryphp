@@ -161,6 +161,11 @@ final class Request {
     }
     
     public function bindTo($object){
-        \System\Core\Obj::setProperties($object, $this->getParam());
+        $params = $this->getParam();
+        
+        foreach($params as $name => $value){
+            $value = strlen($value) > 0 ? $value : null; 
+            \System\Core\Obj::setProperty($object, $name, $value);
+        }
     }
 }
