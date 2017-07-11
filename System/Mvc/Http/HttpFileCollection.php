@@ -4,6 +4,8 @@ namespace System\Mvc\Http;
 
 class HttpFileCollection implements \IteratorAggregate{
     
+    protected $collection = [];
+    
     public function __construct($files){
 
         foreach($files as $name => $properties){
