@@ -66,11 +66,7 @@ class DbRowCollection implements \IteratorAggregate {
     }
     
     public function toArray() : array{
-        $array = [];
-        foreach($this->rows as $row){
-            $array[] = \System\Core\Obj::getProperties($row);
-        }
-        return $array;
+        return $this->rows;
     }
 
     public function getIterator(){

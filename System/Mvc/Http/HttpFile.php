@@ -11,11 +11,11 @@ class HttpFile{
     protected $error;
     
     public function __construct(array $properties){
-        $this->name = is_string($properties['name']) ? $properties['name'] : '';
-        $this->type = is_string($properties['type']) ? $properties['type'] : '';
-        $this->tmpName = is_string($properties['tmp_name']) ? $properties['tmp_name'] : '';
-        $this->size = is_string($properties['size']) ? $properties['size'] : '';
-        $this->error = is_string($properties['error']) ? $properties['error'] : '';
+        $this->name = $properties['name'];
+        $this->type = $properties['type'];
+        $this->tmpName = $properties['tmp_name'];
+        $this->size = $properties['size'];
+        $this->error = $properties['error'];
     }
     
     public function getFileName(){
@@ -50,5 +50,9 @@ class HttpFile{
         $data = fread($fp, filesize($this->tmpName));
         fclose($fp);
         return $data;
+    }
+    
+    public function isValid(){
+        return !$this->error ? true : false;
     }
 }
