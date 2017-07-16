@@ -31,12 +31,34 @@ class EntityGenerator{
         $strProperties = new \System\Core\StrBuilder();
         $strMethods = new \System\Core\StrBuilder();
         $keyField = '';
-        
+//print_R($fields); exit;
         foreach($fields as $field){ 
             
             if($field->getString('COLUMN_KEY')->equals('PRI')){
                 $keyField = $field->get('COLUMN_NAME');
             }
+            
+            $strProperties->appendTab()
+                ->append('/**')
+                ->appendLine()
+                ->appendTab()
+                ->append(sprintf(' * @System.Data.Entity.Mapping.Attributes.DataType("%s")', $field->get('DATA_TYPE')))->appendLine();
+            
+            if($field->get('COLUMN_DEFAULT') !=null){
+                $strProperties->appendTab()
+                    ->append(sprintf(' * @System.Data.Entity.Mapping.Attributes.DefaultValue("%s")', $field->get('COLUMN_DEFAULT')))->appendLine();
+            }
+
+            if($field->get('IS_NULLABLE') == 'NO'){
+                $strProperties->appendTab()
+                    ->append(' * @System.Data.Validation.Required()', $field->get('COLUMN_COMMENT'))->appendLine();
+            }
+            if((int)$field->get('CHARACTER_MAXIMUM_LENGTH') > 0){
+                $strProperties->appendTab()
+                    ->append(sprintf(' * @System.Data.Validation.StringLength("%s")', $field->get('CHARACTER_MAXIMUM_LENGTH')))->appendLine();
+            }
+            
+            $strProperties->appendTab()->append(' */')->appendLine();
             
             $strProperties->appendTab()
                 ->append('protected $')
@@ -77,7 +99,8 @@ class EntityGenerator{
         
         $sb->append($strProperties)
             ->append($strMethods)
-            ->trim()->appendLine()
+            ->trim()
+            ->appendLine()
             ->append('}')
             ->tokens([
                 'namespace' => $this->config->get('namespace'),

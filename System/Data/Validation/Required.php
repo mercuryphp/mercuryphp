@@ -4,7 +4,7 @@ namespace System\Data\Validation;
 
 class Required extends Validator {
 
-    public function __construct($errMessage){
+    public function __construct(string $errMessage = ''){
         $this->errMessage = $errMessage;
     }
     
