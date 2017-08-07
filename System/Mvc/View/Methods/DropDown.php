@@ -7,7 +7,7 @@ use System\Core\StrBuilder;
 
 class DropDown{
 
-    public function execute(string $name, array $source, string $dataValue, string $dataText, $selectedValue = null, array $attributes = []){
+    public function execute(string $name, array $source, string $dataValue, string $dataText, $selectedValue = null, $emptyOption = null, array $attributes = []){
 
         $arr = new Arr($attributes);
 
@@ -28,6 +28,10 @@ class DropDown{
         }
 
         $control = $control->append('>');
+        
+        if($emptyOption !==null){
+            $control = $control->append('<option value=""></option>');
+        }
 
         foreach($source as $row){
             
