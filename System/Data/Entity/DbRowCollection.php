@@ -65,6 +65,17 @@ class DbRowCollection implements \IteratorAggregate {
         return false;
     }
     
+    public function getValues($field){
+        $array = [];
+        foreach($this->rows as $idx => $row){
+            $data = is_object($row) ? \System\Core\Obj::getProperties($row) : $row;
+            
+            if(is_array($data) && array_key_exists($field, $data)){ 
+                $array[] = $data[$field];
+            }
+        }
+    }
+    
     public function count() : int{
         return count($this->rows);
     }
