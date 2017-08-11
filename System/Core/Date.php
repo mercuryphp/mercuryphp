@@ -7,7 +7,14 @@ class Date extends \DateTime {
     protected static $dateFormat = 'Y-m-d H:i:s';
     protected static $timezone = null;
     
-    public function __construct(string $date = '', $object = null) {
+    public function __construct(string $date = '', $object = null){
+        if(strlen($date) == 8){
+            $day = Str::set($date)->subString(0,2);
+            $month = Str::set($date)->subString(2,2);
+            $year = Str::set($date)->subString(4,4);
+            $date = $year.'-'.$month.'-'.$day;
+            $date = Str::t
+        }
         parent::__construct($date, $object);
     }
 

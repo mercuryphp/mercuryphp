@@ -74,6 +74,19 @@ class DbRowCollection implements \IteratorAggregate {
                 $array[] = $data[$field];
             }
         }
+        return $array;
+    }
+    
+    public function groupBy($field){
+        $array = [];
+        foreach($this->rows as $idx => $row){
+            $data = is_object($row) ? \System\Core\Obj::getProperties($row) : $row;
+            
+            if(is_array($data) && array_key_exists($field, $data)){ 
+                $array[$data[$field]][] = $row;
+            }
+        }
+        return $array;
     }
     
     public function count() : int{
