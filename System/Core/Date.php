@@ -14,6 +14,12 @@ class Date extends \DateTime {
             $year = Str::set($date)->subString(4,4);
             $date = $year.'-'.$month.'-'.$day;
         }
+        if(strlen($date) == 10){
+            $day = Str::set($date)->subString(0,2);
+            $month = Str::set($date)->subString(3,2);
+            $year = Str::set($date)->subString(6,4);
+            $date = $year.'-'.$month.'-'.$day;
+        }
         parent::__construct($date, $object);
     }
 
