@@ -13,7 +13,6 @@ class Date extends \DateTime {
             $month = Str::set($date)->subString(2,2);
             $year = Str::set($date)->subString(4,4);
             $date = $year.'-'.$month.'-'.$day;
-            $date = Str::t
         }
         parent::__construct($date, $object);
     }
