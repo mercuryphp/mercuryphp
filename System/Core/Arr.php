@@ -70,9 +70,12 @@ class Arr implements \IteratorAggregate, \ArrayAccess, \Countable {
         return $this;
     }
     
-    public function get($key){
+    public function get($key, $default = null){
         if($this->hasKey($key)){
             return $this->array[$key];
+        }
+        if(null !== $default){
+            return $default;
         }
         return false;
     }
