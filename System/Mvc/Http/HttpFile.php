@@ -55,4 +55,8 @@ class HttpFile{
     public function isValid(){
         return !$this->error ? true : false;
     }
+    
+    public function save($path){
+        return move_uploaded_file($this->tmpName, $path);
+    }
 }

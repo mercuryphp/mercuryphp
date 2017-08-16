@@ -53,6 +53,7 @@ final class Obj {
 
             $property->setValue($object, $value);
         }
+        return $object;
     }
     
     /**
@@ -151,8 +152,16 @@ final class Obj {
                     break;
                 case 'object':
                         $type = (string)$param->getType(); 
+                        
                         if($type){
-                            $actionArgs[] = Obj::setProperties($type, $args);
+                            switch($type){
+                                case 'System\Core\Date':
+                                    $actionArgs[] = Obj::getInstance($type, [$args[$param->name]]);
+                                    break;
+                                default:
+                                    $actionArgs[] = Obj::setProperties($type, $args);
+                            }
+                            
                         }
                     break; 
             }

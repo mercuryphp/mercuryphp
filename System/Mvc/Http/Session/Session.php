@@ -24,10 +24,6 @@ abstract class Session {
     public function getSessionId(){
         return $this->sessionId;
     }
-    
-    public function active(){
-        return $this->active;
-    }
 
     public function set($name, $value){
         $this->collection[$name] = $value;
@@ -42,11 +38,19 @@ abstract class Session {
         }
     }
     
+    public function remove($name){
+        unset($this->collection[$name]);
+    }
+
     public function exists($name){ 
         if(array_key_exists($name, $this->collection)){
             return true;
         }
         return false;
+    }
+    
+    public function active(){
+        return $this->active;
     }
     
     public function start(){

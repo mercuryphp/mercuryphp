@@ -33,4 +33,10 @@ abstract class View {
         $closure = $ref->getClosure($object)->bindTo($this);
         return $closure(...$arguments);
     }
+    
+    public function __get($name){
+        if(array_key_exists($name, $this->params)){
+            return $this->params[$name];
+        }
+    }
 }
