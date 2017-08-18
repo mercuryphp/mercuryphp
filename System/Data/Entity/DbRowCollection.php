@@ -52,6 +52,16 @@ class DbRowCollection implements \IteratorAggregate {
         } 
         return $this;
     }
+    
+    public function insert($index, $row){
+        array_splice($this->rows, $index, 0, [$row]);
+        return $this;
+    }
+    
+    public function add($row){
+        $this->rows[] = $row;
+        return $this;
+    }
 
     public function merge($data){
         $this->rows = array_merge($this->rows, $data);

@@ -11,6 +11,7 @@ class DbQueryBuilder {
     protected $sql;
     protected $isWhere = false;
     protected $params = [];
+    protected $paramCounter = 0;
     
     public function __construct(DbContext $db){
         $this->db = $db;
@@ -42,6 +43,22 @@ class DbQueryBuilder {
         $this->sql->append($field)->append('=:')->append($bindField)->appendLine();
         $this->isWhere = true;
         $this->params[$bindField] = $value;
+        return $this;
+    }
+    
+    public function between(string $field, $value1, $value2){
+        
+        if(false == $this->isWhere){
+            $this->sql->append("WHERE ");
+        }else{
+            $this->sql->appendLine()->append("AND ");
+        }
+
+        $this->sql->append($field . ' BETWEEN ')->append(':bvf' . $this->paramCounter . ' AND :bvt' . $this->paramCounter)->appendLine();
+        $this->isWhere = true;
+        $this->params['bvf'.$this->paramCounter] = $value1;
+        $this->params['bvt'.$this->paramCounter] = $value2;
+        $this->paramCounter++;
         return $this;
     }
     

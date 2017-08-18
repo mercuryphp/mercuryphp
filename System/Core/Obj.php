@@ -156,7 +156,12 @@ final class Obj {
                         if($type){
                             switch($type){
                                 case 'System\Core\Date':
-                                    $actionArgs[] = Obj::getInstance($type, [$args[$param->name]]);
+                                    if(array_key_exists($param->name, $args)){
+                                        $actionArgs[] = Obj::getInstance($type, [$args[$param->name]]);
+                                    }else{
+                                        $actionArgs[] = Date::now();
+                                    }
+                                    
                                     break;
                                 default:
                                     $actionArgs[] = Obj::setProperties($type, $args);
