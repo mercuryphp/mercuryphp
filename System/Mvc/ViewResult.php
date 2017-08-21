@@ -24,6 +24,11 @@ class ViewResult implements IActionResult {
         $this->view->setLayout($layout);
         return $this;
     }
+    
+    public function setContentType(string $contentType){
+        $this->httpContext->getResponse()->setContentType($contentType);
+        return $this;
+    }
 
     public function execute() : string{
         $viewName = $this->viewName ? $this->viewName : $this->httpContext->getRequest()->getRouteData()->getAction();
