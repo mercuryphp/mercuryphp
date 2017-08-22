@@ -61,4 +61,9 @@ class DbQuery {
         }
         return false;
     }
+    
+    public function nonQuery(){
+        $stm = $this->db->query($this->sql, $this->params);
+        return $stm->rowCount();
+    }
 }
