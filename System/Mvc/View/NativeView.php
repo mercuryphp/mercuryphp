@@ -40,6 +40,7 @@ class NativeView extends View {
     
     public function render(\System\Mvc\Http\HttpContext $httpContext, array $params = [], string $viewName = '') : string{
         $this->params = array_merge($this->params, $params);
+        $this->params['environment'] = $httpContext->getEnvironment();
         $this->params['request'] = $httpContext->getRequest();
         $this->params['session'] = $httpContext->getSession();
         
