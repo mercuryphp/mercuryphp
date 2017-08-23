@@ -11,10 +11,12 @@ abstract class DbContext {
     private $config;
     private $query;
     private $schema;
-    private $dbSets = [];
+    private $dbSets;
     private $entityAttributeData;
     private $entities;
-    
+    private $repositories;
+    private $params;
+
     public function __construct(string $dsn = ''){
         if($dsn){
             $this->db = new \System\Data\Database($dsn);
@@ -23,8 +25,11 @@ abstract class DbContext {
         $this->config = new DbConfiguration();
         $this->query = new DbQuery($this->db);
         $this->schema = new Mapping\Schema\Schema($this->db);
+        $this->dbSets = new Arr();
         $this->entityAttributeData = new Arr();
         $this->entities = new Arr();
+        $this->repositories = new Arr();
+        $this->params = new Arr();
         
         $this->config->setEntityAttributeDriver(new Mapping\Driver\AnnotationDriver());
     }
@@ -46,7 +51,12 @@ abstract class DbContext {
     }
     
     public function getRepository(string $name){
-        return Obj::getInstance($name, [$this]);
+        if ($this->repositories->hasKey($name)){
+            return $this->repositories[$name];
+        }
+        $repository = Obj::getInstance($name, [$this]);
+        $this->repositories[$name] = $repository;
+        return $repository;
     }
 
     public function getEntityAttributeData() : Arr{
@@ -63,7 +73,7 @@ abstract class DbContext {
     
     public function dbSet($name){
         
-        if(array_key_exists($name, $this->dbSets)){
+        if($this->dbSets->hasKey($name)){
             return $this->dbSets[$name];
         }
 
@@ -73,6 +83,10 @@ abstract class DbContext {
         return $this->dbSets[$name];
     }
     
+    public function addParam($name, $value){
+        $this->params[$name] = $value;
+    }
+
     public function saveChanges(){
         
         foreach($this->dbSets as $dbSet){
@@ -123,5 +137,9 @@ abstract class DbContext {
                 }
             }
         }
+    }
+    
+    public function __get($name){
+        return $this->params->get($name);
     }
 }

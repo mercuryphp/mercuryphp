@@ -10,7 +10,7 @@ abstract class Repository{
         $this->db = $db;
     }
     
-    public function getDb(){
+    public function getDb() : DbContext{
         return $this->db;
     }
 }
