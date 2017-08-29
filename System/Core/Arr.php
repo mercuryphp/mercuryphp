@@ -13,6 +13,18 @@ class Arr implements \IteratorAggregate, \ArrayAccess, \Countable {
         $this->array = $array;
     }
     
+    public function select(string $fields){
+        $fields = explode(',', $fields);
+
+        $tmp = [];
+        foreach($fields as $field){
+            $tmp[$field] = $this->array[$field];
+        }
+        $this->array = $tmp;
+        unset($tmp);
+        return $this;
+    }
+    
     /**
      * Gets a boolean value that determines if the array contains the specified $key.
      */
@@ -142,5 +154,9 @@ class Arr implements \IteratorAggregate, \ArrayAccess, \Countable {
     
     public static function split(string $delimiter, string $string){
         return new Arr(explode($delimiter, $string));
+    }
+    
+    public static function fromObject($object){
+        return new Arr(Obj::getProperties($object));
     }
 }
