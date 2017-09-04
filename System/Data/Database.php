@@ -194,6 +194,23 @@ class Database {
         return $this->query($sql, $params)->rowCount();
     }
     
+    public function delete(string $table, array $conditions) : int {
+
+        $sql = Str::set('DELETE FROM {table} WHERE ')->tokens(['table' => $table]);
+
+        $idx=0;
+        foreach($conditions as $field=>$value){
+            if($idx > 0){
+                $sql = $sql->append(' AND ');
+            }
+
+            $sql = $sql->append($field.'=:c_'.$field);
+            $params[':c_'.$field] = $value;
+            ++$idx;
+        }
+        return $this->query($sql, $params)->rowCount();
+    }
+    
     /**
      * Initiates a transaction.
      */
