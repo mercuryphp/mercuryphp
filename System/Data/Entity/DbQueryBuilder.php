@@ -32,20 +32,6 @@ class DbQueryBuilder {
         return $this;
     }
     
-    public function where(string $field, $value){
-        
-        if(false == $this->isWhere){
-            $this->sql->append("WHERE ");
-        }else{
-            $this->sql->appendLine()->append("AND ");
-        }
-        $bindField = str_replace('.', '_', $field);
-        $this->sql->append($field)->append('=:')->append($bindField)->appendLine();
-        $this->isWhere = true;
-        $this->params[$bindField] = $value;
-        return $this;
-    }
-    
     public function between(string $field, $value1, $value2){
         
         if(false == $this->isWhere){
@@ -62,6 +48,20 @@ class DbQueryBuilder {
         return $this;
     }
     
+    public function where(string $field, $value){
+        
+        if(false == $this->isWhere){
+            $this->sql->append("WHERE ");
+        }else{
+            $this->sql->appendLine()->append("AND ");
+        }
+        $bindField = str_replace('.', '_', $field);
+        $this->sql->append($field)->append('=:')->append($bindField)->appendLine();
+        $this->isWhere = true;
+        $this->params[$bindField] = $value;
+        return $this;
+    }
+
     public function orWhere(string $field, $value){
         
         if(false == $this->isWhere){
@@ -87,6 +87,19 @@ class DbQueryBuilder {
         $this->sql->append($field)->append('!=:')->append($bindField)->appendLine();
         $this->isWhere = true;
         $this->params[$bindField] = $value;
+        return $this;
+    }
+    
+    public function whereIn(string $field, array $values){
+        
+        if(false == $this->isWhere){
+            $this->sql->append("WHERE ");
+        }else{
+            $this->sql->appendLine()->append("AND ");
+        }
+
+        $this->sql->append($field)->append(' IN (' . implode(',', $values) . ')')->appendLine();
+        $this->isWhere = true;
         return $this;
     }
     

@@ -3,6 +3,7 @@
 namespace System\Data\Validation;
 
 use System\Core\Arr;
+use System\Core\Obj;
 
 class ValidationContext {
     
@@ -15,6 +16,9 @@ class ValidationContext {
     }
     
     public function add(string $name, $value){
+        if(is_object($value)){
+            $value = Obj::getProperty($value, $name);
+        }
         $stack = new ValidationStack($value);
         $this->context->add($name, $stack);
         return $stack;

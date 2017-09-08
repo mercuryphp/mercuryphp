@@ -19,7 +19,8 @@ class Schema{
             IS_NULLABLE,
             DATA_TYPE,
             CHARACTER_MAXIMUM_LENGTH,
-            COLUMN_KEY
+            COLUMN_KEY,
+            EXTRA
             FROM information_schema.TABLES AS t
             INNER JOIN information_schema.COLUMNS c ON c.TABLE_NAME = t.TABLE_NAME
             WHERE t.TABLE_SCHEMA=:dbname

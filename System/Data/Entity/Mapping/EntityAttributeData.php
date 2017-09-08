@@ -2,8 +2,6 @@
 
 namespace System\Data\Entity\Mapping;
 
-use System\Core\Obj;
-
 class EntityAttributeData {
 
     protected $entityName;
@@ -33,12 +31,9 @@ class EntityAttributeData {
         }
 
         $this->entityName = $entityName;
-        $this->tableName = Obj::getInstance($tableNameClass, $data[$tableNameClass])->getName();
-        $this->key = Obj::getInstance($keyClass, $data[$keyClass])->getName();
-
-        foreach($data['fields'] as $field => $attributes){
-            $this->fields[$field] = $attributes;
-        }
+        $this->tableName = $data[$tableNameClass]->getName();
+        $this->key = $data[$keyClass]->getName();
+        $this->fields = $data['fields'];
     }
     
     public function getEntityName() : string{

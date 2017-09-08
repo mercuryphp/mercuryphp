@@ -15,14 +15,16 @@ class DbRowCollection implements \IteratorAggregate {
     }
     
     public function setRowIndex($field){
+        $tmp = [];
         foreach($this->rows as $idx => $row){
             $data = is_object($row) ? \System\Core\Obj::getProperties($row) : $row;
             
             if(is_array($data) && array_key_exists($field, $data)){
-                unset($this->rows[$idx]);
-                $this->rows[$data[$field]] = $row;
+                $tmp[$data[$field]] = $row;
             }
         }
+        $this->rows = $tmp;
+        unset($tmp);
         return $this;
     }
     

@@ -107,8 +107,8 @@ abstract class Controller {
         $this->load();
         
         
-        $attributes = Obj::getMethodAttributes($this, $routeData->getAction());
-        
+        $attributes = Obj::getMethodAttributes($this, $routeData->getAction(), false);
+
         foreach($attributes as $attribute => $args){
             $attributeInstance = Obj::getInstance($attribute);
             $ref = new \ReflectionMethod($attribute, 'execute');

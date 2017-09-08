@@ -174,7 +174,7 @@ final class Obj {
         return $refMethod->invokeArgs($object, $actionArgs);
     }
 
-    public static function getClassAttributes($object) : array{
+    public static function getClassAttributes($object, bool $createInstance = true) : array{
         if(is_string($object)){
             $refClass = new \ReflectionClass($object);
             $object = $refClass->newInstance();
@@ -184,10 +184,10 @@ final class Obj {
             throw new \RuntimeException(sprintf('Obj::getClassAttributes() expects parameter 1 to be object or string.', gettype($object)));
         }
 
-        return self::getAttrinutes($refClass->getDocComment());
+        return self::getAttributes($refClass->getDocComment(), $createInstance);
     }
 
-    public static function getMethodAttributes($object, string $method) : array{
+    public static function getMethodAttributes($object, string $method, bool $createInstance = true) : array{
         if(is_string($object)){
             $refClass = new \ReflectionClass($object);
             $object = $refClass->newInstance();
@@ -197,10 +197,10 @@ final class Obj {
             throw new \RuntimeException(sprintf('Obj::getMethodAttributes() expects parameter 1 to be object or string.', gettype($object)));
         }
 
-        return self::getAttrinutes($refClass->getMethod($method)->getDocComment());
+        return self::getAttributes($refClass->getMethod($method)->getDocComment(), $createInstance);
     }
     
-    public static function getPropertyAttributes($object, string $property) : array{
+    public static function getPropertyAttributes($object, string $property, bool $createInstance = true) : array{
         if(is_string($object)){
             $refClass = new \ReflectionClass($object);
             $object = $refClass->newInstance();
@@ -210,7 +210,7 @@ final class Obj {
             throw new \RuntimeException(sprintf('Obj::getPropertyAttributes() expects parameter 1 to be object or string.', gettype($object)));
         }
 
-        return self::getAttrinutes($refClass->getProperty($property)->getDocComment());
+        return self::getAttributes($refClass->getProperty($property)->getDocComment(), $createInstance);
     }
     
     /**
@@ -245,14 +245,21 @@ final class Obj {
         }
     }
     
-    protected static function getAttrinutes($comments){
+    protected static function getAttributes($comments, $createInstance){
         $attributes = [];
         $lines = Str::set($comments)->split("\\n");
         foreach($lines as $line){
             if(Str::set($line)->trim(" *")->first() == '@'){
                 $attribute = Str::set($line)->get('@', '(');
                 $args = Str::set($line)->get('(', ')');
-                $attributes[(string)$attribute->replace('.', '\\')] = json_decode('['.(string)$args.']');
+                $attributeClass = (string)$attribute->replace('.', '\\');
+                $attributeArgs = json_decode('['.(string)$args.']');
+                
+                if($createInstance){
+                    $attributes[$attributeClass] = Obj::getInstance($attributeClass, $attributeArgs);
+                }else{
+                    $attributes[$attributeClass] = $attributeArgs;
+                }
             }
         }
         return $attributes;

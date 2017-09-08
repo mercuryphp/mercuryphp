@@ -33,6 +33,21 @@ class DbSet implements \IteratorAggregate{
         return false;
     }
 
+    public function getValidators(){
+        
+        $fields = $this->entityAttributeData->getFields();
+        $validators = [];
+        
+        foreach($fields as $field => $attributes){
+            foreach($attributes as $instance){
+                if($instance instanceof \System\Data\Validation\Validator){
+                    $validators[$field][] = $instance;
+                }
+            }
+        }
+        return $validators;
+    }
+    
     public function getIterator(){
         return new \ArrayIterator($this->entities);
     }
