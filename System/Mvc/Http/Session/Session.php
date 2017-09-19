@@ -38,6 +38,14 @@ abstract class Session {
         }
     }
     
+    public function flash(){
+        if($this->exists('__FLASH_DATA__')){
+            $value = $this->collection['__FLASH_DATA__'];
+            $this->remove('__FLASH_DATA__');
+            return $value;
+        }
+    }
+    
     public function remove($name){
         unset($this->collection[$name]);
     }

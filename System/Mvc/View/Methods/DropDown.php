@@ -21,16 +21,16 @@ class DropDown{
         $control = new StrBuilder('<select ');
 
         foreach($arr as $attribute=>$value){
-            $control = $control->append($attribute)
+            $control->append($attribute)
                 ->append('="')
                 ->append($this->escape($value))
                 ->append('" ');
         }
 
-        $control = $control->append('>');
+        $control->append('>');
         
-        if($emptyOption !==null){
-            $control = $control->append('<option value=""></option>');
+        if($emptyOption !== null){
+            $control->append('<option value=""></option>');
         }
 
         foreach($source as $row){
@@ -58,15 +58,15 @@ class DropDown{
             $key = $row[$dataValue];
             $value = $row[$dataText];
             
-            $control = $control->append('<option value="')
+            $control->append('<option value="')
                 ->append($this->escape($key))
                 ->append('"');
 
             if($selectedValue == $key){
-                $control = $control->append(' selected');
+                $control->append(' selected');
             }
 
-            $control = $control->append('>')
+            $control->append('>')
                 ->append($this->escape($value))
                 ->append('</option>');
         }

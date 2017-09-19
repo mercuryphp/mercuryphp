@@ -20,14 +20,19 @@ class ValidationContext {
             $value = Obj::getProperty($value, $name);
         }
         $stack = new ValidationStack($value);
-        $this->context->add($name, $stack);
+        $this->context->set($name, $stack);
         return $stack;
+    }
+    
+    public function addError(string $name, string $errMessage){
+        $this->errors->set($name, $errMessage);
+        return $this;
     }
     
     public function isValid() : bool{
         foreach($this->context as $name => $stack){
             if(!$stack->isValid()){
-                $this->errors->add($name, $stack->getError());
+                $this->errors->set($name, $stack->getError());
             }
         }
         return $this->errors->count() > 0 ? false : true;

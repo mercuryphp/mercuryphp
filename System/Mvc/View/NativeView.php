@@ -42,6 +42,7 @@ class NativeView extends View {
         $this->params = array_merge($this->params, $params);
         $this->params['environment'] = $httpContext->getEnvironment();
         $this->params['request'] = $httpContext->getRequest();
+        $this->params['response'] = $httpContext->getResponse();
         $this->params['session'] = $httpContext->getSession();
         
         extract($this->params);

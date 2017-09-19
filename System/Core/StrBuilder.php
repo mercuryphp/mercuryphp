@@ -69,6 +69,7 @@ class StrBuilder {
     
     public function tokens(array $tokens){
         $this->string = Str::set($this->string)->tokens($tokens);
+        return $this;
     }
 
     /**

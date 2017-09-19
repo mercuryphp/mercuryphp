@@ -66,7 +66,7 @@ abstract class Controller {
     }
     
     protected function redirect(string $location) : IActionResult{
-        return new RedirectResult($this->getResponse(), $location);
+        return new RedirectResult($this->getHttpContext(), $location);
     }
     
     protected function load(){}
