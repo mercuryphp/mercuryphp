@@ -33,11 +33,16 @@ class Date extends \DateTime {
         return $this->format($format);
     }
     
-    public function addMonth($months){
-        $this->modify('+'.$months.' month');
+    public function addMinute($minutes){
+        $this->modify($minutes.' minute');
         return $this;
     }
     
+    public function addMonth($months){
+        $this->modify($months.' month');
+        return $this;
+    }
+
     public static function now(){
         if(null !== self::$timezone){
             return new Date('now', new \DateTimeZone(self::$timezone));

@@ -121,8 +121,13 @@ final class Obj {
      * Gets a boolean value that determines if the specified $object has a method.
      */
     public static function hasMethod($object, string $method) : bool{
-        $object = new \ReflectionObject($object);
-        return $object->hasMethod($method);
+        $refObj = new \ReflectionObject($object);
+        return $refObj->hasMethod($method);
+    }
+    
+    public static function hasProperty($object, $property){
+        $refObj = new \ReflectionObject($object);
+        return $refObj->hasProperty($property);
     }
     
     /**
