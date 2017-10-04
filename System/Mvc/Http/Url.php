@@ -8,12 +8,14 @@ class Url {
     private $host;
     private $rawUri;
     private $uri;
+    private $url;
 
-    public function __construct(){
+    public function __construct(){ 
         $this->httpScheme = $_SERVER['REQUEST_SCHEME'];
         $this->host = $_SERVER['HTTP_HOST'];
         $this->rawUri = trim($_SERVER['REQUEST_URI'], '/');
-        $this->uri = \System\Core\Str::set($this->rawUri)->getIndexOf('?');
+        $this->uri = \System\Core\Str::set($this->rawUri)->getIndexOf('?')->toString();
+        $this->url = $this->httpScheme . '://' . $this->host . '/' . $this->rawUri;
     }
     
     public function getHttpScheme() : string{
@@ -34,5 +36,9 @@ class Url {
     
     public function getSegments(){
         return \System\Core\Arr::split('/', $this->uri);
+    }
+    
+    public function __toString(){
+        return $this->url;
     }
 }

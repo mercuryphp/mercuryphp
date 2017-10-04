@@ -103,6 +103,19 @@ class DbQueryBuilder {
         return $this;
     }
     
+    public function whereNotIn(string $field, array $values){
+        
+        if(false == $this->isWhere){
+            $this->sql->append("WHERE ");
+        }else{
+            $this->sql->appendLine()->append("AND ");
+        }
+
+        $this->sql->append($field)->append(' NOT IN (' . implode(',', $values) . ')')->appendLine();
+        $this->isWhere = true;
+        return $this;
+    }
+    
     public function groupBy($fields){
         $this->sql->append("GROUP BY ")->append($fields)->appendLine();
         return $this;
