@@ -5,12 +5,14 @@ namespace System\Mvc;
 use System\Core\Obj;
 use System\Core\Str;
 use System\Core\Arr;
+use System\Core\ServiceContainer;
 
 abstract class Controller {
     
     private $httpContext;
     private $registry;
     private $config;
+    private $serviceContainer;
     private $view;
     
     public function __construct(){
@@ -36,6 +38,18 @@ abstract class Controller {
     public function getSession() : Http\Session\Session{
         return $this->httpContext->getSession();
     }
+    
+    public function getRegistry(){
+        return $this->registry;
+    }
+    
+    public function setServices(ServiceContainer $services){
+        $this->serviceContainer = $services;
+    }
+    
+    public function getServices() : ServiceContainer{
+        return $this->serviceContainer;
+    }
 
     public function setViewEngine(View\View $view){
         $this->view = $view;
@@ -44,11 +58,7 @@ abstract class Controller {
     public function getViewEngine() : View\View{
         return $this->view;
     }
-    
-    public function getRegistry(){
-        return $this->registry;
-    }
-    
+
     public function setConfiguration(\System\Core\Configuration $config){
         $this->config = $config;
     }

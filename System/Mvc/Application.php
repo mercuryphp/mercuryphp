@@ -101,7 +101,7 @@ abstract class Application {
                     if(!$controller instanceof \System\Mvc\Controller){
                         throw new HttpException('Controller ' . $controllerName . ' must be an instance of System\Mvc\Controller.');
                     }
-                    
+                    $controller->setServices($this->serviceContainer);
                     $controller->setConfiguration($this->config);
                     $controller->getRegistry()->merge(Obj::getProperties($this, \ReflectionProperty::IS_PUBLIC | \ReflectionProperty::IS_PROTECTED));
                 }catch(\Exception $e){
