@@ -61,6 +61,20 @@ class DbQueryBuilder {
         $this->params[$bindField] = $value;
         return $this;
     }
+    
+    public function like(string $field, $value){
+        
+        if(false == $this->isWhere){
+            $this->sql->append("WHERE ");
+        }else{
+            $this->sql->appendLine()->append("AND ");
+        }
+        $bindField = str_replace('.', '_', $field);
+        $this->sql->append($field)->append(' LIKE :')->append($bindField)->appendLine();
+        $this->isWhere = true;
+        $this->params[$bindField] = $value;
+        return $this;
+    }
 
     public function orWhere(string $field, $value){
         
