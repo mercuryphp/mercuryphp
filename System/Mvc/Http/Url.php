@@ -9,13 +9,17 @@ class Url {
     private $rawUri;
     private $uri;
     private $url;
+    private $baseUrl;
 
-    public function __construct(){ 
+    public function __construct(){
         $this->httpScheme = $_SERVER['REQUEST_SCHEME'];
         $this->host = $_SERVER['HTTP_HOST'];
         $this->rawUri = trim($_SERVER['REQUEST_URI'], '/');
         $this->uri = \System\Core\Str::set($this->rawUri)->getIndexOf('?')->toString();
-        $this->url = $this->httpScheme . '://' . $this->host . '/' . $this->rawUri;
+        
+        $port = $_SERVER['SERVER_PORT'] != 80 ? ':'.$_SERVER['SERVER_PORT'] : '';
+        $this->baseUrl = $this->httpScheme . '://' . $this->host . $port;
+        $this->url = $this->httpScheme . '://' . $this->host . $port . '/' . $this->rawUri;
     }
     
     public function getHttpScheme() : string{
@@ -32,6 +36,10 @@ class Url {
     
     public function getUri() : string{
         return $this->uri;
+    }
+    
+    public function getBaseUrl() : string{
+        return $this->baseUrl;
     }
     
     public function getSegments(){

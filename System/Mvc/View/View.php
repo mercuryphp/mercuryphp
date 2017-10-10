@@ -31,6 +31,7 @@ abstract class View {
 
         $ref = new \ReflectionMethod($object, 'execute');
         $closure = $ref->getClosure($object)->bindTo($this);
+        
         return $closure(...$arguments);
     }
     

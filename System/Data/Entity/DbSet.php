@@ -23,6 +23,10 @@ class DbSet implements \IteratorAggregate{
     
     public function find($params){
         
+        if(is_scalar($params)){
+            $params = [$this->entityAttributeData->getKey() => $params];
+        }
+        
         $entity = $this->getQueryBuilder($params)->single($this->entityName, $params);
         
         if($entity){
