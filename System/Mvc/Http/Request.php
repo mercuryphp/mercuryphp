@@ -164,8 +164,10 @@ final class Request {
         $params = $this->getParam();
         
         foreach($params as $name => $value){
-            $value = strlen($value) > 0 ? $value : null; 
-            \System\Core\Obj::setProperty($object, $name, $value);
+            if(is_scalar($value)){
+                $value = strlen($value) > 0 ? $value : null; 
+                \System\Core\Obj::setProperty($object, $name, $value);
+            }
         }
     }
 }
