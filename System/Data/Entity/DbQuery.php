@@ -66,12 +66,14 @@ class DbQuery {
 
         $row = $this->db->fetch($this->sql, $this->params, \PDO::FETCH_ASSOC);
         
-        if($columnName){
-            if(array_key_exists($columnName, $row)){
-                return $row[$columnName];
+        if(is_array($row)){
+            if($columnName){
+                if(array_key_exists($columnName, $row)){
+                    return $row[$columnName];
+                }
+            }else{
+                return array_pop($row);
             }
-        }else{
-            return array_pop($row);
         }
     }
     
