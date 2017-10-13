@@ -62,6 +62,19 @@ class DbQuery {
         return false;
     }
     
+    public function column(string $columnName = ''){
+
+        $row = $this->db->fetch($this->sql, $this->params, \PDO::FETCH_ASSOC);
+        
+        if($columnName){
+            if(array_key_exists($columnName, $row)){
+                return $row[$columnName];
+            }
+        }else{
+            return array_pop($row);
+        }
+    }
+    
     public function nonQuery(){
         $stm = $this->db->query($this->sql, $this->params);
         return $stm->rowCount();
