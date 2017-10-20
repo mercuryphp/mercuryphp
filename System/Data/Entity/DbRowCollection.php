@@ -77,9 +77,9 @@ class DbRowCollection implements \IteratorAggregate {
         return false;
     }
     
-    public function getValues($field){
+    public function getValues(string $field){
         $array = [];
-        foreach($this->rows as $idx => $row){
+        foreach($this->rows as $row){
             $data = is_object($row) ? \System\Core\Obj::getProperties($row) : $row;
             
             if(is_array($data) && array_key_exists($field, $data)){ 
@@ -89,9 +89,9 @@ class DbRowCollection implements \IteratorAggregate {
         return $array;
     }
     
-    public function groupBy($field){
+    public function groupBy(string $field){
         $array = [];
-        foreach($this->rows as $idx => $row){
+        foreach($this->rows as $row){
             $data = is_object($row) ? \System\Core\Obj::getProperties($row) : $row;
             
             if(is_array($data) && array_key_exists($field, $data)){ 
@@ -101,6 +101,17 @@ class DbRowCollection implements \IteratorAggregate {
         return $array;
     }
     
+    public function chunck(int $length, $value = null){
+        $this->rows = array_chunk($this->rows, $length);
+
+        if($value){
+            end($this->rows);
+            $idx = key($this->rows);
+            $this->rows[$idx] = array_pad($this->rows[$idx], $length, $value);
+        }
+        return $this;
+    }
+
     public function count() : int{
         return count($this->rows);
     }

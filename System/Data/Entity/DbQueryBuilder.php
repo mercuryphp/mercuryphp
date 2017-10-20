@@ -177,6 +177,10 @@ class DbQueryBuilder {
         return $this->db->query((string)$this->sql, $this->params)->toList($entityName);
     }
     
+    public function column($fieldName = ''){
+        return $this->db->query((string)$this->sql, $this->params)->column($fieldName);
+    }
+    
     protected function joinType(string $type, string $entityName, string $condition = ''){
         $table = $this->getTable($entityName);
         $this->sql->append($type)->append(" ")

@@ -14,13 +14,34 @@ class Date extends \DateTime {
             $year = Str::set($date)->subString(4,4);
             $date = $year.'-'.$month.'-'.$day;
         }
-        elseif(strlen($date) == 10){
-            $day = Str::set($date)->subString(0,2);
-            $month = Str::set($date)->subString(3,2);
-            $year = Str::set($date)->subString(6,4);
-            $date = $year.'-'.$month.'-'.$day;
-        }
         parent::__construct($date, $object);
+    }
+    
+    public function addMinute($minutes){
+        $this->modify($minutes.' minute');
+        return $this;
+    }
+    
+    public function addDay($days){
+        $this->modify($days.' day');
+        return $this;
+    }
+    
+    public function addMonth($months){
+        $this->modify($months.' month');
+        return $this;
+    }
+    
+    public function getDay(){
+        return $this->format('d');
+    }
+    
+    public function getMonth(){
+        return $this->format('m');
+    }
+    
+    public function getYear(){
+        return $this->format('Y');
     }
 
     public function toString(string $format = '', string $timezone = null){
@@ -31,16 +52,6 @@ class Date extends \DateTime {
         
         $format = $format ? $format : self::$dateFormat;
         return $this->format($format);
-    }
-    
-    public function addMinute($minutes){
-        $this->modify($minutes.' minute');
-        return $this;
-    }
-    
-    public function addMonth($months){
-        $this->modify($months.' month');
-        return $this;
     }
 
     public static function now(){
@@ -56,7 +67,7 @@ class Date extends \DateTime {
         }
         return new Date($dateTime);
     }
-    
+
     public static function parseArgs($year, $month = 1, $day = 1, $hour = 0, $minute = 0, $second = 0){
         
         $date = "$year-$month-$day $hour:$minute:$second";
