@@ -32,7 +32,7 @@ class EntityGenerator{
         $strMethods = new \System\Core\StrBuilder();
         $keyField = '';
         $autoGen = '';
-        
+
         foreach($fields as $field){ 
             
             $autoGen = $field->get('EXTRA');
@@ -59,11 +59,15 @@ class EntityGenerator{
 
             if($field->get('IS_NULLABLE') == 'NO' && !$autoGen){
                 $strProperties->appendTab()
-                    ->append(' * @System.Data.Validation.Required()', $field->get('COLUMN_COMMENT'))->appendLine();
+                    ->append(sprintf(' * @System.Data.Validation.Required("%s is required")', $field->getString('COLUMN_NAME')->toUpperFirst()))->appendLine();
             }
             if((int)$field->get('CHARACTER_MAXIMUM_LENGTH') > 0){
                 $strProperties->appendTab()
-                    ->append(sprintf(' * @System.Data.Validation.StringLength("%s")', $field->get('CHARACTER_MAXIMUM_LENGTH')))->appendLine();
+                    ->append(sprintf(' * @System.Data.Validation.StringLength("%s", "%s max character length is %s")', 
+                        $field->get('CHARACTER_MAXIMUM_LENGTH'), 
+                        $field->getString('COLUMN_NAME')->toUpperFirst(), 
+                        $field->get('CHARACTER_MAXIMUM_LENGTH'))
+                    )->appendLine();
             }
             
             $strProperties->appendTab()->append(' */')->appendLine();

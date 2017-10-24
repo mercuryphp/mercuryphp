@@ -6,9 +6,9 @@ class StringLength extends Validator {
 
     protected $length;
     
-    public function __construct(int $length, string $errMessage = ''){
+    public function __construct(int $length, string $errMessage){
         $this->length = $length;
-        $this->errMessage = $errMessage ? $errMessage : 'Max string length is ' . $length;
+        $this->errMessage = $errMessage;
     }
     
     public function isValid() : bool{
