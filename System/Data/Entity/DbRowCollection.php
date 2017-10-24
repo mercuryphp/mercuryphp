@@ -103,8 +103,8 @@ class DbRowCollection implements \IteratorAggregate {
     
     public function chunck(int $length, $value = null){
         $this->rows = array_chunk($this->rows, $length);
-
-        if($value){
+        
+        if($value && count($this->rows)){
             end($this->rows);
             $idx = key($this->rows);
             $this->rows[$idx] = array_pad($this->rows[$idx], $length, $value);
