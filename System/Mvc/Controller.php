@@ -81,6 +81,8 @@ abstract class Controller {
     
     protected function load(){}
     
+    protected function unload(){}
+    
     protected function render(string $output){
         $this->httpContext->getResponse()->write($output);
     }
@@ -116,7 +118,6 @@ abstract class Controller {
 
         $this->load();
         
-        
         $attributes = Obj::getMethodAttributes($this, $routeData->getAction(), false);
 
         foreach($attributes as $attribute => $args){
@@ -137,6 +138,8 @@ abstract class Controller {
                 $result = new JsonResult($this->httpContext->getResponse(), $result);
             }
         }
+        
+        $this->unload();
 
         $this->render($result->execute());
 
