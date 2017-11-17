@@ -8,8 +8,8 @@ class Required extends Validator {
         $this->errMessage = $errMessage;
     }
     
-    public function isValid() : bool{
-        if($this->value){
+    public function isValid() : bool{ 
+        if(strlen($this->value) > 0){
             return true;
         }
         return false;
