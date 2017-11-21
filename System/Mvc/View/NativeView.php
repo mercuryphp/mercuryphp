@@ -27,7 +27,7 @@ class NativeView extends View {
         extract($this->params);
 
         $includeFile = Str::set($file)->tokens(['root' => $this->rootDirectory]);
-        return include $includeFile;
+        include $includeFile;
     }
 
     public function renderBody(){
