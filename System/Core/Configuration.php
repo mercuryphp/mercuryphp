@@ -18,10 +18,18 @@ class Configuration {
     public function __construct(string $file){
         try {
             $content = file_get_contents($file);
-            $this->config = json_decode($content, true);
+            $lines = explode("\n", $content);
+            
+            if(count($lines) > 0){
+                
+                if(substr($lines[0], 0, 5) == '<?php'){
+                    unset($lines[0]);
+                }
+                $this->config = json_decode(join("\n", $lines), true);
 
-            if(json_last_error() > 0){
-                throw new \RuntimeException(sprintf('An error occured in configuration file "%s" (%s).', $file, json_last_error_msg()));
+                if(json_last_error() > 0){
+                    throw new \RuntimeException(sprintf('An error occured in configuration file "%s" (%s).', $file, json_last_error_msg()));
+                }
             }
         }catch(\Exception $e){
             throw new \RuntimeException($e->getMessage());
