@@ -116,6 +116,10 @@ class DbRowCollection implements \IteratorAggregate {
         return count($this->rows);
     }
     
+    public function reverse() : array{
+        return array_reverse($this->rows);
+    }
+    
     public function toArray() : array{
         return $this->rows;
     }

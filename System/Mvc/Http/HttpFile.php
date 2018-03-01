@@ -39,7 +39,7 @@ class HttpFile{
     }
     
     public function getFileExtension(){
-        $pos = stripos($this->name, '.');
+        $pos = strrpos($this->name, '.');
         if($pos >-1){
             return substr($this->name, $pos + 1);
         }
