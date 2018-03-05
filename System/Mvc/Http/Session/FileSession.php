@@ -18,6 +18,10 @@ class FileSession extends \System\Mvc\Http\Session\Session {
         
         if(file_exists($sessionFile)){
             $this->collection = unserialize(file_get_contents($sessionFile));
+            
+            if(!is_array($this->collection)){
+                $this->collection = [];
+            }
         }else{
             $this->sessionId = bin2hex(random_bytes(30));
         }
