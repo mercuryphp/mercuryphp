@@ -219,8 +219,12 @@ class DbQueryBuilder {
         
         return $data;
     }
+    
+    public function toString(){
+        return (string)$this->sql;
+    }
 
     public function __toString(){
-        return (string)$this->sql;
+        return $this->toString();
     }
 }
