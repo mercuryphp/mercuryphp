@@ -34,6 +34,10 @@ class RouteData {
         return $this->controller;
     }
     
+    public function setAction(string $action){
+        $this->action = $action;
+    }
+    
     public function getAction() : string{
         return $this->action;
     }

@@ -13,7 +13,7 @@ class EntityAttributeData {
 
         $tableNameClass = 'System\Data\Entity\Mapping\Attributes\Table';
         $keyClass = 'System\Data\Entity\Mapping\Attributes\Key';
-        
+ 
         if(!array_key_exists($tableNameClass, $data)){
             throw new EntityAttributeException(sprintf("Table attribute not found in entity %s.", $data['name']));
         }
