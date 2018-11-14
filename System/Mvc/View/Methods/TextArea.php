@@ -7,6 +7,12 @@ use System\Core\Arr;
 use System\Core\StrBuilder;
 
 class TextArea {
+    
+    protected $escape;
+    
+    public function __construct($escape){
+        $this->escape = $escape;
+    }
 
     public function execute(string $name, $text = '', array $attributes = []){
         
@@ -32,7 +38,7 @@ class TextArea {
         foreach($arr as $attribute=>$value){
             $control->append($attribute)
                 ->append('="')
-                ->append($this->escape($value))
+                ->append($this->escape->execute($value))
                 ->append('" ');
         }
         

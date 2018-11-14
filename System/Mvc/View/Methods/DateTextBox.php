@@ -6,7 +6,7 @@ use System\Core\Obj;
 use System\Core\Arr;
 use System\Core\StrBuilder;
 
-class TextBox {
+class DateTextBox {
     
     protected $escape;
     
@@ -27,7 +27,7 @@ class TextBox {
         $arr = new Arr($attributes);
 
         if(!$arr->hasKey('type')){
-            $arr->add('type', $type);
+            $arr->add('type', 'date');
         }
         if(!$arr->hasKey('name')){
             $arr->add('name', $name);

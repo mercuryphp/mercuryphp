@@ -6,6 +6,12 @@ use System\Core\Arr;
 use System\Core\StrBuilder;
 
 class DropDown{
+    
+    protected $escape;
+    
+    public function __construct($escape){
+        $this->escape = $escape;
+    }
 
     public function execute(string $name, array $source, string $dataValue, string $dataText, $selectedValue = null, $emptyOption = null, array $attributes = []){
 
@@ -23,7 +29,7 @@ class DropDown{
         foreach($arr as $attribute=>$value){
             $control->append($attribute)
                 ->append('="')
-                ->append($this->escape($value))
+                ->append($this->escape->execute($value))
                 ->append('" ');
         }
 
@@ -59,7 +65,7 @@ class DropDown{
             $value = $row[$dataText];
             
             $control->append('<option value="')
-                ->append($this->escape($key))
+                ->append($this->escape->execute($key))
                 ->append('"');
 
             if($selectedValue == $key){
@@ -67,7 +73,7 @@ class DropDown{
             }
 
             $control->append('>')
-                ->append($this->escape($value))
+                ->append($this->escape->execute($value))
                 ->append('</option>');
         }
 

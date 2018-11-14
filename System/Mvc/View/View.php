@@ -29,10 +29,8 @@ abstract class View {
             $object = $this->methods[$name];
         }
 
-        $ref = new \ReflectionMethod($object, 'execute');
-        $closure = $ref->getClosure($object)->bindTo($this);
-        
-        return $closure(...$arguments);
+        $refMethod = new \ReflectionMethod($object, 'execute');
+        return $refMethod->invokeArgs($object, $arguments);
     }
     
     public function __get($name){
