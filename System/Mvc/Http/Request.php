@@ -23,6 +23,7 @@ final class Request {
         $rawInput = $this->getRawInput();
 
         if($rawInput && $this->getContentType() == 'application/json'){
+            $rawInput = preg_replace('/[[:cntrl:]]/', '', $rawInput);
             $data = json_decode($rawInput, true);
             $this->post = array_merge($this->post, $data);
         } 
