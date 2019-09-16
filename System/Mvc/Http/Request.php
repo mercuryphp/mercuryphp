@@ -24,7 +24,11 @@ final class Request {
 
         if($rawInput && $this->getContentType() == 'application/json'){
             $data = json_decode($rawInput, true);
-            $this->post = array_merge($this->post, $data);
+            if(is_array($data)){
+                $this->post = array_merge($this->post, $data);
+            }else{
+                print_R($data);
+            }
         } 
     }
     
